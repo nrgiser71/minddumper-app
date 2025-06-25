@@ -77,11 +77,12 @@ export default function AppPage() {
     setConfigLoading(false)
   }
 
-  const buildCategoryStructure = (words: { main_category?: string; sub_category?: string; word: string }[]): CategoryStructure[] => {
+  const buildCategoryStructure = (words: { main_category?: string; sub_category?: string; word: string; category?: string }[]): CategoryStructure[] => {
     const structure: Record<string, Record<string, string[]>> = {}
     
     words.forEach(word => {
-      const mainCat = word.main_category || 'Overig'
+      // Use existing category field if hierarchical fields don't exist
+      const mainCat = word.main_category || (word.category === 'professional' ? 'Professioneel' : 'Persoonlijk')
       const subCat = word.sub_category || 'Algemeen'
       
       if (!structure[mainCat]) {
