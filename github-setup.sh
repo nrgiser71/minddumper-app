@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# GitHub Setup Script voor MindDumper
+
+echo "🚀 GitHub Setup voor MindDumper"
+echo "=============================="
+echo ""
+echo "Optie 1: Via Browser (Makkelijkst)"
+echo "1. Run: gh auth login"
+echo "2. Kies: GitHub.com"
+echo "3. Kies: Login with a web browser"
+echo "4. Kopieer de code en open de link"
+echo ""
+echo "Optie 2: Via Personal Access Token"
+echo "1. Ga naar: https://github.com/settings/tokens"
+echo "2. Generate new token (classic)"
+echo "3. Selecteer: repo, workflow"
+echo "4. Run: export GH_TOKEN=your_token_here"
+echo ""
+echo "Daarna run dit commando:"
+echo "gh repo create minddumper-app --public --source=. --remote=origin --push"
+echo ""
+echo "Of gebruik deze git commands:"
+echo "git remote add origin https://github.com/YOUR_USERNAME/minddumper-app.git"
+echo "git push -u origin main"
