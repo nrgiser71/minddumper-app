@@ -32,6 +32,11 @@ export interface TriggerWord {
   language: string
   word: string
   category?: string
+  main_category?: string
+  sub_category?: string
+  sort_order?: number
+  main_category_order?: number
+  sub_category_order?: number
   is_active: boolean
   created_at: string
 }

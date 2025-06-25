@@ -1,26 +1,34 @@
-import { supabase, type BrainDump } from './supabase'
+import { supabase, type BrainDump, type TriggerWord } from './supabase'
 
-// Fetch trigger words for a specific language
-export async function getTriggerWords(language: string): Promise<string[]> {
+// Fetch trigger words for a specific language with hierarchical structure
+export async function getTriggerWords(language: string): Promise<TriggerWord[]> {
   try {
     const { data, error } = await supabase
       .from('trigger_words')
-      .select('word')
+      .select('*')
       .eq('language', language)
       .eq('is_active', true)
-      .order('word')
+      .order('main_category_order', { ascending: true })
+      .order('sub_category_order', { ascending: true })
+      .order('sort_order', { ascending: true })
 
     if (error) {
       console.error('Error fetching trigger words:', error)
       // Fallback to mock data
-      return getMockTriggerWords(language)
+      return getMockTriggerWordsStructured(language)
     }
 
-    return data?.map(item => item.word) || getMockTriggerWords(language)
+    return data || getMockTriggerWordsStructured(language)
   } catch (error) {
     console.error('Error:', error)
-    return getMockTriggerWords(language)
+    return getMockTriggerWordsStructured(language)
   }
+}
+
+// Legacy function for simple word lists (for backward compatibility)
+export async function getTriggerWordsList(language: string): Promise<string[]> {
+  const words = await getTriggerWords(language)
+  return words.map(w => w.word)
 }
 
 // Save brain dump to database
@@ -95,6 +103,38 @@ export async function getBrainDumpHistory(): Promise<BrainDump[]> {
 }
 
 // Mock data fallback for when database is unavailable
+function getMockTriggerWordsStructured(language: string): TriggerWord[] {
+  const mockWords = [
+    {
+      id: '1',
+      language,
+      word: 'Werk',
+      main_category: 'Professioneel',
+      sub_category: 'Algemeen',
+      main_category_order: 1,
+      sub_category_order: 1,
+      sort_order: 1,
+      is_active: true,
+      created_at: new Date().toISOString()
+    },
+    {
+      id: '2', 
+      language,
+      word: 'Familie',
+      main_category: 'Persoonlijk',
+      sub_category: 'Relaties',
+      main_category_order: 2,
+      sub_category_order: 1,
+      sort_order: 1,
+      is_active: true,
+      created_at: new Date().toISOString()
+    }
+  ]
+  
+  return mockWords
+}
+
+// Legacy mock function for backward compatibility
 function getMockTriggerWords(language: string): string[] {
   const mockWords = {
     nl: ['Werk', 'Familie', 'Gezondheid', 'Huis', 'Financiën', 'Hobby', 'Vrienden', 'Reizen', 'Studie', 'Sport', 'Creativiteit', 'Technologie'],
