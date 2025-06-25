@@ -106,7 +106,7 @@ export default function AppPage() {
     
     // Filter out empty main categories and sort
     return Object.entries(structure)
-      .filter(([_, subCategories]) => Object.keys(subCategories).length > 0)
+      .filter(([, subCategories]) => Object.keys(subCategories).length > 0)
       .map(([mainCategory, subCategories]) => ({
         mainCategory,
         subCategories: Object.entries(subCategories)
