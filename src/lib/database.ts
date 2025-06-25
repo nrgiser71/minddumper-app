@@ -134,15 +134,3 @@ function getMockTriggerWordsStructured(language: string): TriggerWord[] {
   return mockWords
 }
 
-// Legacy mock function for backward compatibility
-function getMockTriggerWords(language: string): string[] {
-  const mockWords = {
-    nl: ['Werk', 'Familie', 'Gezondheid', 'Huis', 'Financiën', 'Hobby', 'Vrienden', 'Reizen', 'Studie', 'Sport', 'Creativiteit', 'Technologie'],
-    en: ['Work', 'Family', 'Health', 'Home', 'Finance', 'Hobby', 'Friends', 'Travel', 'Study', 'Sports', 'Creativity', 'Technology'],
-    de: ['Arbeit', 'Familie', 'Gesundheit', 'Haus', 'Finanzen', 'Hobby', 'Freunde', 'Reisen', 'Studium', 'Sport', 'Kreativität', 'Technologie'],
-    fr: ['Travail', 'Famille', 'Santé', 'Maison', 'Finance', 'Loisir', 'Amis', 'Voyage', 'Étude', 'Sport', 'Créativité', 'Technologie'],
-    es: ['Trabajo', 'Familia', 'Salud', 'Casa', 'Finanzas', 'Pasatiempo', 'Amigos', 'Viaje', 'Estudio', 'Deporte', 'Creatividad', 'Tecnología']
-  }
-  
-  return mockWords[language as keyof typeof mockWords] || mockWords.en
-}
