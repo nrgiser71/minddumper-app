@@ -1,19 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { getTriggerWords, saveBrainDump, getBrainDumpHistory } from '@/lib/database'
 import '../app.css'
 
-// Mock data - will be replaced with real data later
-const triggerWords = {
-  nl: ['Lorem', 'Ipsum', 'Dolor', 'Sit', 'Amet', 'Consectetur', 'Adipiscing', 'Elit', 'Sed', 'Do', 'Eiusmod', 'Tempor'],
-  en: ['Lorem', 'Ipsum', 'Dolor', 'Sit', 'Amet', 'Consectetur', 'Adipiscing', 'Elit', 'Sed', 'Do', 'Eiusmod', 'Tempor'],
-  de: ['Lorem', 'Ipsum', 'Dolor', 'Sit', 'Amet', 'Consectetur', 'Adipiscing', 'Elit', 'Sed', 'Do', 'Eiusmod', 'Tempor'],
-  fr: ['Lorem', 'Ipsum', 'Dolor', 'Sit', 'Amet', 'Consectetur', 'Adipiscing', 'Elit', 'Sed', 'Do', 'Eiusmod', 'Tempor'],
-  es: ['Lorem', 'Ipsum', 'Dolor', 'Sit', 'Amet', 'Consectetur', 'Adipiscing', 'Elit', 'Sed', 'Do', 'Eiusmod', 'Tempor']
-}
-
-type Language = keyof typeof triggerWords
+type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
 type Screen = 'home' | 'language' | 'minddump' | 'finish' | 'config' | 'history'
 
 export default function AppPage() {
@@ -23,16 +15,33 @@ export default function AppPage() {
   const [currentIdeas, setCurrentIdeas] = useState<string[]>([])
   const [allIdeas, setAllIdeas] = useState<string[]>([])
   const [ideaInput, setIdeaInput] = useState('')
+  const [triggerWords, setTriggerWords] = useState<string[]>([])
+  const [loading, setLoading] = useState(false)
+  const [startTime, setStartTime] = useState<Date | null>(null)
 
   const showScreen = (screenId: Screen) => {
     setCurrentScreen(screenId)
   }
 
-  const startMindDump = (language: Language) => {
+  const startMindDump = async (language: Language) => {
+    setLoading(true)
     setCurrentLanguage(language)
     setCurrentWordIndex(0)
     setCurrentIdeas([])
     setAllIdeas([])
+    setStartTime(new Date())
+    
+    // Load trigger words from database
+    try {
+      const words = await getTriggerWords(language)
+      setTriggerWords(words)
+    } catch (error) {
+      console.error('Error loading trigger words:', error)
+      // Fallback to empty array, database.ts will handle fallback
+      setTriggerWords([])
+    }
+    
+    setLoading(false)
     setCurrentScreen('minddump')
   }
 
@@ -47,18 +56,33 @@ export default function AppPage() {
   }
 
   const nextWord = () => {
-    const words = triggerWords[currentLanguage]
     setCurrentIdeas([])
     const nextIndex = currentWordIndex + 1
     
-    if (nextIndex >= words.length) {
+    if (nextIndex >= triggerWords.length) {
       finishMindDump()
     } else {
       setCurrentWordIndex(nextIndex)
     }
   }
 
-  const finishMindDump = () => {
+  const finishMindDump = async () => {
+    // Calculate duration
+    const duration = startTime ? Math.round((Date.now() - startTime.getTime()) / 60000) : 0
+    
+    // Save to database (optional, continues even if it fails)
+    try {
+      await saveBrainDump({
+        language: currentLanguage,
+        ideas: allIdeas,
+        total_words: currentWordIndex,
+        duration_minutes: duration
+      })
+    } catch (error) {
+      console.error('Error saving brain dump:', error)
+      // Continue anyway - user can still export
+    }
+    
     setCurrentScreen('finish')
   }
 
@@ -82,8 +106,8 @@ export default function AppPage() {
     }
   }
 
-  const currentWord = triggerWords[currentLanguage][currentWordIndex]
-  const progress = Math.round((currentWordIndex / triggerWords[currentLanguage].length) * 100)
+  const currentWord = triggerWords[currentWordIndex] || 'Loading...'
+  const progress = triggerWords.length > 0 ? Math.round((currentWordIndex / triggerWords.length) * 100) : 0
 
   return (
     <div>
@@ -146,31 +170,37 @@ export default function AppPage() {
             </div>
             
             <div className="language-grid">
-              <button className="language-option" onClick={() => startMindDump('nl')}>
+              <button className="language-option" onClick={() => startMindDump('nl')} disabled={loading}>
                 <div className="flag">🇳🇱</div>
                 <span>Nederlands</span>
               </button>
               
-              <button className="language-option" onClick={() => startMindDump('en')}>
+              <button className="language-option" onClick={() => startMindDump('en')} disabled={loading}>
                 <div className="flag">🇬🇧</div>
                 <span>English</span>
               </button>
               
-              <button className="language-option" onClick={() => startMindDump('de')}>
+              <button className="language-option" onClick={() => startMindDump('de')} disabled={loading}>
                 <div className="flag">🇩🇪</div>
                 <span>Deutsch</span>
               </button>
               
-              <button className="language-option" onClick={() => startMindDump('fr')}>
+              <button className="language-option" onClick={() => startMindDump('fr')} disabled={loading}>
                 <div className="flag">🇫🇷</div>
                 <span>Français</span>
               </button>
               
-              <button className="language-option" onClick={() => startMindDump('es')}>
+              <button className="language-option" onClick={() => startMindDump('es')} disabled={loading}>
                 <div className="flag">🇪🇸</div>
                 <span>Español</span>
               </button>
             </div>
+            
+            {loading && (
+              <div style={{textAlign: 'center', marginTop: '2rem', color: '#666'}}>
+                Triggerwoorden laden...
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -308,7 +338,7 @@ export default function AppPage() {
               </div>
               
               <div className="trigger-list">
-                {triggerWords[currentLanguage].slice(0, 6).map((word, index) => (
+                {triggerWords.slice(0, 6).map((word, index) => (
                   <div key={index} className="trigger-item">
                     <input type="checkbox" id={`trigger${index}`} defaultChecked={index < 4} />
                     <label htmlFor={`trigger${index}`}>{word}</label>
@@ -316,7 +346,7 @@ export default function AppPage() {
                 ))}
               </div>
               
-              <div className="show-more-triggers">Toon meer woorden ({triggerWords[currentLanguage].length - 6} van {triggerWords[currentLanguage].length})</div>
+              <div className="show-more-triggers">Toon meer woorden ({Math.max(0, triggerWords.length - 6)} van {triggerWords.length})</div>
             </div>
             
             <div className="config-section">
