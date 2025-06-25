@@ -171,6 +171,90 @@ export default function AdminPage() {
         <p><strong>Woorden:</strong> Gestart maar niet afgerond, Nog te starten, Nog te beoordelen</p>
         <p><em>Dit wordt automatisch opgesplitst in 3 aparte triggerwoorden.</em></p>
       </div>
+
+      <div style={{ marginTop: '3rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px' }}>
+        <h3>Backup & Restore</h3>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <button
+            onClick={async () => {
+              try {
+                const response = await fetch('/api/admin/export-backup')
+                const blob = await response.blob()
+                const url = window.URL.createObjectURL(blob)
+                const a = document.createElement('a')
+                a.href = url
+                a.download = `minddumper-backup-${new Date().toISOString().split('T')[0]}.json`
+                document.body.appendChild(a)
+                a.click()
+                document.body.removeChild(a)
+                window.URL.revokeObjectURL(url)
+                setMessage('✅ Backup gedownload!')
+              } catch (error) {
+                setMessage(`❌ Fout bij backup: ${error}`)
+              }
+            }}
+            style={{
+              background: '#4caf50',
+              color: 'white',
+              border: 'none',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '1rem'
+            }}
+          >
+            📥 Backup Downloaden
+          </button>
+
+          <input
+            type="file"
+            accept=".json"
+            onChange={async (e) => {
+              const file = e.target.files?.[0]
+              if (!file) return
+
+              try {
+                const text = await file.text()
+                const backup = JSON.parse(text)
+                
+                if (confirm(`Wil je de backup van ${backup.exportDate} importeren? Dit vervangt alle huidige Nederlandse woorden!`)) {
+                  const response = await fetch('/api/admin/import-backup', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: text
+                  })
+                  
+                  const result = await response.json()
+                  if (result.success) {
+                    setMessage(`✅ Backup geïmporteerd: ${result.imported} woorden`)
+                  } else {
+                    setMessage(`❌ Fout bij importeren: ${result.error}`)
+                  }
+                }
+              } catch (error) {
+                setMessage(`❌ Fout bij lezen backup: ${error}`)
+              }
+            }}
+            style={{ display: 'none' }}
+            id="backup-upload"
+          />
+          <label
+            htmlFor="backup-upload"
+            style={{
+              background: '#2196f3',
+              color: 'white',
+              border: 'none',
+              padding: '0.75rem 1.5rem',
+              borderRadius: '6px',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              display: 'inline-block'
+            }}
+          >
+            📤 Backup Importeren
+          </label>
+        </div>
+      </div>
     </div>
   )
 }
