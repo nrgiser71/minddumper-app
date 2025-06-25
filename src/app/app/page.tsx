@@ -16,11 +16,29 @@ export default function AppPage() {
   const [allIdeas, setAllIdeas] = useState<string[]>([])
   const [ideaInput, setIdeaInput] = useState('')
   const [triggerWords, setTriggerWords] = useState<string[]>([])
+  const [configTriggerWords, setConfigTriggerWords] = useState<string[]>([])
   const [loading, setLoading] = useState(false)
+  const [configLoading, setConfigLoading] = useState(false)
   const [startTime, setStartTime] = useState<Date | null>(null)
 
   const showScreen = (screenId: Screen) => {
     setCurrentScreen(screenId)
+    
+    // Load trigger words when going to config screen
+    if (screenId === 'config' && configTriggerWords.length === 0) {
+      loadConfigTriggerWords()
+    }
+  }
+
+  const loadConfigTriggerWords = async () => {
+    setConfigLoading(true)
+    try {
+      const words = await getTriggerWords(currentLanguage)
+      setConfigTriggerWords(words)
+    } catch (error) {
+      console.error('Error loading config trigger words:', error)
+    }
+    setConfigLoading(false)
   }
 
   const startMindDump = async (language: Language) => {
@@ -322,7 +340,22 @@ export default function AppPage() {
             
             <div className="config-section">
               <h3>Taal</h3>
-              <select className="language-select" value={currentLanguage} onChange={(e) => setCurrentLanguage(e.target.value as Language)}>
+              <select 
+                className="language-select" 
+                value={currentLanguage} 
+                onChange={async (e) => {
+                  const newLanguage = e.target.value as Language
+                  setCurrentLanguage(newLanguage)
+                  setConfigLoading(true)
+                  try {
+                    const words = await getTriggerWords(newLanguage)
+                    setConfigTriggerWords(words)
+                  } catch (error) {
+                    console.error('Error loading trigger words for new language:', error)
+                  }
+                  setConfigLoading(false)
+                }}
+              >
                 <option value="nl">Nederlands</option>
                 <option value="en">English</option>
                 <option value="de">Deutsch</option>
@@ -337,16 +370,30 @@ export default function AppPage() {
                 <input type="text" className="search-input" placeholder="Zoek triggerwoorden..." />
               </div>
               
-              <div className="trigger-list">
-                {triggerWords.slice(0, 6).map((word, index) => (
-                  <div key={index} className="trigger-item">
-                    <input type="checkbox" id={`trigger${index}`} defaultChecked={index < 4} />
-                    <label htmlFor={`trigger${index}`}>{word}</label>
+              {configLoading ? (
+                <div style={{textAlign: 'center', margin: '2rem 0', color: '#666'}}>
+                  Triggerwoorden laden...
+                </div>
+              ) : (
+                <>
+                  <div className="trigger-list">
+                    {configTriggerWords.slice(0, 12).map((word, index) => (
+                      <div key={index} className="trigger-item">
+                        <input type="checkbox" id={`trigger${index}`} defaultChecked={true} />
+                        <label htmlFor={`trigger${index}`}>{word}</label>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
-              
-              <div className="show-more-triggers">Toon meer woorden ({Math.max(0, triggerWords.length - 6)} van {triggerWords.length})</div>
+                  
+                  <div className="show-more-triggers">
+                    {configTriggerWords.length > 12 ? (
+                      `Toon meer woorden (${configTriggerWords.length - 12} van ${configTriggerWords.length})`
+                    ) : (
+                      `${configTriggerWords.length} woorden beschikbaar`
+                    )}
+                  </div>
+                </>
+              )}
             </div>
             
             <div className="config-section">
