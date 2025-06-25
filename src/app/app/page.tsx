@@ -377,7 +377,7 @@ export default function AppPage() {
               ) : (
                 <>
                   <div className="trigger-list">
-                    {configTriggerWords.slice(0, 12).map((word, index) => (
+                    {configTriggerWords.map((word, index) => (
                       <div key={index} className="trigger-item">
                         <input type="checkbox" id={`trigger${index}`} defaultChecked={true} />
                         <label htmlFor={`trigger${index}`}>{word}</label>
@@ -386,11 +386,7 @@ export default function AppPage() {
                   </div>
                   
                   <div className="show-more-triggers">
-                    {configTriggerWords.length > 12 ? (
-                      `Toon meer woorden (${configTriggerWords.length - 12} van ${configTriggerWords.length})`
-                    ) : (
-                      `${configTriggerWords.length} woorden beschikbaar`
-                    )}
+                    {configTriggerWords.length} woorden beschikbaar
                   </div>
                 </>
               )}
