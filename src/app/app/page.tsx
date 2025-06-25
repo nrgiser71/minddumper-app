@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { getTriggerWords, getTriggerWordsList, saveBrainDump } from '@/lib/database'
+import { getTriggerWordsList, saveBrainDump } from '@/lib/database'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
