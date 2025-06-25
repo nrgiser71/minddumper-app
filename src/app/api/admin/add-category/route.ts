@@ -38,7 +38,7 @@ export async function POST(request: Request) {
         .insert({
           language: 'nl',
           word: word,
-          category: subCategory,
+          category: `${mainCategory}|${subCategory}`, // Store main category info
           is_active: true
         })
 

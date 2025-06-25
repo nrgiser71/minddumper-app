@@ -84,18 +84,17 @@ export default function AppPage() {
     }
     
     words.forEach(word => {
-      const subCat = word.category || 'Algemeen'
-      
-      // Try to determine main category based on subcategory name or use a simple heuristic
       let mainCat = 'Persoonlijk' // default
+      let subCat = word.category || 'Algemeen'
       
-      // You can update this logic based on your actual subcategory names
-      // For now, we'll try to auto-detect or you can update this list
-      const professionalKeywords = ['werk', 'bedrijf', 'professional', 'kantoor', 'systemen', 'verkoop', 'financieel', 'administratie']
-      const subcatLower = subCat.toLowerCase()
-      
-      if (professionalKeywords.some(keyword => subcatLower.includes(keyword))) {
-        mainCat = 'Professioneel'
+      // Check if category contains main category info (format: "MainCategory|SubCategory")
+      if (word.category && word.category.includes('|')) {
+        const [main, sub] = word.category.split('|')
+        mainCat = main
+        subCat = sub
+      } else {
+        // Fallback for old data - keep existing subcategory name
+        subCat = word.category || 'Algemeen'
       }
       
       if (!structure[mainCat][subCat]) {
