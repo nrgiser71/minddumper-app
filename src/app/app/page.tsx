@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { getTriggerWords, saveBrainDump } from '@/lib/database'
+import { getTriggerWords, getTriggerWordsList, saveBrainDump } from '@/lib/database'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
@@ -33,7 +33,7 @@ export default function AppPage() {
   const loadConfigTriggerWords = async () => {
     setConfigLoading(true)
     try {
-      const words = await getTriggerWords(currentLanguage)
+      const words = await getTriggerWordsList(currentLanguage)
       setConfigTriggerWords(words)
     } catch (error) {
       console.error('Error loading config trigger words:', error)
@@ -51,7 +51,7 @@ export default function AppPage() {
     
     // Load trigger words from database
     try {
-      const words = await getTriggerWords(language)
+      const words = await getTriggerWordsList(language)
       setTriggerWords(words)
     } catch (error) {
       console.error('Error loading trigger words:', error)
@@ -348,7 +348,7 @@ export default function AppPage() {
                   setCurrentLanguage(newLanguage)
                   setConfigLoading(true)
                   try {
-                    const words = await getTriggerWords(newLanguage)
+                    const words = await getTriggerWordsList(newLanguage)
                     setConfigTriggerWords(words)
                   } catch (error) {
                     console.error('Error loading trigger words for new language:', error)
