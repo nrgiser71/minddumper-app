@@ -77,7 +77,7 @@ export default function AppPage() {
     setConfigLoading(false)
   }
 
-  const buildCategoryStructure = (words: any[]): CategoryStructure[] => {
+  const buildCategoryStructure = (words: { main_category?: string; sub_category?: string; word: string }[]): CategoryStructure[] => {
     const structure: Record<string, Record<string, string[]>> = {}
     
     words.forEach(word => {
