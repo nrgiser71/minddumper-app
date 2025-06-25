@@ -432,7 +432,12 @@ export default function AppPage() {
                   </div>
                 )}
               </div>
-              <div className="trigger-word">{currentWord}</div>
+              <div 
+                className="trigger-word" 
+                data-long={currentWord.length > 15 ? "true" : "false"}
+              >
+                {currentWord}
+              </div>
               <div className="trigger-description">Wat komt er in je op bij dit woord?</div>
             </div>
             
