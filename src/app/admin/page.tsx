@@ -52,9 +52,12 @@ export default function AdminPage() {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', fontFamily: 'system-ui' }}>
-      <div style={{ marginBottom: '2rem' }}>
+      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between' }}>
         <Link href="/app" style={{ color: '#007AFF', textDecoration: 'none' }}>
           ← Terug naar app
+        </Link>
+        <Link href="/admin/reorganize" style={{ color: '#007AFF', textDecoration: 'none' }}>
+          📁 Categorieën reorganiseren →
         </Link>
       </div>
 
