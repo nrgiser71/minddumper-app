@@ -24,7 +24,7 @@ body {
 }
 
 .app-container {
-    max-width: 500px;
+    max-width: 800px;
     margin: 0 auto;
     padding: 20px;
 }
@@ -245,6 +245,7 @@ body {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     max-width: 100%;
     overflow: hidden;
+    width: 100%;
 }
 
 .category-hierarchy {
@@ -274,16 +275,16 @@ body {
 }
 
 .trigger-word {
-    font-size: 2.5rem;
+    font-size: 2.8rem;
     font-weight: 700;
     color: #007AFF;
     margin-bottom: 0.5rem;
-    padding: 0.75rem 2rem;
+    padding: 1rem 2.5rem;
     background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
     border-radius: 12px;
     display: inline-block;
-    min-width: 250px;
-    max-width: 90vw;
+    min-width: 350px;
+    max-width: 95vw;
     word-wrap: break-word;
     overflow-wrap: break-word;
     hyphens: auto;
@@ -296,26 +297,46 @@ body {
 }
 
 /* Responsive font size for very long words */
+@media (max-width: 1024px) {
+    .trigger-word {
+        font-size: 2.3rem;
+        padding: 0.75rem 2rem;
+        max-width: 90vw;
+        min-width: 300px;
+    }
+}
+
 @media (max-width: 768px) {
     .trigger-word {
         font-size: 2rem;
         padding: 0.5rem 1.5rem;
         max-width: 95vw;
+        min-width: 250px;
     }
 }
 
 /* For extra long words, make font smaller */
 .trigger-word[data-long="true"] {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
     line-height: 1.4;
-    max-width: 80vw;
+    max-width: 85vw;
+    min-width: 400px;
+}
+
+@media (max-width: 1024px) {
+    .trigger-word[data-long="true"] {
+        font-size: 1.8rem;
+        max-width: 85vw;
+        min-width: 300px;
+    }
 }
 
 @media (max-width: 768px) {
     .trigger-word[data-long="true"] {
-        font-size: 1.3rem;
+        font-size: 1.5rem;
         max-width: 90vw;
         padding: 0.5rem 1rem;
+        min-width: 250px;
     }
 }
 
@@ -719,6 +740,7 @@ body {
 @media (max-width: 480px) {
     .app-container {
         padding: 15px;
+        max-width: 95vw;
     }
     
     .app-title {
@@ -726,7 +748,13 @@ body {
     }
     
     .trigger-word {
-        font-size: 2.5rem;
+        font-size: 1.8rem;
+        min-width: 200px;
+    }
+    
+    .trigger-word[data-long="true"] {
+        font-size: 1.3rem;
+        min-width: 200px;
     }
     
     .summary-stats {
