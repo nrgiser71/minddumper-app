@@ -124,11 +124,17 @@ export async function POST() {
     }
 
     // Get final counts
-    const { data: counts } = await supabase
+    const { data: nlCount } = await supabase
       .from('trigger_words')
-      .select('language, count(*)')
+      .select('*', { count: 'exact' })
+      .eq('language', 'nl')
       .eq('is_active', true)
-      .group('language')
+    
+    const { data: enCount } = await supabase
+      .from('trigger_words')
+      .select('*', { count: 'exact' })
+      .eq('language', 'en')
+      .eq('is_active', true)
 
     console.log('✅ Database improvements completed!')
     
@@ -137,7 +143,8 @@ export async function POST() {
       message: 'Database improvements completed successfully!',
       dutchWordsAdded: dutchWords.length,
       englishWordsAdded: englishWords.length,
-      totalCounts: counts
+      nlTotalCount: nlCount?.length || 0,
+      enTotalCount: enCount?.length || 0
     })
 
   } catch (error) {
