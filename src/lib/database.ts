@@ -1,4 +1,4 @@
-import { supabase, type TriggerWord, type BrainDump } from './supabase'
+import { supabase, type BrainDump } from './supabase'
 
 // Fetch trigger words for a specific language
 export async function getTriggerWords(language: string): Promise<string[]> {

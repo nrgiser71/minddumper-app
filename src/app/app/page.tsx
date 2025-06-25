@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { getTriggerWords, saveBrainDump, getBrainDumpHistory } from '@/lib/database'
+import { getTriggerWords, saveBrainDump } from '@/lib/database'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'

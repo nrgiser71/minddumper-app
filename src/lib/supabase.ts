@@ -24,7 +24,7 @@ export interface BrainDump {
   total_words: number
   duration_minutes: number
   ideas: string[]
-  metadata: Record<string, any>
+  metadata: Record<string, unknown>
 }
 
 export interface TriggerWord {
