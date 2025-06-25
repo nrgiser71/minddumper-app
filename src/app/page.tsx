@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import './landing.css'
 
 export default function HomePage() {
@@ -48,7 +49,7 @@ export default function HomePage() {
             <p className="hero-guarantee">Nooit meer betalen • Alle updates gratis • 30 dagen geld terug</p>
           </div>
           <div className="hero-image">
-            <img src="https://via.placeholder.com/600x400/f0f0f0/666666?text=MindDumper+App" alt="MindDumper App Screenshot" />
+            <Image src="https://via.placeholder.com/600x400/f0f0f0/666666?text=MindDumper+App" alt="MindDumper App Screenshot" width={600} height={400} />
           </div>
         </div>
       </section>
@@ -173,7 +174,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="showcase-image">
-              <img src="https://via.placeholder.com/500x350/f8f8f8/666666?text=Product+Demo" alt="Product Demo" />
+              <Image src="https://via.placeholder.com/500x350/f8f8f8/666666?text=Product+Demo" alt="Product Demo" width={500} height={350} />
             </div>
           </div>
         </div>
@@ -189,7 +190,7 @@ export default function HomePage() {
                 <p>&quot;Eindelijk kan ik slapen zonder dat mijn hoofd vol zit met taken. MindDumper helpt me alles eruit te krijgen en georganiseerd te houden.&quot;</p>
               </div>
               <div className="testimonial-author">
-                <img src="https://via.placeholder.com/50x50/e0e0e0/666666?text=JS" alt="Jan Smith" />
+                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=JS" alt="Jan Smith" width={50} height={50} />
                 <div>
                   <h4>Jan Smith</h4>
                   <span>Product Manager</span>
@@ -202,7 +203,7 @@ export default function HomePage() {
                 <p>&quot;De triggerwoorden zijn briljant! Ik dacht dat ik alles had opgeschreven, maar MindDumper hielp me nog 15 extra taken herinneren.&quot;</p>
               </div>
               <div className="testimonial-author">
-                <img src="https://via.placeholder.com/50x50/e0e0e0/666666?text=MD" alt="Maria Doe" />
+                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=MD" alt="Maria Doe" width={50} height={50} />
                 <div>
                   <h4>Maria Doe</h4>
                   <span>Designer</span>
@@ -215,7 +216,7 @@ export default function HomePage() {
                 <p>&quot;Beste €12 die ik ooit uitgegeven heb! Export naar Things werkt perfect en ik heb het nu al een jaar zonder extra kosten. Lifetime deal was briljant.&quot;</p>
               </div>
               <div className="testimonial-author">
-                <img src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Piet Janssen" />
+                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Piet Janssen" width={50} height={50} />
                 <div>
                   <h4>Piet Janssen</h4>
                   <span>Entrepreneur</span>
