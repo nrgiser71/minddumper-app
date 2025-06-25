@@ -81,9 +81,23 @@ export default function AppPage() {
     const structure: Record<string, Record<string, string[]>> = {}
     
     words.forEach(word => {
-      // Use existing category field if hierarchical fields don't exist
-      const mainCat = word.main_category || (word.category === 'professional' ? 'Professioneel' : 'Persoonlijk')
-      const subCat = word.sub_category || 'Algemeen'
+      // Determine main category
+      let mainCat = 'Persoonlijk' // default
+      if (word.category) {
+        // Check if this is a professional category
+        const professionalCategories = [
+          'Projecten', 'Verplichtingen/beloften aan anderen', 'Communicatie zelf initiëren/reageren op',
+          'Schrijfwerk: te doen/in te leveren', 'Lezen/bekijken', 'Financieel', 'Planning/organisatie',
+          'Organisatieontwikkeling', 'Marketing/promotie', 'Administratie', 'Medewerkers', 'Systemen',
+          'Verkoop', 'Vergaderingen', 'Wachten op', 'Professionele ontwikkeling', 'Kledingkast'
+        ]
+        
+        if (professionalCategories.includes(word.category)) {
+          mainCat = 'Professioneel'
+        }
+      }
+      
+      const subCat = word.category || 'Algemeen'
       
       if (!structure[mainCat]) {
         structure[mainCat] = {}
