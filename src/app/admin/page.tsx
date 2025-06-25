@@ -65,7 +65,7 @@ export default function AdminPage() {
         <ul>
           <li>Kies eerst de hoofdcategorie (Professioneel of Persoonlijk)</li>
           <li>Vul de subcategorie naam in</li>
-          <li>Vul de woorden in, gescheiden door komma's</li>
+          <li>Vul de woorden in, gescheiden door komma&apos;s</li>
           <li>De woorden worden automatisch opgesplitst en opgeslagen</li>
         </ul>
       </div>
@@ -112,7 +112,7 @@ export default function AdminPage() {
 
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Triggerwoorden (gescheiden door komma's):
+            Triggerwoorden (gescheiden door komma&apos;s):
           </label>
           <textarea
             value={words}
