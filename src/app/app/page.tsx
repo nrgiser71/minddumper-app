@@ -78,43 +78,44 @@ export default function AppPage() {
   }
 
   const buildCategoryStructure = (words: { main_category?: string; sub_category?: string; word: string; category?: string }[]): CategoryStructure[] => {
-    const structure: Record<string, Record<string, string[]>> = {}
+    const structure: Record<string, Record<string, string[]>> = {
+      'Professioneel': {},
+      'Persoonlijk': {}
+    }
     
     words.forEach(word => {
-      // Determine main category
-      let mainCat = 'Persoonlijk' // default
-      if (word.category) {
-        // Check if this is a professional category
-        const professionalCategories = [
-          'Projecten', 'Verplichtingen/beloften aan anderen', 'Communicatie zelf initiëren/reageren op',
-          'Schrijfwerk: te doen/in te leveren', 'Lezen/bekijken', 'Financieel', 'Planning/organisatie',
-          'Organisatieontwikkeling', 'Marketing/promotie', 'Administratie', 'Medewerkers', 'Systemen',
-          'Verkoop', 'Vergaderingen', 'Wachten op', 'Professionele ontwikkeling', 'Kledingkast'
-        ]
-        
-        if (professionalCategories.includes(word.category)) {
-          mainCat = 'Professioneel'
-        }
-      }
-      
       const subCat = word.category || 'Algemeen'
       
-      if (!structure[mainCat]) {
-        structure[mainCat] = {}
+      // Try to determine main category based on subcategory name or use a simple heuristic
+      let mainCat = 'Persoonlijk' // default
+      
+      // You can update this logic based on your actual subcategory names
+      // For now, we'll try to auto-detect or you can update this list
+      const professionalKeywords = ['werk', 'bedrijf', 'professional', 'kantoor', 'systemen', 'verkoop', 'financieel', 'administratie']
+      const subcatLower = subCat.toLowerCase()
+      
+      if (professionalKeywords.some(keyword => subcatLower.includes(keyword))) {
+        mainCat = 'Professioneel'
       }
+      
       if (!structure[mainCat][subCat]) {
         structure[mainCat][subCat] = []
       }
       structure[mainCat][subCat].push(word.word)
     })
     
-    return Object.entries(structure).map(([mainCategory, subCategories]) => ({
-      mainCategory,
-      subCategories: Object.entries(subCategories).map(([name, words]) => ({
-        name,
-        words
+    // Filter out empty main categories and sort
+    return Object.entries(structure)
+      .filter(([_, subCategories]) => Object.keys(subCategories).length > 0)
+      .map(([mainCategory, subCategories]) => ({
+        mainCategory,
+        subCategories: Object.entries(subCategories)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([name, words]) => ({
+            name,
+            words: words.sort()
+          }))
       }))
-    }))
   }
 
   const handleMainCategoryCheck = (mainCategory: string, checked: boolean) => {
