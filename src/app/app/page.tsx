@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { getTriggerWordsList, getTriggerWords, saveBrainDump } from '@/lib/database'
+import type { TriggerWord } from '@/lib/supabase'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
@@ -24,6 +25,7 @@ export default function AppPage() {
   const [allIdeas, setAllIdeas] = useState<string[]>([])
   const [ideaInput, setIdeaInput] = useState('')
   const [triggerWords, setTriggerWords] = useState<string[]>([])
+  const [triggerWordsData, setTriggerWordsData] = useState<TriggerWord[]>([])
   const [configTriggerWords, setConfigTriggerWords] = useState<string[]>([])
   const [categoryStructure, setCategoryStructure] = useState<CategoryStructure[]>([])
   const [checkedMainCategories, setCheckedMainCategories] = useState<Record<string, boolean>>({})
@@ -204,10 +206,15 @@ export default function AppPage() {
     try {
       const words = await getTriggerWordsList(language)
       setTriggerWords(words)
+      
+      // Also load full data for category display
+      const fullWords = await getTriggerWords(language)
+      setTriggerWordsData(fullWords)
     } catch (error) {
       console.error('Error loading trigger words:', error)
       // Fallback to empty array, database.ts will handle fallback
       setTriggerWords([])
+      setTriggerWordsData([])
     }
     
     setLoading(false)
@@ -277,6 +284,23 @@ export default function AppPage() {
 
   const currentWord = triggerWords[currentWordIndex] || 'Loading...'
   const progress = triggerWords.length > 0 ? Math.round((currentWordIndex / triggerWords.length) * 100) : 0
+
+  // Get category info for current word
+  const getCurrentCategories = () => {
+    const wordData = triggerWordsData.find(w => w.word === currentWord)
+    if (!wordData || !wordData.category) {
+      return { mainCategory: '', subCategory: '' }
+    }
+    
+    if (wordData.category.includes('|')) {
+      const [main, sub] = wordData.category.split('|')
+      return { mainCategory: main, subCategory: sub }
+    }
+    
+    return { mainCategory: '', subCategory: wordData.category }
+  }
+  
+  const { mainCategory, subCategory } = getCurrentCategories()
 
   return (
     <div>
@@ -396,6 +420,18 @@ export default function AppPage() {
             </div>
             
             <div className="trigger-container">
+              <div className="category-hierarchy">
+                {mainCategory && (
+                  <div className="main-category-display">
+                    {mainCategory}
+                  </div>
+                )}
+                {subCategory && (
+                  <div className="sub-category-display">
+                    {subCategory}
+                  </div>
+                )}
+              </div>
               <div className="trigger-word">{currentWord}</div>
               <div className="trigger-description">Wat komt er in je op bij dit woord?</div>
             </div>
