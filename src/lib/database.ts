@@ -3,24 +3,30 @@ import { supabase, type BrainDump, type TriggerWord } from './supabase'
 // Fetch trigger words for a specific language with hierarchical structure
 export async function getTriggerWords(language: string): Promise<TriggerWord[]> {
   try {
+    console.log(`🔍 Fetching structured trigger words for language: ${language}`)
+    
     const { data, error } = await supabase
       .from('trigger_words')
       .select('*')
       .eq('language', language)
       .eq('is_active', true)
-      .order('main_category_order', { ascending: true })
-      .order('sub_category_order', { ascending: true })
-      .order('sort_order', { ascending: true })
+      .order('id')
 
     if (error) {
-      console.error('Error fetching trigger words:', error)
-      // Fallback to mock data
+      console.error('❌ Database error in getTriggerWords:', error)
       return getMockTriggerWordsStructured(language)
     }
 
-    return data || getMockTriggerWordsStructured(language)
+    console.log(`✅ Found ${data?.length || 0} structured trigger words`)
+    
+    if (!data || data.length === 0) {
+      console.log('⚠️ No structured words found, using fallback')
+      return getMockTriggerWordsStructured(language)
+    }
+    
+    return data
   } catch (error) {
-    console.error('Error:', error)
+    console.error('❌ Error in getTriggerWords:', error)
     return getMockTriggerWordsStructured(language)
   }
 }
