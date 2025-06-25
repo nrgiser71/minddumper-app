@@ -2,11 +2,19 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { getTriggerWordsList, saveBrainDump } from '@/lib/database'
+import { getTriggerWordsList, getTriggerWords, saveBrainDump } from '@/lib/database'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
 type Screen = 'home' | 'language' | 'minddump' | 'finish' | 'config' | 'history'
+
+interface CategoryStructure {
+  mainCategory: string
+  subCategories: {
+    name: string
+    words: string[]
+  }[]
+}
 
 export default function AppPage() {
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
@@ -17,6 +25,10 @@ export default function AppPage() {
   const [ideaInput, setIdeaInput] = useState('')
   const [triggerWords, setTriggerWords] = useState<string[]>([])
   const [configTriggerWords, setConfigTriggerWords] = useState<string[]>([])
+  const [categoryStructure, setCategoryStructure] = useState<CategoryStructure[]>([])
+  const [checkedMainCategories, setCheckedMainCategories] = useState<Record<string, boolean>>({})
+  const [checkedSubCategories, setCheckedSubCategories] = useState<Record<string, boolean>>({})
+  const [checkedWords, setCheckedWords] = useState<Record<string, boolean>>({})
   const [loading, setLoading] = useState(false)
   const [configLoading, setConfigLoading] = useState(false)
   const [startTime, setStartTime] = useState<Date | null>(null)
@@ -35,10 +47,134 @@ export default function AppPage() {
     try {
       const words = await getTriggerWordsList(currentLanguage)
       setConfigTriggerWords(words)
+      
+      // Load structured data for hierarchical display
+      const structuredWords = await getTriggerWords(currentLanguage)
+      const structure = buildCategoryStructure(structuredWords)
+      setCategoryStructure(structure)
+      
+      // Initialize all items as checked
+      const mainCats: Record<string, boolean> = {}
+      const subCats: Record<string, boolean> = {}
+      const wordChecks: Record<string, boolean> = {}
+      
+      structure.forEach(mainCat => {
+        mainCats[mainCat.mainCategory] = true
+        mainCat.subCategories.forEach(subCat => {
+          subCats[`${mainCat.mainCategory}-${subCat.name}`] = true
+          subCat.words.forEach(word => {
+            wordChecks[word] = true
+          })
+        })
+      })
+      
+      setCheckedMainCategories(mainCats)
+      setCheckedSubCategories(subCats)
+      setCheckedWords(wordChecks)
     } catch (error) {
       console.error('Error loading config trigger words:', error)
     }
     setConfigLoading(false)
+  }
+
+  const buildCategoryStructure = (words: any[]): CategoryStructure[] => {
+    const structure: Record<string, Record<string, string[]>> = {}
+    
+    words.forEach(word => {
+      const mainCat = word.main_category || 'Overig'
+      const subCat = word.sub_category || 'Algemeen'
+      
+      if (!structure[mainCat]) {
+        structure[mainCat] = {}
+      }
+      if (!structure[mainCat][subCat]) {
+        structure[mainCat][subCat] = []
+      }
+      structure[mainCat][subCat].push(word.word)
+    })
+    
+    return Object.entries(structure).map(([mainCategory, subCategories]) => ({
+      mainCategory,
+      subCategories: Object.entries(subCategories).map(([name, words]) => ({
+        name,
+        words
+      }))
+    }))
+  }
+
+  const handleMainCategoryCheck = (mainCategory: string, checked: boolean) => {
+    setCheckedMainCategories(prev => ({ ...prev, [mainCategory]: checked }))
+    
+    // Update all subcategories and words in this main category
+    const category = categoryStructure.find(c => c.mainCategory === mainCategory)
+    if (category) {
+      const newSubCats = { ...checkedSubCategories }
+      const newWords = { ...checkedWords }
+      
+      category.subCategories.forEach(subCat => {
+        const subCatKey = `${mainCategory}-${subCat.name}`
+        newSubCats[subCatKey] = checked
+        
+        subCat.words.forEach(word => {
+          newWords[word] = checked
+        })
+      })
+      
+      setCheckedSubCategories(newSubCats)
+      setCheckedWords(newWords)
+    }
+  }
+
+  const handleSubCategoryCheck = (mainCategory: string, subCategory: string, checked: boolean) => {
+    const subCatKey = `${mainCategory}-${subCategory}`
+    setCheckedSubCategories(prev => ({ ...prev, [subCatKey]: checked }))
+    
+    // Update all words in this subcategory
+    const category = categoryStructure.find(c => c.mainCategory === mainCategory)
+    const subCat = category?.subCategories.find(s => s.name === subCategory)
+    
+    if (subCat) {
+      const newWords = { ...checkedWords }
+      subCat.words.forEach(word => {
+        newWords[word] = checked
+      })
+      setCheckedWords(newWords)
+      
+      // Update main category if needed
+      const allSubCatsInMain = category!.subCategories.every(sc => 
+        checkedSubCategories[`${mainCategory}-${sc.name}`] || sc.name === subCategory ? checked : checkedSubCategories[`${mainCategory}-${sc.name}`]
+      )
+      setCheckedMainCategories(prev => ({ ...prev, [mainCategory]: allSubCatsInMain }))
+    }
+  }
+
+  const handleWordCheck = (word: string, checked: boolean) => {
+    setCheckedWords(prev => ({ ...prev, [word]: checked }))
+    
+    // Update parent categories based on word states
+    for (const category of categoryStructure) {
+      for (const subCat of category.subCategories) {
+        if (subCat.words.includes(word)) {
+          const subCatKey = `${category.mainCategory}-${subCat.name}`
+          
+          // Check if all words in subcategory are checked
+          const allWordsInSubCat = subCat.words.every(w => 
+            w === word ? checked : checkedWords[w]
+          )
+          setCheckedSubCategories(prev => ({ ...prev, [subCatKey]: allWordsInSubCat }))
+          
+          // Check if all subcategories in main category are checked
+          const allSubCatsInMain = category.subCategories.every(sc => {
+            const scKey = `${category.mainCategory}-${sc.name}`
+            if (sc.name === subCat.name) return allWordsInSubCat
+            return checkedSubCategories[scKey]
+          })
+          setCheckedMainCategories(prev => ({ ...prev, [category.mainCategory]: allSubCatsInMain }))
+          
+          break
+        }
+      }
+    }
   }
 
   const startMindDump = async (language: Language) => {
@@ -350,6 +486,30 @@ export default function AppPage() {
                   try {
                     const words = await getTriggerWordsList(newLanguage)
                     setConfigTriggerWords(words)
+                    
+                    // Load structured data for new language
+                    const structuredWords = await getTriggerWords(newLanguage)
+                    const structure = buildCategoryStructure(structuredWords)
+                    setCategoryStructure(structure)
+                    
+                    // Initialize all items as checked for new language
+                    const mainCats: Record<string, boolean> = {}
+                    const subCats: Record<string, boolean> = {}
+                    const wordChecks: Record<string, boolean> = {}
+                    
+                    structure.forEach(mainCat => {
+                      mainCats[mainCat.mainCategory] = true
+                      mainCat.subCategories.forEach(subCat => {
+                        subCats[`${mainCat.mainCategory}-${subCat.name}`] = true
+                        subCat.words.forEach(word => {
+                          wordChecks[word] = true
+                        })
+                      })
+                    })
+                    
+                    setCheckedMainCategories(mainCats)
+                    setCheckedSubCategories(subCats)
+                    setCheckedWords(wordChecks)
                   } catch (error) {
                     console.error('Error loading trigger words for new language:', error)
                   }
@@ -376,11 +536,54 @@ export default function AppPage() {
                 </div>
               ) : (
                 <>
-                  <div className="trigger-list">
-                    {configTriggerWords.map((word, index) => (
-                      <div key={index} className="trigger-item">
-                        <input type="checkbox" id={`trigger${index}`} defaultChecked={true} />
-                        <label htmlFor={`trigger${index}`}>{word}</label>
+                  <div className="category-hierarchy">
+                    {categoryStructure.map((mainCategory, mainIndex) => (
+                      <div key={mainIndex} className="main-category">
+                        <div className="main-category-header">
+                          <input 
+                            type="checkbox" 
+                            id={`main-${mainIndex}`}
+                            checked={checkedMainCategories[mainCategory.mainCategory] || false}
+                            onChange={(e) => handleMainCategoryCheck(mainCategory.mainCategory, e.target.checked)}
+                          />
+                          <label htmlFor={`main-${mainIndex}`} className="main-category-label">
+                            <strong>{mainCategory.mainCategory}</strong>
+                          </label>
+                        </div>
+                        
+                        <div className="sub-categories">
+                          {mainCategory.subCategories.map((subCategory, subIndex) => (
+                            <div key={subIndex} className="sub-category">
+                              <div className="sub-category-header">
+                                <input 
+                                  type="checkbox" 
+                                  id={`sub-${mainIndex}-${subIndex}`}
+                                  checked={checkedSubCategories[`${mainCategory.mainCategory}-${subCategory.name}`] || false}
+                                  onChange={(e) => handleSubCategoryCheck(mainCategory.mainCategory, subCategory.name, e.target.checked)}
+                                />
+                                <label htmlFor={`sub-${mainIndex}-${subIndex}`} className="sub-category-label">
+                                  {subCategory.name}
+                                </label>
+                              </div>
+                              
+                              <div className="words-list">
+                                {subCategory.words.map((word, wordIndex) => (
+                                  <div key={wordIndex} className="word-item">
+                                    <input 
+                                      type="checkbox" 
+                                      id={`word-${mainIndex}-${subIndex}-${wordIndex}`}
+                                      checked={checkedWords[word] || false}
+                                      onChange={(e) => handleWordCheck(word, e.target.checked)}
+                                    />
+                                    <label htmlFor={`word-${mainIndex}-${subIndex}-${wordIndex}`}>
+                                      {word}
+                                    </label>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     ))}
                   </div>
