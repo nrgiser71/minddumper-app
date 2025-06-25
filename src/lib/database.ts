@@ -27,8 +27,34 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
 
 // Legacy function for simple word lists (for backward compatibility)
 export async function getTriggerWordsList(language: string): Promise<string[]> {
-  const words = await getTriggerWords(language)
-  return words.map(w => w.word)
+  try {
+    console.log(`🔍 Fetching trigger words for language: ${language}`)
+    
+    const { data, error } = await supabase
+      .from('trigger_words')
+      .select('word')
+      .eq('language', language)
+      .eq('is_active', true)
+      .order('id')
+
+    if (error) {
+      console.error('❌ Database error:', error)
+      return ['Werk', 'Familie'] // Fallback
+    }
+
+    const words = data?.map(row => row.word) || []
+    console.log(`✅ Found ${words.length} trigger words`)
+    
+    if (words.length === 0) {
+      console.log('⚠️ No words found, using fallback')
+      return ['Werk', 'Familie']
+    }
+    
+    return words
+  } catch (error) {
+    console.error('❌ Error in getTriggerWordsList:', error)
+    return ['Werk', 'Familie'] // Fallback
+  }
 }
 
 // Save brain dump to database
