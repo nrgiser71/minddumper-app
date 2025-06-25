@@ -434,7 +434,7 @@ export default function AppPage() {
               </div>
               <div 
                 className="trigger-word" 
-                data-long={currentWord.length > 15 ? "true" : "false"}
+                data-long={currentWord.length > 12 ? "true" : "false"}
               >
                 {currentWord}
               </div>

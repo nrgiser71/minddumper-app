@@ -285,10 +285,13 @@ body {
     min-width: 250px;
     max-width: 90vw;
     word-wrap: break-word;
-    word-break: break-word;
+    overflow-wrap: break-word;
     hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
     text-align: center;
-    line-height: 1.2;
+    line-height: 1.3;
+    white-space: normal;
     animation: fadeIn 0.5s ease-out 0.2s both, pulse 2s ease-in-out infinite;
 }
 
@@ -303,12 +306,16 @@ body {
 
 /* For extra long words, make font smaller */
 .trigger-word[data-long="true"] {
-    font-size: 2rem;
+    font-size: 1.8rem;
+    line-height: 1.4;
+    max-width: 80vw;
 }
 
 @media (max-width: 768px) {
     .trigger-word[data-long="true"] {
-        font-size: 1.5rem;
+        font-size: 1.3rem;
+        max-width: 90vw;
+        padding: 0.5rem 1rem;
     }
 }
 
