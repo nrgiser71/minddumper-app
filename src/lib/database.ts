@@ -10,7 +10,8 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
       .select('*')
       .eq('language', language)
       .eq('is_active', true)
-      .order('id')
+      .order('category', { ascending: true })
+      .order('id', { ascending: true })
 
     if (error) {
       console.error('❌ Database error in getTriggerWords:', error)
@@ -24,7 +25,18 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
       return getMockTriggerWordsStructured(language)
     }
     
-    return data
+    // Sort to ensure proper order: Professional first, then by category
+    const sorted = data.sort((a, b) => {
+      const aMain = a.category?.includes('Professioneel') ? 0 : 1
+      const bMain = b.category?.includes('Professioneel') ? 0 : 1
+      
+      if (aMain !== bMain) return aMain - bMain
+      
+      // Then sort by category
+      return (a.category || '').localeCompare(b.category || '')
+    })
+    
+    return sorted
   } catch (error) {
     console.error('❌ Error in getTriggerWords:', error)
     return getMockTriggerWordsStructured(language)
@@ -38,23 +50,35 @@ export async function getTriggerWordsList(language: string): Promise<string[]> {
     
     const { data, error } = await supabase
       .from('trigger_words')
-      .select('word')
+      .select('word, category')
       .eq('language', language)
       .eq('is_active', true)
-      .order('id')
+      .order('category', { ascending: true })
+      .order('id', { ascending: true })
 
     if (error) {
       console.error('❌ Database error:', error)
       return ['Werk', 'Familie'] // Fallback
     }
 
-    const words = data?.map(row => row.word) || []
-    console.log(`✅ Found ${words.length} trigger words`)
-    
-    if (words.length === 0) {
+    if (!data || data.length === 0) {
       console.log('⚠️ No words found, using fallback')
       return ['Werk', 'Familie']
     }
+
+    // Sort to ensure Professional comes before Personal
+    const sorted = data.sort((a, b) => {
+      const aMain = a.category?.includes('Professioneel') ? 0 : 1
+      const bMain = b.category?.includes('Professioneel') ? 0 : 1
+      
+      if (aMain !== bMain) return aMain - bMain
+      
+      // Then sort by category and maintain order
+      return 0
+    })
+    
+    const words = sorted.map(row => row.word)
+    console.log(`✅ Found ${words.length} trigger words`)
     
     return words
   } catch (error) {
