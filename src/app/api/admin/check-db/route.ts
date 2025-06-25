@@ -26,12 +26,6 @@ export async function GET() {
       }, { status: 500 })
     }
 
-    // Get table info
-    const { data: tableInfo, error: tableError } = await supabase
-      .from('trigger_words')
-      .select('*')
-      .limit(1)
-
     const sampleWord = words?.[0]
     const columns = sampleWord ? Object.keys(sampleWord) : []
 
