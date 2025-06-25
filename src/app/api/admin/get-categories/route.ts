@@ -13,7 +13,7 @@ export async function GET() {
     // Get all Dutch words
     const { data: words, error } = await supabase
       .from('trigger_words')
-      .select('category')
+      .select('category, word')
       .eq('language', 'nl')
       .eq('is_active', true)
 
@@ -22,7 +22,7 @@ export async function GET() {
     }
 
     // Group by category and count
-    const categoryMap = new Map<string, { count: number, mainCategory: string }>()
+    const categoryMap = new Map<string, { count: number, mainCategory: string, words: string[] }>()
     
     for (const word of words || []) {
       const category = word.category || 'Algemeen'
@@ -37,18 +37,20 @@ export async function GET() {
       }
       
       if (!categoryMap.has(subCat)) {
-        categoryMap.set(subCat, { count: 0, mainCategory: mainCat })
+        categoryMap.set(subCat, { count: 0, mainCategory: mainCat, words: [] })
       }
       
       const current = categoryMap.get(subCat)!
       current.count++
+      current.words.push(word.word)
     }
 
     // Convert to array
     const categories = Array.from(categoryMap.entries()).map(([subCategory, data]) => ({
       subCategory,
       wordCount: data.count,
-      currentMain: data.mainCategory
+      currentMain: data.mainCategory,
+      words: data.words.sort()
     }))
 
     console.log(`✅ Found ${categories.length} unique categories`)

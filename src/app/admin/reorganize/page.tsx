@@ -7,6 +7,7 @@ interface CategoryData {
   subCategory: string
   wordCount: number
   currentMain: string
+  words: string[]
 }
 
 export default function ReorganizePage() {
@@ -15,6 +16,7 @@ export default function ReorganizePage() {
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [changes, setChanges] = useState<Record<string, string>>({})
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set())
 
   useEffect(() => {
     loadCategories()
@@ -77,6 +79,18 @@ export default function ReorganizePage() {
     return changes[category.subCategory] || category.currentMain
   }
 
+  const toggleExpanded = (subCategory: string) => {
+    setExpandedCategories(prev => {
+      const newSet = new Set(prev)
+      if (newSet.has(subCategory)) {
+        newSet.delete(subCategory)
+      } else {
+        newSet.add(subCategory)
+      }
+      return newSet
+    })
+  }
+
   if (loading) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
@@ -113,34 +127,52 @@ export default function ReorganizePage() {
             .map(cat => (
               <div key={cat.subCategory} style={{ 
                 background: 'white', 
-                padding: '0.75rem', 
                 marginBottom: '0.5rem', 
                 borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                border: changes[cat.subCategory] ? '2px solid #ff9800' : '1px solid #ddd'
+                border: changes[cat.subCategory] ? '2px solid #ff9800' : '1px solid #ddd',
+                overflow: 'hidden'
               }}>
-                <div>
-                  <strong>{cat.subCategory}</strong>
-                  <span style={{ color: '#666', marginLeft: '0.5rem' }}>
-                    ({cat.wordCount} woorden)
-                  </span>
+                <div style={{
+                  padding: '0.75rem',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <div 
+                    onClick={() => toggleExpanded(cat.subCategory)}
+                    style={{ cursor: 'pointer', flex: 1 }}
+                  >
+                    <strong>{cat.subCategory}</strong>
+                    <span style={{ color: '#666', marginLeft: '0.5rem' }}>
+                      ({cat.wordCount} woorden) {expandedCategories.has(cat.subCategory) ? '▼' : '▶'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => handleCategoryChange(cat.subCategory, 'Persoonlijk')}
+                    style={{
+                      background: '#ff5722',
+                      color: 'white',
+                      border: 'none',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    → Persoonlijk
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleCategoryChange(cat.subCategory, 'Persoonlijk')}
-                  style={{
-                    background: '#ff5722',
-                    color: 'white',
-                    border: 'none',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem'
-                  }}
-                >
-                  → Persoonlijk
-                </button>
+                {expandedCategories.has(cat.subCategory) && (
+                  <div style={{ 
+                    padding: '0.75rem', 
+                    background: '#f5f5f5', 
+                    borderTop: '1px solid #ddd',
+                    fontSize: '0.9rem',
+                    color: '#555'
+                  }}>
+                    {cat.words.join(', ')}
+                  </div>
+                )}
               </div>
             ))}
         </div>
@@ -153,34 +185,52 @@ export default function ReorganizePage() {
             .map(cat => (
               <div key={cat.subCategory} style={{ 
                 background: 'white', 
-                padding: '0.75rem', 
                 marginBottom: '0.5rem', 
                 borderRadius: '6px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                border: changes[cat.subCategory] ? '2px solid #ff9800' : '1px solid #ddd'
+                border: changes[cat.subCategory] ? '2px solid #ff9800' : '1px solid #ddd',
+                overflow: 'hidden'
               }}>
-                <div>
-                  <strong>{cat.subCategory}</strong>
-                  <span style={{ color: '#666', marginLeft: '0.5rem' }}>
-                    ({cat.wordCount} woorden)
-                  </span>
+                <div style={{
+                  padding: '0.75rem',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center'
+                }}>
+                  <div 
+                    onClick={() => toggleExpanded(cat.subCategory)}
+                    style={{ cursor: 'pointer', flex: 1 }}
+                  >
+                    <strong>{cat.subCategory}</strong>
+                    <span style={{ color: '#666', marginLeft: '0.5rem' }}>
+                      ({cat.wordCount} woorden) {expandedCategories.has(cat.subCategory) ? '▼' : '▶'}
+                    </span>
+                  </div>
+                  <button
+                    onClick={() => handleCategoryChange(cat.subCategory, 'Professioneel')}
+                    style={{
+                      background: '#2196f3',
+                      color: 'white',
+                      border: 'none',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '0.9rem'
+                    }}
+                  >
+                    ← Professioneel
+                  </button>
                 </div>
-                <button
-                  onClick={() => handleCategoryChange(cat.subCategory, 'Professioneel')}
-                  style={{
-                    background: '#2196f3',
-                    color: 'white',
-                    border: 'none',
-                    padding: '0.5rem 1rem',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '0.9rem'
-                  }}
-                >
-                  ← Professioneel
-                </button>
+                {expandedCategories.has(cat.subCategory) && (
+                  <div style={{ 
+                    padding: '0.75rem', 
+                    background: '#f5f5f5', 
+                    borderTop: '1px solid #ddd',
+                    fontSize: '0.9rem',
+                    color: '#555'
+                  }}>
+                    {cat.words.join(', ')}
+                  </div>
+                )}
               </div>
             ))}
         </div>
