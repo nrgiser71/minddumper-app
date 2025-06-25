@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MindDumper App
 
-## Getting Started
+Een brain dump tool die gebruikers helpt alle taken uit hun hoofd te krijgen door middel van triggerwoorden.
 
-First, run the development server:
+## Features
+
+- **Meertalige Triggers**: 5 talen ondersteund (NL, EN, DE, FR, ES)
+- **Brain Dump Flow**: Gestructureerd proces om ideeën te verzamelen
+- **Export Functionaliteit**: Exporteer naar tekstlijst
+- **Progress Tracking**: Voortgangsbalken en statistieken
+- **Responsive Design**: Werkt op alle apparaten
+
+## Tech Stack
+
+- **Frontend**: Next.js 15 + TypeScript + Tailwind CSS
+- **Backend**: Supabase (PostgreSQL + Auth)
+- **Deployment**: Vercel
+- **Styling**: Custom CSS met Apple-inspired design
+
+## Development
 
 ```bash
+# Install dependencies
+npm install
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
+# Build for production
+npm run build
+
+# Start production server
+npm start
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Dit project is geconfigureerd voor automatische deployment op Vercel:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Push naar main branch
+2. Vercel detecteert automatisch Next.js
+3. Deploy naar productie
 
-## Learn More
+## Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+# Supabase
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+# Optional: Analytics
+NEXT_PUBLIC_GA_ID=your_google_analytics_id
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+src/
+├── app/
+│   ├── page.tsx          # Landing page
+│   ├── app/page.tsx      # Brain dump app
+│   ├── api/              # API routes
+│   ├── landing.css       # Landing page styles
+│   └── app.css          # App styles
+├── components/           # Reusable components
+└── lib/                 # Utilities and configurations
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Roadmap
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- [x] Landing page met marketing content
+- [x] Complete brain dump app mockup
+- [x] Export functionaliteit
+- [ ] Supabase database integratie
+- [ ] User authentication
+- [ ] Real triggerwoorden database
+- [ ] Payment integratie (Stripe)
+- [ ] Custom domain (minddumper.com)
+
+## License
+
+Proprietary - Alle rechten voorbehouden
