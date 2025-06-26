@@ -54,7 +54,8 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
     // Transform to TriggerWord format and filter based on preferences
     const triggerWords: TriggerWord[] = (systemWords || [])
       .filter(word => userPrefs.get(word.id) !== false) // Only exclude if explicitly disabled
-      .map(word => ({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      .map((word: any) => ({
         id: word.id,
         language: word.language,
         word: word.word,
@@ -89,7 +90,8 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
       .eq('user_id', user.user.id)
       .eq('is_active', true)
 
-    const customTriggerWords: TriggerWord[] = (customWords || []).map(word => ({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const customTriggerWords: TriggerWord[] = (customWords || []).map((word: any) => ({
       id: word.id,
       language: language,
       word: word.word,

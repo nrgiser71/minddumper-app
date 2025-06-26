@@ -15,6 +15,7 @@ interface SystemWordWithCategories {
   }
 }
 
+
 // Get trigger words for brain dump (system words + user preferences + custom words)
 export async function getTriggerWordsForBrainDump(language: string): Promise<string[]> {
   try {
@@ -181,7 +182,7 @@ export async function getStructuredTriggerWords(language: string) {
           .sort((a, b) => a.display_order - b.display_order)
       }))
 
-    return { categories, userPreferences: userPrefs }
+    return { categories, preferences: userPrefs }
   } catch (error) {
     console.error('Error in getStructuredTriggerWords:', error)
     return { categories: [], preferences: {} }
@@ -227,7 +228,7 @@ export async function getAvailableCategoriesV2() {
       .select(`
         id,
         name,
-        main_category:main_categories!inner(
+        main_category:main_categories(
           id,
           name
         )
@@ -239,14 +240,18 @@ export async function getAvailableCategoriesV2() {
       return { mainCategories: [], subCategories: {} }
     }
 
-    const mainCats = new Map<string, string>()
-    const subCats: Record<string, Array<{id: string, name: string}>> = {}
+    const mainCatsMap = new Map()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const subCats: any = {}
 
-    data.forEach(subCat => {
-      const mainCatName = subCat.main_category.name
-      const mainCatId = subCat.main_category.id
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    data.forEach((subCat: any) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mainCatName = (subCat.main_category as any).name
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const mainCatId = (subCat.main_category as any).id
       
-      mainCats.set(mainCatId, mainCatName)
+      mainCatsMap.set(mainCatId, mainCatName)
       
       if (!subCats[mainCatName]) {
         subCats[mainCatName] = []
@@ -259,7 +264,7 @@ export async function getAvailableCategoriesV2() {
     })
 
     return {
-      mainCategories: Array.from(mainCats.values()).sort(),
+      mainCategories: Array.from(mainCatsMap.values()).sort(),
       subCategories: subCats
     }
   } catch (error) {

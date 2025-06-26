@@ -149,8 +149,10 @@ function AppContent() {
       // Set default categories if empty
       if (!newWordMainCategory && categories.mainCategories.length > 0) {
         setNewWordMainCategory(categories.mainCategories[0])
-        if (categories.subCategories[categories.mainCategories[0]]?.length > 0) {
-          setNewWordSubCategory(categories.subCategories[categories.mainCategories[0]][0].name)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        if ((categories.subCategories as any)[categories.mainCategories[0]]?.length > 0) {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          setNewWordSubCategory((categories.subCategories as any)[categories.mainCategories[0]][0].name)
         }
       }
     } catch (error) {
