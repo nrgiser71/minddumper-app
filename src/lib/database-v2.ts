@@ -41,9 +41,6 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
       `)
       .eq('language', language)
       .eq('is_active', true)
-      .order('sub_category.main_category.display_order')
-      .order('sub_category.display_order')
-      .order('display_order')
 
     if (systemError) {
       console.error('Error fetching system words:', systemError)
@@ -180,6 +177,10 @@ export async function getStructuredTriggerWords(language: string) {
         ...mainCat,
         subCategories: Array.from(mainCat.subCategories.values())
           .sort((a, b) => a.display_order - b.display_order)
+          .map(subCat => ({
+            ...subCat,
+            words: subCat.words.sort((a, b) => a.word.localeCompare(b.word))
+          }))
       }))
 
     return { categories, preferences: userPrefs }

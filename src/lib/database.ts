@@ -34,9 +34,6 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
       `)
       .eq('language', language)
       .eq('is_active', true)
-      .order('sub_category.main_category.display_order')
-      .order('sub_category.display_order')
-      .order('display_order')
 
     if (error) {
       console.error('❌ Database error in getTriggerWords:', error)
@@ -107,14 +104,25 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
 
     const allWords = [...triggerWords, ...customTriggerWords]
     
-    console.log(`✅ Found ${triggerWords.length} system + ${customTriggerWords.length} custom = ${allWords.length} total structured trigger words`)
+    // Sort by main category order, then sub category order, then word sort order
+    const sortedWords = allWords.sort((a, b) => {
+      if (a.main_category_order !== b.main_category_order) {
+        return a.main_category_order - b.main_category_order
+      }
+      if (a.sub_category_order !== b.sub_category_order) {
+        return a.sub_category_order - b.sub_category_order
+      }
+      return a.sort_order - b.sort_order
+    })
     
-    if (allWords.length === 0) {
+    console.log(`✅ Found ${triggerWords.length} system + ${customTriggerWords.length} custom = ${sortedWords.length} total structured trigger words`)
+    
+    if (sortedWords.length === 0) {
       console.log('⚠️ No structured words found, using fallback')
       return getMockTriggerWordsStructured(language)
     }
     
-    return allWords
+    return sortedWords
   } catch (error) {
     console.error('❌ Error in getTriggerWords:', error)
     return getMockTriggerWordsStructured(language)
@@ -147,9 +155,6 @@ export async function getTriggerWordsList(language: string): Promise<string[]> {
       `)
       .eq('language', language)
       .eq('is_active', true)
-      .order('sub_category.main_category.display_order')
-      .order('sub_category.display_order') 
-      .order('display_order')
 
     if (systemError) {
       console.error('❌ Database error:', systemError)
