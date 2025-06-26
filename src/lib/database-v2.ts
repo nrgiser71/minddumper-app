@@ -138,7 +138,7 @@ export async function getStructuredTriggerWords(language: string) {
       }>
     }
     
-    const categoryMap: Map<string, CategoryMapValue> = new Map()
+    const categoryMap = new Map() as Map<string, CategoryMapValue>
 
     (systemWords as SystemWordWithCategories[] | null)?.forEach((word) => {
       const mainCat = word.sub_category.main_category
