@@ -502,7 +502,7 @@ function AppContent() {
   }
 
   const exportMindDump = () => {
-    const textList = allIdeas.map(idea => `- ${idea}`).join('\n')
+    const textList = allIdeas.join('\n')
     const blob = new Blob([textList], { type: 'text/plain' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -513,6 +513,32 @@ function AppContent() {
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url)
     alert('Je mind dump is geëxporteerd als tekstbestand!')
+  }
+
+  const exportMindDumpCSV = () => {
+    // Create CSV with headers
+    const headers = ['Nr', 'Idee', 'Datum', 'Tijd']
+    const date = new Date()
+    const dateStr = date.toLocaleDateString('nl-NL')
+    const timeStr = date.toLocaleTimeString('nl-NL')
+    
+    const csvContent = [
+      headers.join(';'),
+      ...allIdeas.map((idea, index) => 
+        [index + 1, `"${idea.replace(/"/g, '""')}"`, dateStr, timeStr].join(';')
+      )
+    ].join('\n')
+    
+    const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8' })
+    const url = window.URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = `mind-dump-${new Date().toISOString().split('T')[0]}.csv`
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    window.URL.revokeObjectURL(url)
+    alert('Je mind dump is geëxporteerd als CSV bestand!')
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -752,6 +778,13 @@ function AppContent() {
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" strokeWidth="2"/>
                 </svg>
                 Exporteer Tekstlijst
+              </button>
+              
+              <button className="btn-primary large" onClick={exportMindDumpCSV}>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+                Exporteer CSV
               </button>
               
               <button className="btn-secondary large" onClick={() => showScreen('home')}>
