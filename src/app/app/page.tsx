@@ -726,9 +726,9 @@ function AppContent() {
                     
                     structure.forEach(mainCat => {
                       mainCats[mainCat.mainCategory] = true
-                      mainCat.subCategories.forEach((subCat: StructuredSubCategory) => {
+                      mainCat.subCategories.forEach((subCat: {name: string, words: string[]}) => {
                         subCats[`${mainCat.mainCategory}-${subCat.name}`] = true
-                        subCat.words.forEach((word: {id: string, word: string, enabled: boolean}) => {
+                        subCat.words.forEach((word: string) => {
                           wordChecks[word] = true
                         })
                       })
