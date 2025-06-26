@@ -140,7 +140,7 @@ export async function getStructuredTriggerWords(language: string) {
     
     const categoryMap = new Map() as Map<string, CategoryMapValue>
 
-    (systemWords as SystemWordWithCategories[] | null)?.forEach((word) => {
+    (systemWords as unknown as SystemWordWithCategories[] | null)?.forEach((word) => {
       const mainCat = word.sub_category.main_category
       const subCat = word.sub_category
 
