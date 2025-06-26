@@ -47,18 +47,17 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
       return []
     }
 
-    // Get user preferences (disabled words)
+    // Get user preferences (all preferences)
     const { data: preferences } = await supabase
       .from('user_trigger_word_preferences')
-      .select('system_word_id')
+      .select('system_word_id, is_enabled')
       .eq('user_id', user.user.id)
-      .eq('is_enabled', false)
 
-    const disabledWordIds = new Set(preferences?.map(p => p.system_word_id) || [])
+    const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
 
-    // Filter out disabled words
+    // Filter based on user preferences (default to enabled if no preference)
     const enabledSystemWords = (systemWords || [])
-      .filter(word => !disabledWordIds.has(word.id))
+      .filter(word => userPrefs.get(word.id) ?? true)
       .map(word => word.word)
 
     // Get user custom words

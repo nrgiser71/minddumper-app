@@ -44,16 +44,14 @@ export async function POST(request: NextRequest) {
           })
         }
       } else {
-        // Insert new preference (only if not default enabled)
-        if (!isEnabled) {
-          toInsert.push({
-            user_id: userId,
-            system_word_id: systemWordId,
-            is_enabled: isEnabled,
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          })
-        }
+        // Insert new preference (always insert explicit preferences)
+        toInsert.push({
+          user_id: userId,
+          system_word_id: systemWordId,
+          is_enabled: isEnabled,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        })
       }
     })
 
