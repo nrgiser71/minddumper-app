@@ -9,6 +9,8 @@ import { getTriggerWordsForBrainDump, getStructuredTriggerWords, getAvailableCat
 import { getUserCustomWords, addUserCustomWord, updateUserCustomWord, deleteUserCustomWord, type UserCustomWord } from '@/lib/user-words-v2'
 import type { TriggerWord, BrainDump } from '@/lib/supabase'
 import { supabase } from '@/lib/supabase'
+import { ToastProvider, useToast } from '@/components/toast-context'
+import { ToastContainer } from '@/components/toast-container'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
@@ -35,6 +37,7 @@ interface StructuredSubCategory {
 
 function AppContent() {
   const { signOut } = useAuth()
+  const { showToast } = useToast()
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
   const [currentLanguage, setCurrentLanguage] = useState<Language>('nl')
   const [currentWordIndex, setCurrentWordIndex] = useState(0)
@@ -195,7 +198,7 @@ function AppContent() {
 
   const handleAddUserWord = async () => {
     if (!newWordText.trim() || !newWordMainCategory || !newWordSubCategory) {
-      alert('Vul alle velden in')
+      showToast('Vul alle velden in', 'error')
       return
     }
 
@@ -203,16 +206,17 @@ function AppContent() {
     const subCatOptions = availableCategories.subCategories[newWordMainCategory] || []
     const subCat = subCatOptions.find(s => s.name === newWordSubCategory)
     if (!subCat) {
-      alert('Ongeldige subcategorie')
+      showToast('Ongeldige subcategorie', 'error')
       return
     }
 
     const result = await addUserCustomWord(newWordText, subCat.id)
     if (result.success) {
       setNewWordText('')
+      showToast('Woord toegevoegd!', 'success')
       loadUserWords() // Refresh list
     } else {
-      alert(result.error || 'Er is een fout opgetreden')
+      showToast(result.error || 'Er is een fout opgetreden', 'error')
     }
   }
 
@@ -234,7 +238,7 @@ function AppContent() {
     const subCatOptions = availableCategories.subCategories[newWordMainCategory] || []
     const subCat = subCatOptions.find(s => s.name === newWordSubCategory)
     if (!subCat) {
-      alert('Ongeldige subcategorie')
+      showToast('Ongeldige subcategorie', 'error')
       return
     }
 
@@ -242,9 +246,10 @@ function AppContent() {
     if (result.success) {
       setEditingWordId(null)
       setNewWordText('')
+      showToast('Woord bijgewerkt!', 'success')
       loadUserWords() // Refresh list
     } else {
-      alert(result.error || 'Er is een fout opgetreden')
+      showToast(result.error || 'Er is een fout opgetreden', 'error')
     }
   }
 
@@ -255,9 +260,10 @@ function AppContent() {
 
     const result = await deleteUserCustomWord(id)
     if (result.success) {
+      showToast('Woord verwijderd!', 'success')
       loadUserWords() // Refresh list
     } else {
-      alert(result.error || 'Er is een fout opgetreden')
+      showToast(result.error || 'Er is een fout opgetreden', 'error')
     }
   }
 
@@ -395,7 +401,7 @@ function AppContent() {
     try {
       const { data: user } = await supabase.auth.getUser()
       if (!user.user) {
-        alert('Niet ingelogd')
+        showToast('Niet ingelogd', 'error')
         return
       }
 
@@ -422,13 +428,13 @@ function AppContent() {
       
       if (result.success) {
         console.log('Bulk save results:', result)
-        alert('Voorkeuren opgeslagen!')
+        showToast('Voorkeuren opgeslagen!', 'success')
       } else {
         throw new Error(result.error)
       }
     } catch (error) {
       console.error('Error saving preferences:', error)
-      alert('Fout bij opslaan van voorkeuren: ' + error)
+      showToast('Fout bij opslaan van voorkeuren: ' + error, 'error')
     }
     setSavingPreferences(false)
   }
@@ -523,7 +529,7 @@ function AppContent() {
     a.click()
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url)
-    alert('Je mind dump is geëxporteerd als tekstbestand!')
+    showToast('Je mind dump is geëxporteerd als tekstbestand!', 'success')
   }
 
   const exportMindDumpCSV = () => {
@@ -554,7 +560,7 @@ function AppContent() {
     a.click()
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url)
-    alert('Je mind dump is geëxporteerd als CSV bestand!')
+    showToast('Je mind dump is geëxporteerd als CSV bestand!', 'success')
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -1155,7 +1161,10 @@ function AppContent() {
 export default function AppPage() {
   return (
     <ProtectedRoute>
-      <AppContent />
+      <ToastProvider>
+        <AppContent />
+        <ToastContainer />
+      </ToastProvider>
     </ProtectedRoute>
   )
 }
