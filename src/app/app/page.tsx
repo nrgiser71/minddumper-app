@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { ProtectedRoute } from '@/components/protected-route'
 import { saveBrainDump, getBrainDumpHistory, getTriggerWords, getTriggerWordsList } from '@/lib/database'
-import { getTriggerWordsForBrainDump, getStructuredTriggerWords, updateWordPreference, getAvailableCategoriesV2 } from '@/lib/database-v2'
+import { getTriggerWordsForBrainDump, getStructuredTriggerWords, getAvailableCategoriesV2 } from '@/lib/database-v2'
 import { getUserCustomWords, addUserCustomWord, updateUserCustomWord, deleteUserCustomWord, type UserCustomWord } from '@/lib/user-words-v2'
 import type { TriggerWord, BrainDump } from '@/lib/supabase'
+import { supabase } from '@/lib/supabase'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
@@ -388,25 +389,43 @@ function AppContent() {
 
   const saveWordPreferences = async () => {
     setSavingPreferences(true)
-    console.log('🔍 Starting save preferences...')
+    console.log('🔍 Starting bulk save preferences...')
     console.log('triggerWordsData length:', triggerWordsData.length)
-    console.log('checkedWords:', Object.keys(checkedWords).length)
     
     try {
-      // Save all word preferences to database
-      const promises: Promise<boolean>[] = []
+      const { data: user } = await supabase.auth.getUser()
+      if (!user.user) {
+        alert('Niet ingelogd')
+        return
+      }
+
+      // Prepare bulk preferences data
+      const preferences = triggerWordsData.map(word => ({
+        systemWordId: word.id,
+        isEnabled: checkedWords[word.word] ?? true
+      }))
       
-      triggerWordsData.forEach(word => {
-        const isChecked = checkedWords[word.word] ?? true
-        console.log(`Word: ${word.word}, isChecked: ${isChecked}, id: ${word.id}`)
-        promises.push(updateWordPreference(word.id, isChecked))
+      console.log('Sending bulk request with', preferences.length, 'preferences')
+      
+      const response = await fetch('/api/admin/bulk-preferences', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userId: user.user.id,
+          preferences
+        })
       })
       
-      console.log('Total promises:', promises.length)
-      const results = await Promise.all(promises)
-      console.log('Results:', results)
+      const result = await response.json()
       
-      alert('Voorkeuren opgeslagen!')
+      if (result.success) {
+        console.log('Bulk save results:', result)
+        alert('Voorkeuren opgeslagen!')
+      } else {
+        throw new Error(result.error)
+      }
     } catch (error) {
       console.error('Error saving preferences:', error)
       alert('Fout bij opslaan van voorkeuren: ' + error)
