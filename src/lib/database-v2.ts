@@ -55,9 +55,20 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
 
     const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
 
+    console.log('🔍 Brain Dump Debug Info:')
+    console.log('Total system words:', systemWords?.length || 0)
+    console.log('Total user preferences:', preferences?.length || 0)
+    console.log('User preferences map:', Object.fromEntries(userPrefs))
+
     // Filter based on user preferences (default to enabled if no preference)
     const enabledSystemWords = (systemWords || [])
-      .filter(word => userPrefs.get(word.id) ?? true)
+      .filter(word => {
+        const isEnabled = userPrefs.get(word.id) ?? true
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const wordData = word as any
+        console.log(`Word "${word.word}" (${wordData.sub_category?.main_category?.name}): ${isEnabled ? 'ENABLED' : 'DISABLED'}`)
+        return isEnabled
+      })
       .map(word => word.word)
 
     // Get user custom words
@@ -68,6 +79,10 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
       .eq('is_active', true)
 
     const customWordsList = customWords?.map(w => w.word) || []
+
+    console.log('Final enabled system words:', enabledSystemWords.length)
+    console.log('Final custom words:', customWordsList.length)
+    console.log('Total words for brain dump:', enabledSystemWords.length + customWordsList.length)
 
     // Combine all words
     return [...enabledSystemWords, ...customWordsList]
