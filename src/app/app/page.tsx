@@ -516,18 +516,10 @@ function AppContent() {
   }
 
   const exportMindDumpCSV = () => {
-    // Create CSV with headers
-    const headers = ['Nr', 'Idee', 'Datum', 'Tijd']
-    const date = new Date()
-    const dateStr = date.toLocaleDateString('nl-NL')
-    const timeStr = date.toLocaleTimeString('nl-NL')
-    
-    const csvContent = [
-      headers.join(';'),
-      ...allIdeas.map((idea, index) => 
-        [index + 1, `"${idea.replace(/"/g, '""')}"`, dateStr, timeStr].join(';')
-      )
-    ].join('\n')
+    // Create CSV with just the ideas, one per line
+    const csvContent = allIdeas.map(idea => 
+      `"${idea.replace(/"/g, '""')}"`
+    ).join('\n')
     
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8' })
     const url = window.URL.createObjectURL(blob)
