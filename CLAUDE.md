@@ -21,6 +21,37 @@ npm run lint
 npm run typecheck
 ```
 
+### 🚨 VERPLICHTE WORKFLOW VOOR CODE WIJZIGINGEN
+
+**BELANGRIJK: Vercel heeft een limiet van deploys per dag. Elke gefaalde build verspilt deze kostbare deploy quota.**
+
+**ALTIJD DEZE STAPPEN VOLGEN VOOR ELKE GIT COMMIT:**
+
+1. **Lokaal builden en testen**:
+   ```bash
+   npm run build
+   ```
+   
+2. **Alleen committen als build succesvol is**:
+   - Geen TypeScript errors
+   - Geen ESLint errors  
+   - Geen compilation failures
+   
+3. **Dan pas naar Git**:
+   ```bash
+   git add .
+   git commit -m "beschrijving"
+   git push
+   ```
+
+**NOOIT direct naar Git pushen zonder lokale build check!**
+
+Dit voorkomt:
+- Verspilde deploy quota
+- Gefaalde production builds
+- Tijdverlies door debug cycles
+- Frustratie bij gebruiker
+
 ### Database Beheer
 - Admin interface: `/admin` - Voor het toevoegen van categorieën en triggerwoorden
 - Reorganisatie: `/admin/reorganize` - Voor het verplaatsen van subcategorieën tussen hoofdcategorieën
