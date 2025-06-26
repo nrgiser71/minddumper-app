@@ -103,9 +103,9 @@ function AppContent() {
       
       categories.forEach(mainCat => {
         mainCats[mainCat.name] = true
-        mainCat.subCategories.forEach(subCat => {
+        mainCat.subCategories.forEach((subCat: StructuredSubCategory) => {
           subCats[`${mainCat.name}-${subCat.name}`] = true
-          subCat.words.forEach(word => {
+          subCat.words.forEach((word: {id: string, word: string, enabled: boolean}) => {
             wordChecks[word.word] = word.enabled
           })
         })
@@ -726,9 +726,9 @@ function AppContent() {
                     
                     structure.forEach(mainCat => {
                       mainCats[mainCat.mainCategory] = true
-                      mainCat.subCategories.forEach(subCat => {
+                      mainCat.subCategories.forEach((subCat: StructuredSubCategory) => {
                         subCats[`${mainCat.mainCategory}-${subCat.name}`] = true
-                        subCat.words.forEach(word => {
+                        subCat.words.forEach((word: {id: string, word: string, enabled: boolean}) => {
                           wordChecks[word] = true
                         })
                       })
