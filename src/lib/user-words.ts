@@ -209,7 +209,7 @@ export async function getAvailableCategories(): Promise<{ mainCategories: string
   try {
     const { data, error } = await supabase
       .from('trigger_words')
-      .select('main_category, sub_category')
+      .select('category')
       .eq('is_active', true)
 
     if (error || !data) {
@@ -227,13 +227,44 @@ export async function getAvailableCategories(): Promise<{ mainCategories: string
     const subCategories: Record<string, Set<string>> = {}
 
     data.forEach(item => {
-      if (item.main_category && item.sub_category) {
-        mainCategories.add(item.main_category)
+      if (item.category) {
+        let main: string
+        let sub: string
         
-        if (!subCategories[item.main_category]) {
-          subCategories[item.main_category] = new Set()
+        // Try different separators: '–' (em dash), '-' (hyphen), '/' (slash), '|' (pipe)
+        if (item.category.includes(' – ')) {
+          [main, sub] = item.category.split(' – ')
+        } else if (item.category.includes(' - ')) {
+          [main, sub] = item.category.split(' - ')
+        } else if (item.category.includes(' / ')) {
+          [main, sub] = item.category.split(' / ')
+        } else if (item.category.includes('|')) {
+          [main, sub] = item.category.split('|')
+        } else {
+          // If no separator found, treat as subcategory under "Overig"
+          main = 'Overig'
+          sub = item.category
         }
-        subCategories[item.main_category].add(item.sub_category)
+        
+        // Clean up any remaining issues
+        main = main.trim()
+        sub = sub.trim()
+        
+        // If main contains pipe, it means parsing failed - use as subcategory under "Overig"
+        if (main.includes('|')) {
+          sub = main
+          main = 'Overig'
+        }
+        
+        main = main.trim()
+        sub = sub.trim()
+        
+        mainCategories.add(main)
+        
+        if (!subCategories[main]) {
+          subCategories[main] = new Set()
+        }
+        subCategories[main].add(sub)
       }
     })
 
