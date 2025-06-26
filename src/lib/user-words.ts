@@ -206,97 +206,12 @@ export async function deleteUserTriggerWord(id: string): Promise<{ success: bool
 
 // Get all categories from existing trigger words to suggest to users
 export async function getAvailableCategories(): Promise<{ mainCategories: string[]; subCategories: Record<string, string[]> }> {
-  try {
-    const { data, error } = await supabase
-      .from('trigger_words')
-      .select('category')
-      .eq('is_active', true)
-
-    if (error || !data) {
-      // Fallback categories
-      return {
-        mainCategories: ['Professioneel', 'Persoonlijk'],
-        subCategories: {
-          'Professioneel': ['Werk', 'Projecten', 'Vergaderingen', 'Planning'],
-          'Persoonlijk': ['Familie', 'Vrienden', 'Hobby', 'Gezondheid', 'Financiën']
-        }
-      }
-    }
-
-    const mainCategories = new Set<string>()
-    const subCategories: Record<string, Set<string>> = {}
-
-    data.forEach(item => {
-      if (item.category) {
-        let main: string
-        let sub: string
-        
-        // Try different separators: '–' (em dash), '-' (hyphen), '/' (slash), '|' (pipe)
-        if (item.category.includes(' – ')) {
-          [main, sub] = item.category.split(' – ')
-        } else if (item.category.includes(' - ')) {
-          [main, sub] = item.category.split(' - ')
-        } else if (item.category.includes(' / ')) {
-          [main, sub] = item.category.split(' / ')
-        } else if (item.category.includes('|')) {
-          [main, sub] = item.category.split('|')
-        } else {
-          // If no separator found, treat as subcategory under "Overig"
-          main = 'Overig'
-          sub = item.category
-        }
-        
-        // Clean up any remaining issues
-        main = main.trim()
-        sub = sub.trim()
-        
-        // If main contains pipe, it means parsing failed - use as subcategory under "Overig"
-        if (main.includes('|')) {
-          sub = main
-          main = 'Overig'
-        }
-        
-        main = main.trim()
-        sub = sub.trim()
-        
-        mainCategories.add(main)
-        
-        if (!subCategories[main]) {
-          subCategories[main] = new Set()
-        }
-        subCategories[main].add(sub)
-      }
-    })
-
-    // If no structured data found, use fallback
-    if (mainCategories.size === 0) {
-      return {
-        mainCategories: ['Professioneel', 'Persoonlijk'],
-        subCategories: {
-          'Professioneel': ['Werk', 'Projecten', 'Vergaderingen', 'Planning'],
-          'Persoonlijk': ['Familie', 'Vrienden', 'Hobby', 'Gezondheid', 'Financiën']
-        }
-      }
-    }
-
-    // Convert Sets to Arrays
-    const result = {
-      mainCategories: Array.from(mainCategories).sort(),
-      subCategories: Object.fromEntries(
-        Object.entries(subCategories).map(([main, subs]) => [main, Array.from(subs).sort()])
-      )
-    }
-
-    return result
-  } catch (error) {
-    console.error('❌ Error getting available categories:', error)
-    // Fallback
-    return {
-      mainCategories: ['Professioneel', 'Persoonlijk'],
-      subCategories: {
-        'Professioneel': ['Werk', 'Projecten', 'Vergaderingen', 'Planning'],
-        'Persoonlijk': ['Familie', 'Vrienden', 'Hobby', 'Gezondheid', 'Financiën']
-      }
+  // Return the correct categories that you actually want users to use
+  return {
+    mainCategories: ['Professioneel', 'Persoonlijk'],
+    subCategories: {
+      'Professioneel': ['Werk', 'Projecten', 'Vergaderingen', 'Planning', 'Marketing', 'Verkoop', 'Administratie'],
+      'Persoonlijk': ['Familie', 'Vrienden', 'Hobby', 'Gezondheid', 'Financiën', 'Huishouden', 'Ontspanning']
     }
   }
 }
