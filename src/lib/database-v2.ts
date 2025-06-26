@@ -123,7 +123,7 @@ export async function getStructuredTriggerWords(language: string) {
       }>
     }>()
 
-    systemWords?.forEach(word => {
+    systemWords?.forEach((word: any) => {
       const mainCat = word.sub_category.main_category
       const subCat = word.sub_category
 
