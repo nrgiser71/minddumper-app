@@ -537,7 +537,12 @@ function AppContent() {
       }
       return idea
     })
-    const csvContent = cleanIdeas.join('\n')
+    
+    // Create proper CSV with header and quoted values
+    const csvContent = [
+      'Idee',
+      ...cleanIdeas.map(idea => `"${idea.replace(/"/g, '""')}"`)
+    ].join('\n')
     
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8' })
     const url = window.URL.createObjectURL(blob)
