@@ -122,7 +122,7 @@ export async function getStructuredTriggerWords(language: string) {
     const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
 
     // Build hierarchical structure
-    const categoryMap = new Map<string, {
+    type CategoryMapValue = {
       id: string
       name: string
       display_order: number
@@ -136,7 +136,9 @@ export async function getStructuredTriggerWords(language: string) {
           enabled: boolean
         }>
       }>
-    }>()
+    }
+    
+    const categoryMap = new Map<string, CategoryMapValue>()
 
     (systemWords as SystemWordWithCategories[] | null)?.forEach((word) => {
       const mainCat = word.sub_category.main_category
