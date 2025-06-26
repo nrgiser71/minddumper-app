@@ -209,7 +209,7 @@ export async function getAvailableCategories(): Promise<{ mainCategories: string
   try {
     const { data, error } = await supabase
       .from('trigger_words')
-      .select('category')
+      .select('main_category, sub_category')
       .eq('is_active', true)
 
     if (error || !data) {
@@ -227,16 +227,26 @@ export async function getAvailableCategories(): Promise<{ mainCategories: string
     const subCategories: Record<string, Set<string>> = {}
 
     data.forEach(item => {
-      if (item.category && item.category.includes('|')) {
-        const [main, sub] = item.category.split('|')
-        mainCategories.add(main)
+      if (item.main_category && item.sub_category) {
+        mainCategories.add(item.main_category)
         
-        if (!subCategories[main]) {
-          subCategories[main] = new Set()
+        if (!subCategories[item.main_category]) {
+          subCategories[item.main_category] = new Set()
         }
-        subCategories[main].add(sub)
+        subCategories[item.main_category].add(item.sub_category)
       }
     })
+
+    // If no structured data found, use fallback
+    if (mainCategories.size === 0) {
+      return {
+        mainCategories: ['Professioneel', 'Persoonlijk'],
+        subCategories: {
+          'Professioneel': ['Werk', 'Projecten', 'Vergaderingen', 'Planning'],
+          'Persoonlijk': ['Familie', 'Vrienden', 'Hobby', 'Gezondheid', 'Financiën']
+        }
+      }
+    }
 
     // Convert Sets to Arrays
     const result = {
