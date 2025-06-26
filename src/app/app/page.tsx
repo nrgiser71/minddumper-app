@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { ProtectedRoute } from '@/components/protected-route'
 import { getTriggerWordsList, getTriggerWords, saveBrainDump, getBrainDumpHistory } from '@/lib/database'
+import { getUserTriggerWords, addUserTriggerWord, updateUserTriggerWord, deleteUserTriggerWord, getAvailableCategories, type UserTriggerWord } from '@/lib/user-words'
 import type { TriggerWord, BrainDump } from '@/lib/supabase'
 import '../app.css'
 
@@ -39,6 +40,13 @@ function AppContent() {
   const [startTime, setStartTime] = useState<Date | null>(null)
   const [brainDumpHistory, setBrainDumpHistory] = useState<BrainDump[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
+  const [userWords, setUserWords] = useState<UserTriggerWord[]>([])
+  const [availableCategories, setAvailableCategories] = useState<{mainCategories: string[], subCategories: Record<string, string[]>}>({mainCategories: [], subCategories: {}})
+  const [newWordText, setNewWordText] = useState('')
+  const [newWordMainCategory, setNewWordMainCategory] = useState('')
+  const [newWordSubCategory, setNewWordSubCategory] = useState('')
+  const [editingWordId, setEditingWordId] = useState<string | null>(null)
+  const [userWordsLoading, setUserWordsLoading] = useState(false)
 
   const showScreen = (screenId: Screen) => {
     setCurrentScreen(screenId)
@@ -51,6 +59,11 @@ function AppContent() {
     // Load brain dump history when going to history screen
     if (screenId === 'history') {
       loadBrainDumpHistory()
+    }
+    
+    // Load user words when going to config screen
+    if (screenId === 'config') {
+      loadUserWords()
     }
   }
 
@@ -99,6 +112,90 @@ function AppContent() {
       setBrainDumpHistory([])
     }
     setHistoryLoading(false)
+  }
+
+  const loadUserWords = async () => {
+    setUserWordsLoading(true)
+    try {
+      const [words, categories] = await Promise.all([
+        getUserTriggerWords(),
+        getAvailableCategories()
+      ])
+      setUserWords(words)
+      setAvailableCategories(categories)
+      
+      // Set default categories if empty
+      if (!newWordMainCategory && categories.mainCategories.length > 0) {
+        setNewWordMainCategory(categories.mainCategories[0])
+        if (categories.subCategories[categories.mainCategories[0]]?.length > 0) {
+          setNewWordSubCategory(categories.subCategories[categories.mainCategories[0]][0])
+        }
+      }
+    } catch (error) {
+      console.error('Error loading user words:', error)
+    }
+    setUserWordsLoading(false)
+  }
+
+  const handleAddUserWord = async () => {
+    if (!newWordText.trim() || !newWordMainCategory || !newWordSubCategory) {
+      alert('Vul alle velden in')
+      return
+    }
+
+    const result = await addUserTriggerWord(newWordText, newWordMainCategory, newWordSubCategory)
+    if (result.success) {
+      setNewWordText('')
+      loadUserWords() // Refresh list
+    } else {
+      alert(result.error || 'Er is een fout opgetreden')
+    }
+  }
+
+  const handleEditUserWord = (word: UserTriggerWord) => {
+    setEditingWordId(word.id)
+    setNewWordText(word.word)
+    setNewWordMainCategory(word.main_category)
+    setNewWordSubCategory(word.sub_category)
+  }
+
+  const handleUpdateUserWord = async () => {
+    if (!editingWordId || !newWordText.trim() || !newWordMainCategory || !newWordSubCategory) {
+      return
+    }
+
+    const result = await updateUserTriggerWord(editingWordId, newWordText, newWordMainCategory, newWordSubCategory)
+    if (result.success) {
+      setEditingWordId(null)
+      setNewWordText('')
+      loadUserWords() // Refresh list
+    } else {
+      alert(result.error || 'Er is een fout opgetreden')
+    }
+  }
+
+  const handleDeleteUserWord = async (id: string) => {
+    if (!confirm('Weet je zeker dat je dit woord wilt verwijderen?')) {
+      return
+    }
+
+    const result = await deleteUserTriggerWord(id)
+    if (result.success) {
+      loadUserWords() // Refresh list
+    } else {
+      alert(result.error || 'Er is een fout opgetreden')
+    }
+  }
+
+  const handleCancelEdit = () => {
+    setEditingWordId(null)
+    setNewWordText('')
+    if (availableCategories.mainCategories.length > 0) {
+      setNewWordMainCategory(availableCategories.mainCategories[0])
+      if (availableCategories.subCategories[availableCategories.mainCategories[0]]?.length > 0) {
+        setNewWordSubCategory(availableCategories.subCategories[availableCategories.mainCategories[0]][0])
+      }
+    }
   }
 
   const buildCategoryStructure = (words: { main_category?: string; sub_category?: string; word: string; category?: string }[]): CategoryStructure[] => {
@@ -680,11 +777,125 @@ function AppContent() {
             </div>
             
             <div className="config-section">
-              <h3>Eigen woorden toevoegen</h3>
-              <div className="add-word-container">
-                <input type="text" className="add-word-input" placeholder="Nieuw triggerwoord..." />
-                <button className="btn-add">Toevoegen</button>
-              </div>
+              <h3>Mijn Woorden</h3>
+              
+              {userWordsLoading ? (
+                <div style={{textAlign: 'center', margin: '2rem 0', color: '#666'}}>
+                  Laden...
+                </div>
+              ) : (
+                <>
+                  {userWords.length > 0 && (
+                    <div className="user-words-list">
+                      <h4>Jouw toegevoegde woorden:</h4>
+                      {userWords.map((word) => (
+                        <div key={word.id} className="user-word-item">
+                          <div className="user-word-info">
+                            <span className="user-word-text">{word.word}</span>
+                            <span className="user-word-category">
+                              {word.main_category} › {word.sub_category}
+                            </span>
+                          </div>
+                          <div className="user-word-actions">
+                            <button 
+                              className="btn-edit"
+                              onClick={() => handleEditUserWord(word)}
+                              title="Bewerken"
+                            >
+                              ✏️
+                            </button>
+                            <button 
+                              className="btn-delete"
+                              onClick={() => handleDeleteUserWord(word.id)}
+                              title="Verwijderen"
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <div className="add-user-word-section">
+                    <h4>{editingWordId ? 'Woord bewerken' : 'Nieuw woord toevoegen'}</h4>
+                    
+                    <div className="add-word-form">
+                      <div className="form-row">
+                        <input 
+                          type="text" 
+                          className="add-word-input" 
+                          placeholder="Triggerwoord..." 
+                          value={newWordText}
+                          onChange={(e) => setNewWordText(e.target.value)}
+                        />
+                      </div>
+                      
+                      <div className="form-row">
+                        <div className="category-selects">
+                          <select 
+                            className="category-select"
+                            value={newWordMainCategory}
+                            onChange={(e) => {
+                              setNewWordMainCategory(e.target.value)
+                              // Reset subcategory when main category changes
+                              const subCats = availableCategories.subCategories[e.target.value]
+                              if (subCats && subCats.length > 0) {
+                                setNewWordSubCategory(subCats[0])
+                              }
+                            }}
+                          >
+                            <option value="">Hoofdcategorie...</option>
+                            {availableCategories.mainCategories.map(cat => (
+                              <option key={cat} value={cat}>{cat}</option>
+                            ))}
+                          </select>
+                          
+                          <select 
+                            className="category-select"
+                            value={newWordSubCategory}
+                            onChange={(e) => setNewWordSubCategory(e.target.value)}
+                            disabled={!newWordMainCategory}
+                          >
+                            <option value="">Subcategorie...</option>
+                            {newWordMainCategory && availableCategories.subCategories[newWordMainCategory]?.map(subCat => (
+                              <option key={subCat} value={subCat}>{subCat}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                      
+                      <div className="form-actions">
+                        {editingWordId ? (
+                          <>
+                            <button 
+                              className="btn-primary"
+                              onClick={handleUpdateUserWord}
+                              disabled={!newWordText.trim() || !newWordMainCategory || !newWordSubCategory}
+                            >
+                              Bijwerken
+                            </button>
+                            <button 
+                              className="btn-secondary"
+                              onClick={handleCancelEdit}
+                            >
+                              Annuleren
+                            </button>
+                          </>
+                        ) : (
+                          <button 
+                            className="btn-primary"
+                            onClick={handleAddUserWord}
+                            disabled={!newWordText.trim() || !newWordMainCategory || !newWordSubCategory}
+                          >
+                            Toevoegen
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </div>
           </div>
         </div>

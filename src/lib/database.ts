@@ -1,4 +1,5 @@
 import { supabase, type BrainDump, type TriggerWord } from './supabase'
+import { getUserTriggerWords } from './user-words'
 
 // Fetch trigger words for a specific language with hierarchical structure
 export async function getTriggerWords(language: string): Promise<TriggerWord[]> {
@@ -48,39 +49,56 @@ export async function getTriggerWordsList(language: string): Promise<string[]> {
   try {
     console.log(`🔍 Fetching trigger words for language: ${language}`)
     
-    const { data, error } = await supabase
-      .from('trigger_words')
-      .select('word, category')
-      .eq('language', language)
-      .eq('is_active', true)
-      .order('category', { ascending: true })
-      .order('id', { ascending: true })
+    // Get both standard trigger words and user trigger words
+    const [standardWordsResult, userWords] = await Promise.all([
+      supabase
+        .from('trigger_words')
+        .select('word, category')
+        .eq('language', language)
+        .eq('is_active', true)
+        .order('category', { ascending: true })
+        .order('id', { ascending: true }),
+      getUserTriggerWords()
+    ])
+
+    const { data, error } = standardWordsResult
 
     if (error) {
       console.error('❌ Database error:', error)
       return ['Werk', 'Familie'] // Fallback
     }
 
-    if (!data || data.length === 0) {
+    let standardWords: string[] = []
+    if (data && data.length > 0) {
+      // Sort to ensure Professional comes before Personal
+      const sorted = data.sort((a, b) => {
+        const aMain = a.category?.includes('Professioneel') ? 0 : 1
+        const bMain = b.category?.includes('Professioneel') ? 0 : 1
+        
+        if (aMain !== bMain) return aMain - bMain
+        
+        // Then sort by category and maintain order
+        return 0
+      })
+      
+      standardWords = sorted.map(row => row.word)
+    }
+
+    // Add user words to the list (they'll appear after standard words)
+    const userWordsList = userWords
+      .filter(word => word.is_active)
+      .map(word => word.word)
+
+    const allWords = [...standardWords, ...userWordsList]
+    
+    console.log(`✅ Found ${standardWords.length} standard + ${userWordsList.length} user trigger words = ${allWords.length} total`)
+    
+    if (allWords.length === 0) {
       console.log('⚠️ No words found, using fallback')
       return ['Werk', 'Familie']
     }
-
-    // Sort to ensure Professional comes before Personal
-    const sorted = data.sort((a, b) => {
-      const aMain = a.category?.includes('Professioneel') ? 0 : 1
-      const bMain = b.category?.includes('Professioneel') ? 0 : 1
-      
-      if (aMain !== bMain) return aMain - bMain
-      
-      // Then sort by category and maintain order
-      return 0
-    })
     
-    const words = sorted.map(row => row.word)
-    console.log(`✅ Found ${words.length} trigger words`)
-    
-    return words
+    return allWords
   } catch (error) {
     console.error('❌ Error in getTriggerWordsList:', error)
     return ['Werk', 'Familie'] // Fallback
