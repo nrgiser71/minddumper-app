@@ -1,19 +1,4 @@
 import { supabase } from './supabase'
-import { getUserTriggerWords } from './user-words'
-
-interface SystemWord {
-  id: string
-  word: string
-  sub_category_id: string
-  sub_category: {
-    id: string
-    name: string
-    main_category: {
-      id: string
-      name: string
-    }
-  }
-}
 
 // Get trigger words for brain dump (system words + user preferences + custom words)
 export async function getTriggerWordsForBrainDump(language: string): Promise<string[]> {

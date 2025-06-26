@@ -1,5 +1,4 @@
 import { supabase, type BrainDump, type TriggerWord } from './supabase'
-import { getUserTriggerWords } from './user-words'
 
 // Fetch trigger words for a specific language with hierarchical structure
 export async function getTriggerWords(language: string): Promise<TriggerWord[]> {

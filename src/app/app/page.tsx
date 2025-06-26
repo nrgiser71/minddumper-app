@@ -72,7 +72,7 @@ function AppContent() {
     setConfigLoading(true)
     try {
       // Get structured data for hierarchical display
-      const { categories, userPreferences } = await getStructuredTriggerWords(currentLanguage)
+      const { categories } = await getStructuredTriggerWords(currentLanguage)
       
       // Build legacy structure for existing UI
       const structure: CategoryStructure[] = categories.map(mainCat => ({
