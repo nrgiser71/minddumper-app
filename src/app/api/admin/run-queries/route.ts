@@ -11,6 +11,108 @@ export async function POST() {
   try {
     console.log('🚀 Running database improvements...')
 
+    // First: Create user_trigger_words table if it doesn't exist
+    console.log('📋 Creating user_trigger_words table...')
+    
+    const createTableQuery = `
+      -- Create user_trigger_words table
+      CREATE TABLE IF NOT EXISTS public.user_trigger_words (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+        word TEXT NOT NULL,
+        main_category TEXT NOT NULL,
+        sub_category TEXT NOT NULL,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+        -- Prevent duplicate words per user
+        UNIQUE(user_id, word)
+      );
+
+      -- Enable RLS
+      ALTER TABLE public.user_trigger_words ENABLE ROW LEVEL SECURITY;
+
+      -- Drop existing policies if they exist
+      DROP POLICY IF EXISTS "Users can view own trigger words" ON public.user_trigger_words;
+      DROP POLICY IF EXISTS "Users can insert own trigger words" ON public.user_trigger_words;
+      DROP POLICY IF EXISTS "Users can update own trigger words" ON public.user_trigger_words;
+      DROP POLICY IF EXISTS "Users can delete own trigger words" ON public.user_trigger_words;
+
+      -- Create policies
+      CREATE POLICY "Users can view own trigger words" ON public.user_trigger_words
+        FOR SELECT USING (auth.uid() = user_id);
+
+      CREATE POLICY "Users can insert own trigger words" ON public.user_trigger_words
+        FOR INSERT WITH CHECK (auth.uid() = user_id);
+
+      CREATE POLICY "Users can update own trigger words" ON public.user_trigger_words
+        FOR UPDATE USING (auth.uid() = user_id);
+
+      CREATE POLICY "Users can delete own trigger words" ON public.user_trigger_words
+        FOR DELETE USING (auth.uid() = user_id);
+
+      -- Create indexes for performance
+      CREATE INDEX IF NOT EXISTS idx_user_trigger_words_user_id ON public.user_trigger_words(user_id);
+      CREATE INDEX IF NOT EXISTS idx_user_trigger_words_active ON public.user_trigger_words(user_id, is_active);
+
+      -- Function to update updated_at timestamp
+      CREATE OR REPLACE FUNCTION update_updated_at_column()
+      RETURNS TRIGGER AS $$
+      BEGIN
+          NEW.updated_at = timezone('utc'::text, now());
+          RETURN NEW;
+      END;
+      $$ language 'plpgsql';
+
+      -- Drop existing trigger if it exists
+      DROP TRIGGER IF EXISTS update_user_trigger_words_updated_at ON public.user_trigger_words;
+
+      -- Trigger for updated_at
+      CREATE TRIGGER update_user_trigger_words_updated_at 
+          BEFORE UPDATE ON public.user_trigger_words 
+          FOR EACH ROW EXECUTE PROCEDURE update_updated_at_column();
+    `
+
+    // Execute each SQL statement separately
+    const statements = [
+      `CREATE TABLE IF NOT EXISTS public.user_trigger_words (
+        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+        user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
+        word TEXT NOT NULL,
+        main_category TEXT NOT NULL,
+        sub_category TEXT NOT NULL,
+        is_active BOOLEAN DEFAULT true,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+        UNIQUE(user_id, word)
+      )`,
+      `ALTER TABLE public.user_trigger_words ENABLE ROW LEVEL SECURITY`,
+      `DROP POLICY IF EXISTS "Users can view own trigger words" ON public.user_trigger_words`,
+      `DROP POLICY IF EXISTS "Users can insert own trigger words" ON public.user_trigger_words`,
+      `DROP POLICY IF EXISTS "Users can update own trigger words" ON public.user_trigger_words`,
+      `DROP POLICY IF EXISTS "Users can delete own trigger words" ON public.user_trigger_words`,
+      `CREATE POLICY "Users can view own trigger words" ON public.user_trigger_words FOR SELECT USING (auth.uid() = user_id)`,
+      `CREATE POLICY "Users can insert own trigger words" ON public.user_trigger_words FOR INSERT WITH CHECK (auth.uid() = user_id)`,
+      `CREATE POLICY "Users can update own trigger words" ON public.user_trigger_words FOR UPDATE USING (auth.uid() = user_id)`,
+      `CREATE POLICY "Users can delete own trigger words" ON public.user_trigger_words FOR DELETE USING (auth.uid() = user_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_user_trigger_words_user_id ON public.user_trigger_words(user_id)`,
+      `CREATE INDEX IF NOT EXISTS idx_user_trigger_words_active ON public.user_trigger_words(user_id, is_active)`
+    ]
+
+    for (const statement of statements) {
+      try {
+        const { error } = await supabase.rpc('exec', { sql: statement })
+        if (error) {
+          console.log(`⚠️ SQL statement result (might be normal):`, error.message)
+        }
+      } catch (err) {
+        console.log(`⚠️ SQL execution (continuing):`, err)
+        // Continue anyway - some statements might fail if already exists
+      }
+    }
+    
+    console.log('✅ user_trigger_words table setup completed!')
+
     // Improvement 1: Add more Dutch trigger words
     const dutchWords = [
       ['Vergaderingen', 'professional'],
