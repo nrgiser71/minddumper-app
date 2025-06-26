@@ -538,11 +538,12 @@ function AppContent() {
       return idea
     })
     
-    // Create proper CSV with header and quoted values
-    const csvContent = [
-      'Idee',
-      ...cleanIdeas.map(idea => `"${idea.replace(/"/g, '""')}"`)
-    ].join('\n')
+    // Create proper CSV with semicolon delimiter (standard for Dutch Excel)
+    const csvRows = [
+      'Idee;',  // Header with delimiter
+      ...cleanIdeas.map(idea => `"${idea.replace(/"/g, '""')}";`)  // Each idea with delimiter
+    ]
+    const csvContent = csvRows.join('\n')
     
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8' })
     const url = window.URL.createObjectURL(blob)
