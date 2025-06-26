@@ -52,6 +52,7 @@ export default function ImportJsonPage() {
     <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
       <h1>JSON Backup Importeren</h1>
       <p>Plak je JSON backup hieronder en krijg SQL om in Supabase uit te voeren.</p>
+      <p style={{ fontSize: '12px', color: '#666' }}>Versie: 2.0 - Maakt ALLE categorieën aan uit JSON (wist eerst alles)</p>
 
       <div style={{ marginBottom: '20px' }}>
         <label htmlFor="json-input" style={{ display: 'block', marginBottom: '8px', fontWeight: 'bold' }}>
