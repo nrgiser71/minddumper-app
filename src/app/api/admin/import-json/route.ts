@@ -49,21 +49,46 @@ interface JsonData {
 function generateImportSQL(jsonData: JsonData): string {
   const { structure } = jsonData
   
-  let sql = `-- Import trigger words from JSON backup
--- Clear existing system trigger words first
+  let sql = `-- Import COMPLETE data from JSON backup
+-- Clear ALL existing data
 DELETE FROM system_trigger_words;
+DELETE FROM sub_categories;
+DELETE FROM main_categories;
 
--- Import structured data from JSON backup
+-- Import all main categories
+INSERT INTO main_categories (name, display_order) VALUES
+${Object.keys(structure).map((mainCat, index) => `('${mainCat}', ${index + 1})`).join(',\n')};
+
+-- Import all subcategories
 `
   
   // Process each main category
   for (const [mainCategoryName, subCategories] of Object.entries(structure)) {
-    
-    // Process each subcategory
+    const subCatNames = Object.keys(subCategories);
+    if (subCatNames.length > 0) {
+      sql += `
+-- Subcategories for ${mainCategoryName}
+INSERT INTO sub_categories (main_category_id, name, display_order)
+SELECT mc.id, subcats.name, subcats.display_order
+FROM main_categories mc,
+(VALUES
+${subCatNames.map((subCat, index) => `  ('${subCat.replace(/'/g, "''")}', ${index + 1})`).join(',\n')}
+) AS subcats(name, display_order)
+WHERE mc.name = '${mainCategoryName}';
+`
+    }
+  }
+
+  sql += `
+-- Import all trigger words
+`
+
+  // Process words
+  for (const [mainCategoryName, subCategories] of Object.entries(structure)) {
     for (const [subCategoryName, words] of Object.entries(subCategories as Record<string, string[]>)) {
       if (Array.isArray(words) && words.length > 0) {
         sql += `
--- Insert words for ${mainCategoryName} > ${subCategoryName}
+-- Words for ${mainCategoryName} > ${subCategoryName}
 INSERT INTO system_trigger_words (sub_category_id, word, language, display_order, is_active)
 SELECT 
   sc.id as sub_category_id,
@@ -71,13 +96,12 @@ SELECT
   '${jsonData.language || 'nl'}' as language,
   words.display_order,
   true as is_active
-FROM (
-  SELECT mc.id as main_id FROM main_categories mc WHERE mc.name = '${mainCategoryName}'
-) main_cat
-JOIN sub_categories sc ON sc.main_category_id = main_cat.main_id AND sc.name = '${subCategoryName}'
+FROM main_categories mc
+JOIN sub_categories sc ON sc.main_category_id = mc.id AND sc.name = '${subCategoryName.replace(/'/g, "''")}'
 CROSS JOIN (VALUES
 ${words.map((word, index) => `  ('${word.replace(/'/g, "''")}', ${index + 1})`).join(',\n')}
-) AS words(word, display_order);
+) AS words(word, display_order)
+WHERE mc.name = '${mainCategoryName}';
 `
       }
     }
