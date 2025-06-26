@@ -94,11 +94,11 @@ export async function getStructuredTriggerWords(language: string) {
       .select(`
         id,
         word,
-        sub_category:sub_categories!inner(
+        sub_category:sub_categories(
           id,
           name,
           display_order,
-          main_category:main_categories!inner(
+          main_category:main_categories(
             id,
             name,
             display_order
