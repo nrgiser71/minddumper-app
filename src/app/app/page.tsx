@@ -828,7 +828,7 @@ function AppContent() {
                           <div className="user-word-info">
                             <span className="user-word-text">{word.word}</span>
                             <span className="user-word-category">
-                              {word.main_category} › {word.sub_category}
+                              {word.sub_category?.main_category.name} › {word.sub_category?.name}
                             </span>
                           </div>
                           <div className="user-word-actions">
