@@ -502,7 +502,18 @@ function AppContent() {
   }
 
   const exportMindDump = () => {
-    const textList = allIdeas.join('\n')
+    console.log('🔍 Export Debug - allIdeas:', allIdeas)
+    // Make sure we only export the plain ideas without any formatting
+    const cleanIdeas = allIdeas.map(idea => {
+      // If the idea contains semicolons, it might be formatted data - extract just the idea part
+      if (idea.includes(';')) {
+        const parts = idea.split(';')
+        // Assuming the idea is in the second column (after number)
+        return parts[1] ? parts[1].replace(/^"|"$/g, '') : idea
+      }
+      return idea
+    })
+    const textList = cleanIdeas.join('\n')
     const blob = new Blob([textList], { type: 'text/plain' })
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
@@ -516,10 +527,17 @@ function AppContent() {
   }
 
   const exportMindDumpCSV = () => {
-    // Create CSV with just the ideas, one per line
-    const csvContent = allIdeas.map(idea => 
-      `"${idea.replace(/"/g, '""')}"`
-    ).join('\n')
+    // Make sure we only export the plain ideas without any formatting
+    const cleanIdeas = allIdeas.map(idea => {
+      // If the idea contains semicolons, it might be formatted data - extract just the idea part
+      if (idea.includes(';')) {
+        const parts = idea.split(';')
+        // Assuming the idea is in the second column (after number)
+        return parts[1] ? parts[1].replace(/^"|"$/g, '') : idea
+      }
+      return idea
+    })
+    const csvContent = cleanIdeas.join('\n')
     
     const blob = new Blob(['\ufeff' + csvContent], { type: 'text/csv;charset=utf-8' })
     const url = window.URL.createObjectURL(blob)
