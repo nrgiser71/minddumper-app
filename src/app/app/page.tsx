@@ -388,20 +388,28 @@ function AppContent() {
 
   const saveWordPreferences = async () => {
     setSavingPreferences(true)
+    console.log('🔍 Starting save preferences...')
+    console.log('triggerWordsData length:', triggerWordsData.length)
+    console.log('checkedWords:', Object.keys(checkedWords).length)
+    
     try {
       // Save all word preferences to database
       const promises: Promise<boolean>[] = []
       
       triggerWordsData.forEach(word => {
         const isChecked = checkedWords[word.word] ?? true
+        console.log(`Word: ${word.word}, isChecked: ${isChecked}, id: ${word.id}`)
         promises.push(updateWordPreference(word.id, isChecked))
       })
       
-      await Promise.all(promises)
+      console.log('Total promises:', promises.length)
+      const results = await Promise.all(promises)
+      console.log('Results:', results)
+      
       alert('Voorkeuren opgeslagen!')
     } catch (error) {
       console.error('Error saving preferences:', error)
-      alert('Fout bij opslaan van voorkeuren')
+      alert('Fout bij opslaan van voorkeuren: ' + error)
     }
     setSavingPreferences(false)
   }
