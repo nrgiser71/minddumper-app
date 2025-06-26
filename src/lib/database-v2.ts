@@ -30,12 +30,15 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
       .select(`
         id,
         word,
+        display_order,
         sub_category:sub_categories!inner(
           id,
           name,
+          display_order,
           main_category:main_categories!inner(
             id,
-            name
+            name,
+            display_order
           )
         )
       `)
@@ -69,23 +72,71 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
         console.log(`Word "${word.word}" (${wordData.sub_category?.main_category?.name}): ${isEnabled ? 'ENABLED' : 'DISABLED'}`)
         return isEnabled
       })
-      .map(word => word.word)
 
-    // Get user custom words
+    // Get user custom words with full structure
     const { data: customWords } = await supabase
       .from('user_custom_trigger_words')
-      .select('word')
+      .select(`
+        word,
+        sub_category:sub_categories!inner(
+          id,
+          name,
+          display_order,
+          main_category:main_categories!inner(
+            id,
+            name,
+            display_order
+          )
+        )
+      `)
       .eq('user_id', user.user.id)
       .eq('is_active', true)
 
-    const customWordsList = customWords?.map(w => w.word) || []
+    // Combine all words with their structure
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const allWords: any[] = [
+      ...enabledSystemWords,
+      ...(customWords || [])
+    ]
+
+    // Sort by main category order, then sub category order, then word
+    allWords.sort((a, b) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const aMainOrder = (a.sub_category as any)?.main_category?.display_order || 999
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const bMainOrder = (b.sub_category as any)?.main_category?.display_order || 999
+      
+      if (aMainOrder !== bMainOrder) {
+        return aMainOrder - bMainOrder
+      }
+      
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const aSubOrder = (a.sub_category as any)?.display_order || 999
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const bSubOrder = (b.sub_category as any)?.display_order || 999
+      
+      if (aSubOrder !== bSubOrder) {
+        return aSubOrder - bSubOrder
+      }
+      
+      return a.word.localeCompare(b.word)
+    })
+
+    const sortedWords = allWords.map(w => w.word)
 
     console.log('Final enabled system words:', enabledSystemWords.length)
-    console.log('Final custom words:', customWordsList.length)
-    console.log('Total words for brain dump:', enabledSystemWords.length + customWordsList.length)
+    console.log('Final custom words:', customWords?.length || 0)
+    console.log('Total words for brain dump:', sortedWords.length)
+    
+    // Debug: Show the order
+    console.log('🔤 Word order after sorting:')
+    allWords.forEach((word, index) => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const w = word as any
+      console.log(`${index + 1}. "${w.word}" - ${w.sub_category?.main_category?.name} > ${w.sub_category?.name}`)
+    })
 
-    // Combine all words
-    return [...enabledSystemWords, ...customWordsList]
+    return sortedWords
   } catch (error) {
     console.error('Error in getTriggerWordsForBrainDump:', error)
     return []
