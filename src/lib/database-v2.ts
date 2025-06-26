@@ -1,5 +1,20 @@
 import { supabase } from './supabase'
 
+interface SystemWordWithCategories {
+  id: string
+  word: string
+  sub_category: {
+    id: string
+    name: string
+    display_order: number
+    main_category: {
+      id: string
+      name: string
+      display_order: number
+    }
+  }
+}
+
 // Get trigger words for brain dump (system words + user preferences + custom words)
 export async function getTriggerWordsForBrainDump(language: string): Promise<string[]> {
   try {
@@ -123,7 +138,7 @@ export async function getStructuredTriggerWords(language: string) {
       }>
     }>()
 
-    systemWords?.forEach((word: any) => {
+    systemWords?.forEach((word: SystemWordWithCategories) => {
       const mainCat = word.sub_category.main_category
       const subCat = word.sub_category
 
