@@ -15,7 +15,9 @@ export default function HomePage() {
             <a href="#features" className="nav-link">Features</a>
             <a href="#pricing" className="nav-link">Lifetime Deal</a>
             <a href="#testimonials" className="nav-link">Reviews</a>
-            <button className="nav-cta">🔥 Koop Nu - €12</button>
+            <Link href="/auth/signup">
+              <button className="nav-cta">🔥 Koop Nu - €12</button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -41,9 +43,11 @@ export default function HomePage() {
               </div>
             </div>
             <div className="hero-buttons">
-              <button className="btn-primary">Koop Nu - €12 Lifetime! 🔥</button>
-              <Link href="/app">
-                <button className="btn-secondary">Bekijk Demo</button>
+              <Link href="/auth/signup">
+                <button className="btn-primary">Koop Nu - €12 Lifetime! 🔥</button>
+              </Link>
+              <Link href="/auth/login">
+                <button className="btn-secondary">Inloggen</button>
               </Link>
             </div>
             <p className="hero-guarantee">Nooit meer betalen • Alle updates gratis • 30 dagen geld terug</p>
@@ -169,7 +173,7 @@ export default function HomePage() {
                 <li>AI-categorisering van taken en projecten</li>
                 <li>Kopieer en plak tekstlijst in elke app</li>
               </ul>
-              <Link href="/app">
+              <Link href="/auth/login">
                 <button className="btn-primary">Start Je Brain Dump</button>
               </Link>
             </div>
@@ -256,7 +260,9 @@ export default function HomePage() {
                 <li>Prioriteit email support</li>
                 <li>30 dagen geld-terug-garantie</li>
               </ul>
-              <button className="btn-primary">Koop Nu - Slechts €12 (Lifetime!)</button>
+              <Link href="/auth/signup">
+                <button className="btn-primary">Koop Nu - Slechts €12 (Lifetime!)</button>
+              </Link>
               <p className="lifetime-note">💎 Eénmalige betaling van €12 • Nooit meer betalen • Alle updates gratis • Voor altijd van jou</p>
               <p className="impulse-note">Minder dan een lunch voor een tool die je productiviteit voor altijd verhoogt!</p>
             </div>
@@ -271,7 +277,9 @@ export default function HomePage() {
             <h2>Klaar voor een leeg hoofd? 🤯</h2>
             <p>Stop met het onthouden van alle taken in je hoofd. Voor slechts €12 krijg je MindDumper <strong>VOOR ALTIJD</strong> - nooit meer betalen!</p>
             <div className="cta-buttons">
-              <button className="btn-primary large">Koop Nu - €12 Lifetime Deal! 🔥</button>
+              <Link href="/auth/signup">
+                <button className="btn-primary large">Koop Nu - €12 Lifetime Deal! 🔥</button>
+              </Link>
               <p className="cta-note">Slechts €12 eenmalig • Nooit meer betalen • 30 dagen geld-terug-garantie</p>
               <p className="cta-urgent">Minder dan een koffie met gebak voor een lifetime productiviteitstool!</p>
             </div>

@@ -2,7 +2,9 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { getTriggerWordsList, getTriggerWords, saveBrainDump } from '@/lib/database'
+import { useAuth } from '@/lib/auth-context'
+import { ProtectedRoute } from '@/components/protected-route'
+import { getTriggerWordsList, getTriggerWords, saveBrainDump, getBrainDumpHistory } from '@/lib/database'
 import type { TriggerWord } from '@/lib/supabase'
 import '../app.css'
 
@@ -17,7 +19,8 @@ interface CategoryStructure {
   }[]
 }
 
-export default function AppPage() {
+function AppContent() {
+  const { user, signOut } = useAuth()
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
   const [currentLanguage, setCurrentLanguage] = useState<Language>('nl')
   const [currentWordIndex, setCurrentWordIndex] = useState(0)
@@ -34,6 +37,8 @@ export default function AppPage() {
   const [loading, setLoading] = useState(false)
   const [configLoading, setConfigLoading] = useState(false)
   const [startTime, setStartTime] = useState<Date | null>(null)
+  const [brainDumpHistory, setBrainDumpHistory] = useState<any[]>([])
+  const [historyLoading, setHistoryLoading] = useState(false)
 
   const showScreen = (screenId: Screen) => {
     setCurrentScreen(screenId)
@@ -41,6 +46,11 @@ export default function AppPage() {
     // Load trigger words when going to config screen
     if (screenId === 'config' && configTriggerWords.length === 0) {
       loadConfigTriggerWords()
+    }
+    
+    // Load brain dump history when going to history screen
+    if (screenId === 'history') {
+      loadBrainDumpHistory()
     }
   }
 
@@ -77,6 +87,18 @@ export default function AppPage() {
       console.error('Error loading config trigger words:', error)
     }
     setConfigLoading(false)
+  }
+
+  const loadBrainDumpHistory = async () => {
+    setHistoryLoading(true)
+    try {
+      const history = await getBrainDumpHistory()
+      setBrainDumpHistory(history)
+    } catch (error) {
+      console.error('Error loading brain dump history:', error)
+      setBrainDumpHistory([])
+    }
+    setHistoryLoading(false)
   }
 
   const buildCategoryStructure = (words: { main_category?: string; sub_category?: string; word: string; category?: string }[]): CategoryStructure[] => {
@@ -337,6 +359,12 @@ export default function AppPage() {
                   <polyline points="12,6 12,12 16,14" stroke="currentColor" strokeWidth="2"/>
                 </svg>
                 Geschiedenis bekijken
+              </button>
+              <button className="btn-text" onClick={() => signOut()}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+                Uitloggen
               </button>
               <Link href="/" className="btn-text">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -676,39 +704,58 @@ export default function AppPage() {
             </div>
             
             <div className="history-list">
-              <div className="history-item" onClick={() => showScreen('finish')}>
-                <div className="history-date">24 december 2024</div>
-                <div className="history-stats">
-                  <span className="stat">47 ideeën</span>
-                  <span className="stat">12 triggerwoorden</span>
-                  <span className="stat">8 min</span>
+              {historyLoading ? (
+                <div style={{textAlign: 'center', margin: '2rem 0', color: '#666'}}>
+                  Geschiedenis laden...
                 </div>
-                <div className="history-preview">Lorem ipsum, consectetur adipiscing, sed do eiusmod...</div>
-              </div>
-              
-              <div className="history-item" onClick={() => showScreen('finish')}>
-                <div className="history-date">23 december 2024</div>
-                <div className="history-stats">
-                  <span className="stat">31 ideeën</span>
-                  <span className="stat">8 triggerwoorden</span>
-                  <span className="stat">6 min</span>
+              ) : brainDumpHistory.length === 0 ? (
+                <div style={{textAlign: 'center', margin: '2rem 0', color: '#666'}}>
+                  <p>Nog geen brain dumps gemaakt.</p>
+                  <p>Start je eerste sessie om hier je geschiedenis te zien!</p>
                 </div>
-                <div className="history-preview">Tempor incididunt, ut labore dolore, magna aliqua...</div>
-              </div>
-              
-              <div className="history-item" onClick={() => showScreen('finish')}>
-                <div className="history-date">20 december 2024</div>
-                <div className="history-stats">
-                  <span className="stat">28 ideeën</span>
-                  <span className="stat">7 triggerwoorden</span>
-                  <span className="stat">5 min</span>
-                </div>
-                <div className="history-preview">Ut enim ad minim, quis nostrud exercitation...</div>
-              </div>
+              ) : (
+                brainDumpHistory.map((dump, index) => (
+                  <div key={dump.id} className="history-item" onClick={() => {
+                    // Load this dump's data into current view
+                    setAllIdeas(dump.ideas || [])
+                    setCurrentWordIndex(dump.total_words || 0)
+                    showScreen('finish')
+                  }}>
+                    <div className="history-date">
+                      {new Date(dump.created_at).toLocaleDateString('nl-NL', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                        hour: '2-digit',
+                        minute: '2-digit'
+                      })}
+                    </div>
+                    <div className="history-stats">
+                      <span className="stat">{dump.total_ideas || 0} ideeën</span>
+                      <span className="stat">{dump.total_words || 0} triggerwoorden</span>
+                      <span className="stat">{dump.duration_minutes || 0} min</span>
+                    </div>
+                    <div className="history-preview">
+                      {dump.ideas && dump.ideas.length > 0 
+                        ? dump.ideas.slice(0, 3).join(', ') + (dump.ideas.length > 3 ? '...' : '')
+                        : 'Geen ideeën opgeslagen'
+                      }
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           </div>
         </div>
       )}
     </div>
+  )
+}
+
+export default function AppPage() {
+  return (
+    <ProtectedRoute>
+      <AppContent />
+    </ProtectedRoute>
   )
 }
