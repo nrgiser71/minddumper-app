@@ -21,6 +21,17 @@ interface CategoryStructure {
   }[]
 }
 
+interface StructuredSubCategory {
+  id: string
+  name: string
+  display_order: number
+  words: Array<{
+    id: string
+    word: string
+    enabled: boolean
+  }>
+}
+
 function AppContent() {
   const { signOut } = useAuth()
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
@@ -77,7 +88,7 @@ function AppContent() {
       // Build legacy structure for existing UI
       const structure: CategoryStructure[] = categories.map(mainCat => ({
         mainCategory: mainCat.name,
-        subCategories: mainCat.subCategories.map(subCat => ({
+        subCategories: mainCat.subCategories.map((subCat: StructuredSubCategory) => ({
           name: subCat.name,
           words: subCat.words.map(w => w.word)
         }))
