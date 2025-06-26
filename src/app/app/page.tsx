@@ -129,6 +129,26 @@ function AppContent() {
       // Also get simple word list for backward compatibility
       const words = await getTriggerWordsForBrainDump(currentLanguage)
       setConfigTriggerWords(words)
+      
+      // Store full structured data for saving preferences
+      const allWords = categories.flatMap(mainCat => 
+        mainCat.subCategories.flatMap(subCat => 
+          subCat.words.map(word => ({
+            id: word.id,
+            word: word.word,
+            main_category: mainCat.name,
+            sub_category: subCat.name,
+            category: `${mainCat.name} - ${subCat.name}`,
+            main_category_order: mainCat.display_order,
+            sub_category_order: subCat.display_order,
+            sort_order: 0,
+            is_active: true,
+            created_at: new Date().toISOString(),
+            language: currentLanguage
+          }))
+        )
+      )
+      setTriggerWordsData(allWords)
     } catch (error) {
       console.error('Error loading config trigger words:', error)
     }
