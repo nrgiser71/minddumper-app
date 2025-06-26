@@ -4,9 +4,8 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { ProtectedRoute } from '@/components/protected-route'
-import { saveBrainDump, getBrainDumpHistory } from '@/lib/database'
-import { getTriggerWordsForBrainDump, getStructuredTriggerWords, updateWordPreference, getAvailableCategoriesV2 } from '@/lib/database-v2'
-import { getUserCustomWords, addUserCustomWord, updateUserCustomWord, deleteUserCustomWord, type UserCustomWord } from '@/lib/user-words-v2'
+import { getTriggerWordsList, getTriggerWords, saveBrainDump, getBrainDumpHistory } from '@/lib/database'
+import { getUserTriggerWords, addUserTriggerWord, updateUserTriggerWord, deleteUserTriggerWord, getAvailableCategories, type UserTriggerWord } from '@/lib/user-words'
 import type { TriggerWord, BrainDump } from '@/lib/supabase'
 import '../app.css'
 
@@ -41,8 +40,8 @@ function AppContent() {
   const [startTime, setStartTime] = useState<Date | null>(null)
   const [brainDumpHistory, setBrainDumpHistory] = useState<BrainDump[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
-  const [userWords, setUserWords] = useState<UserCustomWord[]>([])
-  const [availableCategories, setAvailableCategories] = useState<{mainCategories: string[], subCategories: Record<string, Array<{id: string, name: string}>>}>({mainCategories: [], subCategories: {}})
+  const [userWords, setUserWords] = useState<UserTriggerWord[]>([])
+  const [availableCategories, setAvailableCategories] = useState<{mainCategories: string[], subCategories: Record<string, string[]>}>({mainCategories: [], subCategories: {}})
   const [newWordText, setNewWordText] = useState('')
   const [newWordMainCategory, setNewWordMainCategory] = useState('')
   const [newWordSubCategory, setNewWordSubCategory] = useState('')
@@ -71,31 +70,25 @@ function AppContent() {
   const loadConfigTriggerWords = async () => {
     setConfigLoading(true)
     try {
-      // Get structured data for hierarchical display
-      const { categories, userPreferences } = await getStructuredTriggerWords(currentLanguage)
+      const words = await getTriggerWordsList(currentLanguage)
+      setConfigTriggerWords(words)
       
-      // Build legacy structure for existing UI
-      const structure: CategoryStructure[] = categories.map(mainCat => ({
-        mainCategory: mainCat.name,
-        subCategories: mainCat.subCategories.map(subCat => ({
-          name: subCat.name,
-          words: subCat.words.map(w => w.word)
-        }))
-      }))
-      
+      // Load structured data for hierarchical display
+      const structuredWords = await getTriggerWords(currentLanguage)
+      const structure = buildCategoryStructure(structuredWords)
       setCategoryStructure(structure)
       
-      // Initialize checkboxes based on user preferences
+      // Initialize all items as checked
       const mainCats: Record<string, boolean> = {}
       const subCats: Record<string, boolean> = {}
       const wordChecks: Record<string, boolean> = {}
       
-      categories.forEach(mainCat => {
-        mainCats[mainCat.name] = true
+      structure.forEach(mainCat => {
+        mainCats[mainCat.mainCategory] = true
         mainCat.subCategories.forEach(subCat => {
-          subCats[`${mainCat.name}-${subCat.name}`] = true
+          subCats[`${mainCat.mainCategory}-${subCat.name}`] = true
           subCat.words.forEach(word => {
-            wordChecks[word.word] = word.enabled
+            wordChecks[word] = true
           })
         })
       })
@@ -103,10 +96,6 @@ function AppContent() {
       setCheckedMainCategories(mainCats)
       setCheckedSubCategories(subCats)
       setCheckedWords(wordChecks)
-      
-      // Also get simple word list for backward compatibility
-      const words = await getTriggerWordsForBrainDump(currentLanguage)
-      setConfigTriggerWords(words)
     } catch (error) {
       console.error('Error loading config trigger words:', error)
     }
@@ -129,8 +118,8 @@ function AppContent() {
     setUserWordsLoading(true)
     try {
       const [words, categories] = await Promise.all([
-        getUserCustomWords(),
-        getAvailableCategoriesV2()
+        getUserTriggerWords(),
+        getAvailableCategories()
       ])
       setUserWords(words)
       setAvailableCategories(categories)
@@ -139,7 +128,7 @@ function AppContent() {
       if (!newWordMainCategory && categories.mainCategories.length > 0) {
         setNewWordMainCategory(categories.mainCategories[0])
         if (categories.subCategories[categories.mainCategories[0]]?.length > 0) {
-          setNewWordSubCategory(categories.subCategories[categories.mainCategories[0]][0].name)
+          setNewWordSubCategory(categories.subCategories[categories.mainCategories[0]][0])
         }
       }
     } catch (error) {
@@ -154,15 +143,7 @@ function AppContent() {
       return
     }
 
-    // Find subcategory ID
-    const subCatOptions = availableCategories.subCategories[newWordMainCategory] || []
-    const subCat = subCatOptions.find(s => s.name === newWordSubCategory)
-    if (!subCat) {
-      alert('Ongeldige subcategorie')
-      return
-    }
-
-    const result = await addUserCustomWord(newWordText, subCat.id)
+    const result = await addUserTriggerWord(newWordText, newWordMainCategory, newWordSubCategory)
     if (result.success) {
       setNewWordText('')
       loadUserWords() // Refresh list
@@ -171,13 +152,11 @@ function AppContent() {
     }
   }
 
-  const handleEditUserWord = (word: UserCustomWord) => {
+  const handleEditUserWord = (word: UserTriggerWord) => {
     setEditingWordId(word.id)
     setNewWordText(word.word)
-    if (word.sub_category) {
-      setNewWordMainCategory(word.sub_category.main_category.name)
-      setNewWordSubCategory(word.sub_category.name)
-    }
+    setNewWordMainCategory(word.main_category)
+    setNewWordSubCategory(word.sub_category)
   }
 
   const handleUpdateUserWord = async () => {
@@ -185,15 +164,7 @@ function AppContent() {
       return
     }
 
-    // Find subcategory ID
-    const subCatOptions = availableCategories.subCategories[newWordMainCategory] || []
-    const subCat = subCatOptions.find(s => s.name === newWordSubCategory)
-    if (!subCat) {
-      alert('Ongeldige subcategorie')
-      return
-    }
-
-    const result = await updateUserCustomWord(editingWordId, newWordText, subCat.id)
+    const result = await updateUserTriggerWord(editingWordId, newWordText, newWordMainCategory, newWordSubCategory)
     if (result.success) {
       setEditingWordId(null)
       setNewWordText('')
@@ -208,7 +179,7 @@ function AppContent() {
       return
     }
 
-    const result = await deleteUserCustomWord(id)
+    const result = await deleteUserTriggerWord(id)
     if (result.success) {
       loadUserWords() // Refresh list
     } else {
@@ -222,7 +193,7 @@ function AppContent() {
     if (availableCategories.mainCategories.length > 0) {
       setNewWordMainCategory(availableCategories.mainCategories[0])
       if (availableCategories.subCategories[availableCategories.mainCategories[0]]?.length > 0) {
-        setNewWordSubCategory(availableCategories.subCategories[availableCategories.mainCategories[0]][0].name)
+        setNewWordSubCategory(availableCategories.subCategories[availableCategories.mainCategories[0]][0])
       }
     }
   }
@@ -313,14 +284,8 @@ function AppContent() {
     }
   }
 
-  const handleWordCheck = async (word: string, checked: boolean) => {
+  const handleWordCheck = (word: string, checked: boolean) => {
     setCheckedWords(prev => ({ ...prev, [word]: checked }))
-    
-    // Find the system word ID for this word to update preferences
-    const systemWord = triggerWordsData.find(w => w.word === word)
-    if (systemWord) {
-      await updateWordPreference(systemWord.id, checked)
-    }
     
     // Update parent categories based on word states
     for (const category of categoryStructure) {
@@ -358,7 +323,7 @@ function AppContent() {
     
     // Load trigger words from database
     try {
-      const words = await getTriggerWordsForBrainDump(language)
+      const words = await getTriggerWordsList(language)
       setTriggerWords(words)
       
       // Also load full data for category display
@@ -876,7 +841,7 @@ function AppContent() {
                               // Reset subcategory when main category changes
                               const subCats = availableCategories.subCategories[e.target.value]
                               if (subCats && subCats.length > 0) {
-                                setNewWordSubCategory(subCats[0].name)
+                                setNewWordSubCategory(subCats[0])
                               }
                             }}
                           >
@@ -894,7 +859,7 @@ function AppContent() {
                           >
                             <option value="">Subcategorie...</option>
                             {newWordMainCategory && availableCategories.subCategories[newWordMainCategory]?.map(subCat => (
-                              <option key={subCat.id} value={subCat.name}>{subCat.name}</option>
+                              <option key={subCat} value={subCat}>{subCat}</option>
                             ))}
                           </select>
                         </div>

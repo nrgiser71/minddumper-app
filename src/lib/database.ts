@@ -6,92 +6,181 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
   try {
     console.log(`🔍 Fetching structured trigger words for language: ${language}`)
     
-    const { data, error } = await supabase
-      .from('trigger_words')
-      .select('*')
+    const { data: user } = await supabase.auth.getUser()
+    if (!user.user) {
+      console.log('⚠️ No authenticated user')
+      return getMockTriggerWordsStructured(language)
+    }
+
+    // Get all system words with structure
+    const { data: systemWords, error } = await supabase
+      .from('system_trigger_words')
+      .select(`
+        id,
+        word,
+        language,
+        display_order,
+        is_active,
+        created_at,
+        sub_category:sub_categories!inner(
+          id,
+          name,
+          display_order,
+          main_category:main_categories!inner(
+            id,
+            name,
+            display_order
+          )
+        )
+      `)
       .eq('language', language)
       .eq('is_active', true)
-      .order('category', { ascending: true })
-      .order('id', { ascending: true })
+      .order('sub_category.main_category.display_order')
+      .order('sub_category.display_order')
+      .order('display_order')
 
     if (error) {
       console.error('❌ Database error in getTriggerWords:', error)
       return getMockTriggerWordsStructured(language)
     }
 
-    console.log(`✅ Found ${data?.length || 0} structured trigger words`)
+    // Get user preferences
+    const { data: preferences } = await supabase
+      .from('user_trigger_word_preferences')
+      .select('system_word_id, is_enabled')
+      .eq('user_id', user.user.id)
+
+    const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
+
+    // Transform to TriggerWord format and filter based on preferences
+    const triggerWords: TriggerWord[] = (systemWords || [])
+      .filter(word => userPrefs.get(word.id) !== false) // Only exclude if explicitly disabled
+      .map(word => ({
+        id: word.id,
+        language: word.language,
+        word: word.word,
+        main_category: word.sub_category.main_category.name,
+        sub_category: word.sub_category.name,
+        category: `${word.sub_category.main_category.name} - ${word.sub_category.name}`,
+        main_category_order: word.sub_category.main_category.display_order,
+        sub_category_order: word.sub_category.display_order,
+        sort_order: word.display_order,
+        is_active: word.is_active,
+        created_at: word.created_at
+      }))
+
+    // Add user custom words
+    const { data: customWords } = await supabase
+      .from('user_custom_trigger_words')
+      .select(`
+        id,
+        word,
+        created_at,
+        sub_category:sub_categories!inner(
+          id,
+          name,
+          display_order,
+          main_category:main_categories!inner(
+            id,
+            name,
+            display_order
+          )
+        )
+      `)
+      .eq('user_id', user.user.id)
+      .eq('is_active', true)
+
+    const customTriggerWords: TriggerWord[] = (customWords || []).map(word => ({
+      id: word.id,
+      language: language,
+      word: word.word,
+      main_category: word.sub_category.main_category.name,
+      sub_category: word.sub_category.name,
+      category: `${word.sub_category.main_category.name} - ${word.sub_category.name}`,
+      main_category_order: word.sub_category.main_category.display_order,
+      sub_category_order: word.sub_category.display_order,
+      sort_order: 999, // Custom words go last
+      is_active: true,
+      created_at: word.created_at
+    }))
+
+    const allWords = [...triggerWords, ...customTriggerWords]
     
-    if (!data || data.length === 0) {
+    console.log(`✅ Found ${triggerWords.length} system + ${customTriggerWords.length} custom = ${allWords.length} total structured trigger words`)
+    
+    if (allWords.length === 0) {
       console.log('⚠️ No structured words found, using fallback')
       return getMockTriggerWordsStructured(language)
     }
     
-    // Sort to ensure proper order: Professional first, then by category
-    const sorted = data.sort((a, b) => {
-      const aMain = a.category?.includes('Professioneel') ? 0 : 1
-      const bMain = b.category?.includes('Professioneel') ? 0 : 1
-      
-      if (aMain !== bMain) return aMain - bMain
-      
-      // Then sort by category
-      return (a.category || '').localeCompare(b.category || '')
-    })
-    
-    return sorted
+    return allWords
   } catch (error) {
     console.error('❌ Error in getTriggerWords:', error)
     return getMockTriggerWordsStructured(language)
   }
 }
 
-// Legacy function for simple word lists (for backward compatibility)
+// Legacy function for simple word lists (now uses new database structure)
 export async function getTriggerWordsList(language: string): Promise<string[]> {
   try {
-    console.log(`🔍 Fetching trigger words for language: ${language}`)
+    console.log(`🔍 Fetching trigger words for language: ${language} from new structure`)
     
-    // Get both standard trigger words and user trigger words
-    const [standardWordsResult, userWords] = await Promise.all([
-      supabase
-        .from('trigger_words')
-        .select('word, category')
-        .eq('language', language)
-        .eq('is_active', true)
-        .order('category', { ascending: true })
-        .order('id', { ascending: true }),
-      getUserTriggerWords()
-    ])
-
-    const { data, error } = standardWordsResult
-
-    if (error) {
-      console.error('❌ Database error:', error)
+    const { data: user } = await supabase.auth.getUser()
+    if (!user.user) {
+      console.log('⚠️ No authenticated user')
       return ['Werk', 'Familie'] // Fallback
     }
 
-    let standardWords: string[] = []
-    if (data && data.length > 0) {
-      // Sort to ensure Professional comes before Personal
-      const sorted = data.sort((a, b) => {
-        const aMain = a.category?.includes('Professioneel') ? 0 : 1
-        const bMain = b.category?.includes('Professioneel') ? 0 : 1
-        
-        if (aMain !== bMain) return aMain - bMain
-        
-        // Then sort by category and maintain order
-        return 0
-      })
-      
-      standardWords = sorted.map(row => row.word)
+    // Get system words with user preferences
+    const { data: systemWords, error: systemError } = await supabase
+      .from('system_trigger_words')
+      .select(`
+        id,
+        word,
+        sub_category:sub_categories!inner(
+          main_category:main_categories!inner(
+            display_order
+          ),
+          display_order
+        )
+      `)
+      .eq('language', language)
+      .eq('is_active', true)
+      .order('sub_category.main_category.display_order')
+      .order('sub_category.display_order') 
+      .order('display_order')
+
+    if (systemError) {
+      console.error('❌ Database error:', systemError)
+      return ['Werk', 'Familie'] // Fallback
     }
 
-    // Add user words to the list (they'll appear after standard words)
-    const userWordsList = userWords
-      .filter(word => word.is_active)
+    // Get user preferences (disabled words)
+    const { data: preferences } = await supabase
+      .from('user_trigger_word_preferences')
+      .select('system_word_id')
+      .eq('user_id', user.user.id)
+      .eq('is_enabled', false)
+
+    const disabledWordIds = new Set(preferences?.map(p => p.system_word_id) || [])
+
+    // Filter out disabled words
+    const enabledSystemWords = (systemWords || [])
+      .filter(word => !disabledWordIds.has(word.id))
       .map(word => word.word)
 
-    const allWords = [...standardWords, ...userWordsList]
+    // Get user custom words
+    const { data: customWords } = await supabase
+      .from('user_custom_trigger_words')
+      .select('word')
+      .eq('user_id', user.user.id)
+      .eq('is_active', true)
+
+    const customWordsList = customWords?.map(w => w.word) || []
+
+    const allWords = [...enabledSystemWords, ...customWordsList]
     
-    console.log(`✅ Found ${standardWords.length} standard + ${userWordsList.length} user trigger words = ${allWords.length} total`)
+    console.log(`✅ Found ${enabledSystemWords.length} enabled system + ${customWordsList.length} custom words = ${allWords.length} total`)
     
     if (allWords.length === 0) {
       console.log('⚠️ No words found, using fallback')
