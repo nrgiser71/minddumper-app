@@ -172,8 +172,27 @@ export default function AdminPage() {
         <p><em>Dit wordt automatisch opgesplitst in 3 aparte triggerwoorden.</em></p>
       </div>
 
-      <div style={{ marginTop: '3rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px' }}>
-        <h3>Backup & Restore</h3>
+      <div style={{ marginTop: '3rem', padding: '1rem', background: '#fff3cd', borderRadius: '8px', border: '1px solid #ffeaa7' }}>
+        <h3>🆕 Nieuwe Database Structuur</h3>
+        <p style={{ marginBottom: '1rem' }}>Voor de nieuwe genormaliseerde database structuur:</p>
+        <Link 
+          href="/admin/import-json" 
+          style={{ 
+            display: 'inline-block',
+            background: '#007AFF',
+            color: 'white',
+            padding: '0.75rem 1.5rem',
+            borderRadius: '6px',
+            textDecoration: 'none',
+            fontWeight: 'bold'
+          }}
+        >
+          📥 JSON Import Tool →
+        </Link>
+      </div>
+
+      <div style={{ marginTop: '1rem', padding: '1rem', background: '#e8f5e9', borderRadius: '8px' }}>
+        <h3>Backup & Restore (Oude Structuur)</h3>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <button
             onClick={async () => {
