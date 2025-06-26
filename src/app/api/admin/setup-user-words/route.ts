@@ -12,7 +12,7 @@ export async function POST() {
     console.log('🚀 Setting up user_trigger_words functionality...')
 
     // Check if table exists by trying to query it
-    const { data: existingData, error: checkError } = await supabase
+    const { error: checkError } = await supabase
       .from('user_trigger_words')
       .select('*')
       .limit(1)
