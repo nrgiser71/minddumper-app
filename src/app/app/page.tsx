@@ -59,6 +59,7 @@ function AppContent() {
   const [newWordSubCategory, setNewWordSubCategory] = useState('')
   const [editingWordId, setEditingWordId] = useState<string | null>(null)
   const [userWordsLoading, setUserWordsLoading] = useState(false)
+  const [savingPreferences, setSavingPreferences] = useState(false)
 
   const showScreen = (screenId: Screen) => {
     setCurrentScreen(screenId)
@@ -326,14 +327,8 @@ function AppContent() {
     }
   }
 
-  const handleWordCheck = async (word: string, checked: boolean) => {
+  const handleWordCheck = (word: string, checked: boolean) => {
     setCheckedWords(prev => ({ ...prev, [word]: checked }))
-    
-    // Find the system word ID for this word to update preferences
-    const systemWord = triggerWordsData.find(w => w.word === word)
-    if (systemWord) {
-      await updateWordPreference(systemWord.id, checked)
-    }
     
     // Update parent categories based on word states
     for (const category of categoryStructure) {
@@ -359,6 +354,26 @@ function AppContent() {
         }
       }
     }
+  }
+
+  const saveWordPreferences = async () => {
+    setSavingPreferences(true)
+    try {
+      // Save all word preferences to database
+      const promises: Promise<boolean>[] = []
+      
+      triggerWordsData.forEach(word => {
+        const isChecked = checkedWords[word.word] ?? true
+        promises.push(updateWordPreference(word.id, isChecked))
+      })
+      
+      await Promise.all(promises)
+      alert('Voorkeuren opgeslagen!')
+    } catch (error) {
+      console.error('Error saving preferences:', error)
+      alert('Fout bij opslaan van voorkeuren')
+    }
+    setSavingPreferences(false)
   }
 
   const startMindDump = async (language: Language) => {
@@ -819,6 +834,26 @@ function AppContent() {
                   
                   <div className="show-more-triggers">
                     {configTriggerWords.length} woorden beschikbaar
+                  </div>
+                  
+                  <div className="save-preferences-section" style={{ marginTop: '20px', textAlign: 'center' }}>
+                    <button 
+                      className="btn-primary"
+                      onClick={saveWordPreferences}
+                      disabled={savingPreferences}
+                      style={{
+                        padding: '12px 24px',
+                        backgroundColor: savingPreferences ? '#ccc' : '#007bff',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        fontSize: '16px',
+                        fontWeight: 'bold',
+                        cursor: savingPreferences ? 'not-allowed' : 'pointer'
+                      }}
+                    >
+                      {savingPreferences ? 'Voorkeuren opslaan...' : 'Voorkeuren Opslaan'}
+                    </button>
                   </div>
                 </>
               )}
