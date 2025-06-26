@@ -106,13 +106,21 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
     
     // Sort by main category order, then sub category order, then word sort order
     const sortedWords = allWords.sort((a, b) => {
-      if (a.main_category_order !== b.main_category_order) {
-        return a.main_category_order - b.main_category_order
+      const aMainOrder = a.main_category_order || 0
+      const bMainOrder = b.main_category_order || 0
+      if (aMainOrder !== bMainOrder) {
+        return aMainOrder - bMainOrder
       }
-      if (a.sub_category_order !== b.sub_category_order) {
-        return a.sub_category_order - b.sub_category_order
+      
+      const aSubOrder = a.sub_category_order || 0
+      const bSubOrder = b.sub_category_order || 0
+      if (aSubOrder !== bSubOrder) {
+        return aSubOrder - bSubOrder
       }
-      return a.sort_order - b.sort_order
+      
+      const aSortOrder = a.sort_order || 0
+      const bSortOrder = b.sort_order || 0
+      return aSortOrder - bSortOrder
     })
     
     console.log(`✅ Found ${triggerWords.length} system + ${customTriggerWords.length} custom = ${sortedWords.length} total structured trigger words`)
