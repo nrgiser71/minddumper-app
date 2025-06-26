@@ -103,13 +103,23 @@ function AppContent() {
       const wordChecks: Record<string, boolean> = {}
       
       categories.forEach(mainCat => {
-        mainCats[mainCat.name] = true
+        let mainCatAllEnabled = true
+        
         mainCat.subCategories.forEach((subCat: StructuredSubCategory) => {
-          subCats[`${mainCat.name}-${subCat.name}`] = true
+          let subCatAllEnabled = true
+          
           subCat.words.forEach((word: {id: string, word: string, enabled: boolean}) => {
             wordChecks[word.word] = word.enabled
+            if (!word.enabled) {
+              subCatAllEnabled = false
+              mainCatAllEnabled = false
+            }
           })
+          
+          subCats[`${mainCat.name}-${subCat.name}`] = subCatAllEnabled
         })
+        
+        mainCats[mainCat.name] = mainCatAllEnabled
       })
       
       setCheckedMainCategories(mainCats)
