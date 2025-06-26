@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { ProtectedRoute } from '@/components/protected-route'
 import { getTriggerWordsList, getTriggerWords, saveBrainDump, getBrainDumpHistory } from '@/lib/database'
-import type { TriggerWord } from '@/lib/supabase'
+import type { TriggerWord, BrainDump } from '@/lib/supabase'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
@@ -20,7 +20,7 @@ interface CategoryStructure {
 }
 
 function AppContent() {
-  const { user, signOut } = useAuth()
+  const { signOut } = useAuth()
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
   const [currentLanguage, setCurrentLanguage] = useState<Language>('nl')
   const [currentWordIndex, setCurrentWordIndex] = useState(0)
@@ -37,7 +37,7 @@ function AppContent() {
   const [loading, setLoading] = useState(false)
   const [configLoading, setConfigLoading] = useState(false)
   const [startTime, setStartTime] = useState<Date | null>(null)
-  const [brainDumpHistory, setBrainDumpHistory] = useState<any[]>([])
+  const [brainDumpHistory, setBrainDumpHistory] = useState<BrainDump[]>([])
   const [historyLoading, setHistoryLoading] = useState(false)
 
   const showScreen = (screenId: Screen) => {
@@ -714,7 +714,7 @@ function AppContent() {
                   <p>Start je eerste sessie om hier je geschiedenis te zien!</p>
                 </div>
               ) : (
-                brainDumpHistory.map((dump, index) => (
+                brainDumpHistory.map((dump) => (
                   <div key={dump.id} className="history-item" onClick={() => {
                     // Load this dump's data into current view
                     setAllIdeas(dump.ideas || [])

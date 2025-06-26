@@ -31,7 +31,7 @@ export default function LoginPage() {
       if (data.user) {
         router.push('/app')
       }
-    } catch (err) {
+    } catch {
       setError('Er is een fout opgetreden bij het inloggen')
     } finally {
       setLoading(false)

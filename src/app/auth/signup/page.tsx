@@ -58,7 +58,7 @@ export default function SignupPage() {
           setMessage('Check je email voor een bevestigingslink voordat je kunt inloggen.')
         }
       }
-    } catch (err) {
+    } catch {
       setError('Er is een fout opgetreden bij het registreren')
     } finally {
       setLoading(false)
