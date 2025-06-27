@@ -34,17 +34,16 @@ export async function POST(request: NextRequest) {
     
     preferences.forEach(({ systemWordId, isEnabled }: { systemWordId: string, isEnabled: boolean }) => {
       if (existingMap.has(systemWordId)) {
-        // Update existing preference if it changed
-        if (existingMap.get(systemWordId) !== isEnabled) {
-          toUpdate.push({
-            user_id: userId,
-            system_word_id: systemWordId,
-            is_enabled: isEnabled,
-            updated_at: new Date().toISOString()
-          })
-        }
+        // Always update existing preference to ensure consistency
+        // This ensures that even if the value hasn't changed, the record exists
+        toUpdate.push({
+          user_id: userId,
+          system_word_id: systemWordId,
+          is_enabled: isEnabled,
+          updated_at: new Date().toISOString()
+        })
       } else {
-        // Insert new preference
+        // Insert new preference - this ensures every word has a preference record
         toInsert.push({
           user_id: userId,
           system_word_id: systemWordId,

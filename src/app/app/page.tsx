@@ -397,6 +397,8 @@ function AppContent() {
       }
 
       // Prepare bulk preferences data
+      // IMPORTANT: Always create a preference record for every word, 
+      // even if it's enabled, to ensure consistency across languages
       const preferences = triggerWordsData.map(word => ({
         systemWordId: word.id,
         isEnabled: checkedWords[word.word] ?? true

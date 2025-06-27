@@ -176,13 +176,23 @@ export async function getStructuredTriggerWords(language: string) {
       return { categories: [], preferences: {} }
     }
 
-    // Get user preferences
+    // Get user preferences for this specific language
     const { data: preferences } = await supabase
       .from('user_trigger_word_preferences')
-      .select('system_word_id, is_enabled')
+      .select(`
+        system_word_id, 
+        is_enabled,
+        system_trigger_words!inner(language)
+      `)
       .eq('user_id', user.user.id)
+      .eq('system_trigger_words.language', language)
 
     const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
+    
+    console.log(`Loading preferences for language ${language}:`)
+    console.log(`- Total system words: ${systemWords?.length || 0}`)
+    console.log(`- User preferences found: ${preferences?.length || 0}`)
+    console.log(`- Missing preferences: ${(systemWords?.length || 0) - (preferences?.length || 0)}`)
 
     // Build hierarchical structure
     type CategoryMapValue = {
@@ -228,11 +238,17 @@ export async function getStructuredTriggerWords(language: string) {
       }
 
       const subCategory = mainCategory.subCategories.get(subCat.id)!
+      const isEnabled = userPrefs.get(word.id) ?? true // Default to enabled if no preference
       subCategory.words.push({
         id: word.id,
         word: word.word,
-        enabled: userPrefs.get(word.id) ?? true // Default to enabled if no preference
+        enabled: isEnabled
       })
+      
+      // Log missing preferences for debugging
+      if (!userPrefs.has(word.id)) {
+        console.log(`Missing preference for word "${word.word}" (ID: ${word.id}) - defaulting to enabled`)
+      }
     })
 
     // Convert to array and sort
@@ -282,6 +298,65 @@ export async function updateWordPreference(systemWordId: string, enabled: boolea
     return true
   } catch (error) {
     console.error('Error in updateWordPreference:', error)
+    return false
+  }
+}
+
+// Ensure all preferences exist for a user and language
+export async function ensureAllPreferencesExist(userId: string, language: string) {
+  try {
+    // Get all system words for this language
+    const { data: systemWords, error: wordsError } = await supabase
+      .from('system_trigger_words')
+      .select('id')
+      .eq('language', language)
+      .eq('is_active', true)
+
+    if (wordsError || !systemWords) {
+      console.error('Error fetching system words:', wordsError)
+      return false
+    }
+
+    // Get existing preferences
+    const { data: existingPrefs, error: prefError } = await supabase
+      .from('user_trigger_word_preferences')
+      .select('system_word_id')
+      .eq('user_id', userId)
+
+    if (prefError) {
+      console.error('Error fetching preferences:', prefError)
+      return false
+    }
+
+    const existingSet = new Set(existingPrefs?.map(p => p.system_word_id) || [])
+    
+    // Find missing preferences
+    const missingPrefs = systemWords
+      .filter(word => !existingSet.has(word.id))
+      .map(word => ({
+        user_id: userId,
+        system_word_id: word.id,
+        is_enabled: true, // Default to enabled
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }))
+
+    if (missingPrefs.length > 0) {
+      console.log(`Creating ${missingPrefs.length} missing preferences for language ${language}`)
+      
+      const { error: insertError } = await supabase
+        .from('user_trigger_word_preferences')
+        .insert(missingPrefs)
+
+      if (insertError) {
+        console.error('Error inserting missing preferences:', insertError)
+        return false
+      }
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error in ensureAllPreferencesExist:', error)
     return false
   }
 }
