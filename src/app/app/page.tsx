@@ -176,7 +176,7 @@ function AppContent() {
     try {
       const [words, categories] = await Promise.all([
         getUserCustomWords(),
-        getAvailableCategoriesV2()
+        getAvailableCategoriesV2(currentLanguage)
       ])
       setUserWords(words)
       setAvailableCategories(categories)
@@ -866,6 +866,9 @@ function AppContent() {
                     setCheckedMainCategories(mainCats)
                     setCheckedSubCategories(subCats)
                     setCheckedWords(wordChecks)
+                    
+                    // Reload user words and categories for the new language
+                    await loadUserWords()
                   } catch (error) {
                     console.error('Error loading trigger words for new language:', error)
                   }

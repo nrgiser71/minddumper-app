@@ -287,8 +287,9 @@ export async function updateWordPreference(systemWordId: string, enabled: boolea
 }
 
 // Get available categories for user custom words
-export async function getAvailableCategoriesV2() {
+export async function getAvailableCategoriesV2(language: string = 'nl') {
   try {
+    // Get categories that have system words in the specified language
     const { data, error } = await supabase
       .from('sub_categories')
       .select(`
@@ -297,9 +298,14 @@ export async function getAvailableCategoriesV2() {
         main_category:main_categories(
           id,
           name
+        ),
+        system_trigger_words!inner(
+          language
         )
       `)
       .eq('is_active', true)
+      .eq('system_trigger_words.language', language)
+      .eq('system_trigger_words.is_active', true)
 
     if (error || !data) {
       console.error('Error fetching categories:', error)
@@ -307,6 +313,7 @@ export async function getAvailableCategoriesV2() {
     }
 
     const mainCatsMap = new Map()
+    const subCatsMap = new Map() // Track unique subcategories
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const subCats: any = {}
 
@@ -316,6 +323,13 @@ export async function getAvailableCategoriesV2() {
       const mainCatName = (subCat.main_category as any).name
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const mainCatId = (subCat.main_category as any).id
+      const subCatKey = `${mainCatId}-${subCat.id}`
+      
+      // Skip if we've already processed this subcategory
+      if (subCatsMap.has(subCatKey)) {
+        return
+      }
+      subCatsMap.set(subCatKey, true)
       
       mainCatsMap.set(mainCatId, mainCatName)
       
