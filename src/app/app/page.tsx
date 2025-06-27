@@ -308,45 +308,6 @@ function AppContent() {
     }
   }
 
-  const buildCategoryStructure = (words: { main_category?: string; sub_category?: string; word: string; category?: string }[]): CategoryStructure[] => {
-    const structure: Record<string, Record<string, string[]>> = {
-      'Professioneel': {},
-      'Persoonlijk': {}
-    }
-    
-    words.forEach(word => {
-      let mainCat = 'Persoonlijk' // default
-      let subCat = word.category || 'Algemeen'
-      
-      // Check if category contains main category info (format: "MainCategory|SubCategory")
-      if (word.category && word.category.includes('|')) {
-        const [main, sub] = word.category.split('|')
-        mainCat = main
-        subCat = sub
-      } else {
-        // Fallback for old data - keep existing subcategory name
-        subCat = word.category || 'Algemeen'
-      }
-      
-      if (!structure[mainCat][subCat]) {
-        structure[mainCat][subCat] = []
-      }
-      structure[mainCat][subCat].push(word.word)
-    })
-    
-    // Filter out empty main categories and sort
-    return Object.entries(structure)
-      .filter(([, subCategories]) => Object.keys(subCategories).length > 0)
-      .map(([mainCategory, subCategories]) => ({
-        mainCategory,
-        subCategories: Object.entries(subCategories)
-          .sort(([a], [b]) => a.localeCompare(b))
-          .map(([name, words]) => ({
-            name,
-            words: words.sort()
-          }))
-      }))
-  }
 
   const handleMainCategoryCheck = (mainCategory: string, checked: boolean) => {
     setCheckedMainCategories(prev => ({ ...prev, [mainCategory]: checked }))
@@ -873,29 +834,67 @@ function AppContent() {
                     const words = await getTriggerWordsList(newLanguage)
                     setConfigTriggerWords(words)
                     
-                    // Load structured data for new language
-                    const structuredWords = await getTriggerWords(newLanguage)
-                    const structure = buildCategoryStructure(structuredWords)
+                    // Load structured data for new language WITH user preferences
+                    const { categories } = await getStructuredTriggerWords(newLanguage)
+                    
+                    // Build legacy structure for existing UI
+                    const structure: CategoryStructure[] = categories.map(mainCat => ({
+                      mainCategory: mainCat.name,
+                      subCategories: mainCat.subCategories.map((subCat: StructuredSubCategory) => ({
+                        name: subCat.name,
+                        words: subCat.words.map(w => w.word)
+                      }))
+                    }))
                     setCategoryStructure(structure)
                     
-                    // Initialize all items as checked for new language
+                    // Initialize checkboxes based on user preferences (like loadConfigTriggerWords does)
                     const mainCats: Record<string, boolean> = {}
                     const subCats: Record<string, boolean> = {}
                     const wordChecks: Record<string, boolean> = {}
                     
-                    structure.forEach(mainCat => {
-                      mainCats[mainCat.mainCategory] = true
-                      mainCat.subCategories.forEach((subCat: {name: string, words: string[]}) => {
-                        subCats[`${mainCat.mainCategory}-${subCat.name}`] = true
-                        subCat.words.forEach((word: string) => {
-                          wordChecks[word] = true
+                    categories.forEach(mainCat => {
+                      let mainCatAllEnabled = true
+                      
+                      mainCat.subCategories.forEach((subCat: StructuredSubCategory) => {
+                        let subCatAllEnabled = true
+                        
+                        subCat.words.forEach((word: {id: string, word: string, enabled: boolean}) => {
+                          wordChecks[word.word] = word.enabled
+                          if (!word.enabled) {
+                            subCatAllEnabled = false
+                            mainCatAllEnabled = false
+                          }
                         })
+                        
+                        subCats[`${mainCat.name}-${subCat.name}`] = subCatAllEnabled
                       })
+                      
+                      mainCats[mainCat.name] = mainCatAllEnabled
                     })
                     
                     setCheckedMainCategories(mainCats)
                     setCheckedSubCategories(subCats)
                     setCheckedWords(wordChecks)
+                    
+                    // Store full structured data for saving preferences
+                    const allWords = categories.flatMap(mainCat => 
+                      mainCat.subCategories.flatMap(subCat => 
+                        subCat.words.map(word => ({
+                          id: word.id,
+                          word: word.word,
+                          main_category: mainCat.name,
+                          sub_category: subCat.name,
+                          category: `${mainCat.name} - ${subCat.name}`,
+                          main_category_order: mainCat.display_order,
+                          sub_category_order: subCat.display_order,
+                          sort_order: 0,
+                          is_active: true,
+                          created_at: new Date().toISOString(),
+                          language: newLanguage
+                        }))
+                      )
+                    )
+                    setTriggerWordsData(allWords)
                     
                     // Reset form fields for new language
                     setNewWordText('')
