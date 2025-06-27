@@ -200,18 +200,19 @@ function AppContent() {
     setHistoryLoading(false)
   }
 
-  const loadUserWords = async () => {
+  const loadUserWords = async (language?: Language) => {
     setUserWordsLoading(true)
+    const targetLanguage = language || currentLanguage
     try {
       const [words, categories] = await Promise.all([
         getUserCustomWords(),
-        getAvailableCategoriesV2(currentLanguage)
+        getAvailableCategoriesV2(targetLanguage)
       ])
       setUserWords(words)
       setAvailableCategories(categories)
       
-      // Set default categories if empty
-      if (!newWordMainCategory && categories.mainCategories.length > 0) {
+      // Set default categories (always reset when language changes)
+      if (categories.mainCategories.length > 0) {
         setNewWordMainCategory(categories.mainCategories[0])
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if ((categories.subCategories as any)[categories.mainCategories[0]]?.length > 0) {
@@ -896,8 +897,14 @@ function AppContent() {
                     setCheckedSubCategories(subCats)
                     setCheckedWords(wordChecks)
                     
+                    // Reset form fields for new language
+                    setNewWordText('')
+                    setNewWordMainCategory('')
+                    setNewWordSubCategory('')
+                    setEditingWordId(null)
+                    
                     // Reload user words and categories for the new language
-                    await loadUserWords()
+                    await loadUserWords(newLanguage)
                   } catch (error) {
                     console.error('Error loading trigger words for new language:', error)
                   }
@@ -1020,7 +1027,7 @@ function AppContent() {
                           <div className="user-word-info">
                             <span className="user-word-text">{word.word}</span>
                             <span className="user-word-category">
-                              {word.sub_category?.main_category.name} › {word.sub_category?.name}
+                              {translateCategory(word.sub_category?.main_category.name || '', currentLanguage)} › {word.sub_category?.name}
                             </span>
                           </div>
                           <div className="user-word-actions">
