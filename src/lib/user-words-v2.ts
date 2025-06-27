@@ -18,8 +18,8 @@ export interface UserCustomWord {
   updated_at: string
 }
 
-// Get user's custom trigger words
-export async function getUserCustomWords(): Promise<UserCustomWord[]> {
+// Get user's custom trigger words for a specific language
+export async function getUserCustomWords(language: string = 'nl'): Promise<UserCustomWord[]> {
   try {
     const { data: user } = await supabase.auth.getUser()
     if (!user.user) {
@@ -40,6 +40,7 @@ export async function getUserCustomWords(): Promise<UserCustomWord[]> {
         )
       `)
       .eq('user_id', user.user.id)
+      .eq('language', language)
       .eq('is_active', true)
       .order('created_at', { ascending: false })
 
@@ -56,7 +57,7 @@ export async function getUserCustomWords(): Promise<UserCustomWord[]> {
 }
 
 // Add new user custom word
-export async function addUserCustomWord(word: string, subCategoryId: string): Promise<{ success: boolean; error?: string }> {
+export async function addUserCustomWord(word: string, subCategoryId: string, language: string): Promise<{ success: boolean; error?: string }> {
   try {
     const { data: user } = await supabase.auth.getUser()
     if (!user.user) {
@@ -69,6 +70,7 @@ export async function addUserCustomWord(word: string, subCategoryId: string): Pr
         user_id: user.user.id,
         word: word.trim(),
         sub_category_id: subCategoryId,
+        language: language,
         is_active: true
       })
 
@@ -88,7 +90,7 @@ export async function addUserCustomWord(word: string, subCategoryId: string): Pr
 }
 
 // Update user custom word
-export async function updateUserCustomWord(id: string, word: string, subCategoryId: string): Promise<{ success: boolean; error?: string }> {
+export async function updateUserCustomWord(id: string, word: string, subCategoryId: string, language: string): Promise<{ success: boolean; error?: string }> {
   try {
     const { data: user } = await supabase.auth.getUser()
     if (!user.user) {
@@ -100,6 +102,7 @@ export async function updateUserCustomWord(id: string, word: string, subCategory
       .update({
         word: word.trim(),
         sub_category_id: subCategoryId,
+        language: language,
         updated_at: new Date().toISOString()
       })
       .eq('id', id)

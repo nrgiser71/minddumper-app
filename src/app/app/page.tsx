@@ -205,7 +205,7 @@ function AppContent() {
     const targetLanguage = language || currentLanguage
     try {
       const [words, categories] = await Promise.all([
-        getUserCustomWords(),
+        getUserCustomWords(targetLanguage),
         getAvailableCategoriesV2(targetLanguage)
       ])
       setUserWords(words)
@@ -240,7 +240,7 @@ function AppContent() {
       return
     }
 
-    const result = await addUserCustomWord(newWordText, subCat.id)
+    const result = await addUserCustomWord(newWordText, subCat.id, currentLanguage)
     if (result.success) {
       setNewWordText('')
       showToast('Woord toegevoegd!', 'success')
@@ -272,7 +272,7 @@ function AppContent() {
       return
     }
 
-    const result = await updateUserCustomWord(editingWordId, newWordText, subCat.id)
+    const result = await updateUserCustomWord(editingWordId, newWordText, subCat.id, currentLanguage)
     if (result.success) {
       setEditingWordId(null)
       setNewWordText('')
