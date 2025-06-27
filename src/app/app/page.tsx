@@ -421,7 +421,25 @@ function AppContent() {
         console.log('Bulk save results:', result)
         showToast('Voorkeuren opgeslagen!', 'success')
       } else {
-        throw new Error(result.error)
+        // Handle detailed error information
+        console.error('Error saving preferences:', result)
+        
+        let errorMessage = 'Fout bij opslaan van voorkeuren'
+        
+        if (result.details) {
+          errorMessage += ': ' + result.details
+        } else if (result.error) {
+          errorMessage += ': ' + result.error
+        }
+        
+        // Log failed data for debugging if available
+        if (result.failedData && result.failedData.length > 0) {
+          console.error('Failed to save preferences for:', result.failedData)
+          errorMessage += ` (${result.failedData.length} items failed)`
+        }
+        
+        showToast(errorMessage, 'error')
+        return
       }
     } catch (error) {
       console.error('Error saving preferences:', error)
