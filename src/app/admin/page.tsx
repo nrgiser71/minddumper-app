@@ -52,13 +52,25 @@ export default function AdminPage() {
 
   return (
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', fontFamily: 'system-ui' }}>
-      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between' }}>
+      <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <Link href="/app" style={{ color: '#007AFF', textDecoration: 'none' }}>
           ← Terug naar app
         </Link>
-        <Link href="/admin/reorganize" style={{ color: '#007AFF', textDecoration: 'none' }}>
-          📁 Categorieën reorganiseren →
-        </Link>
+        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+          <Link href="/admin/dashboard" style={{ 
+            color: 'white', 
+            textDecoration: 'none',
+            backgroundColor: '#007AFF',
+            padding: '0.5rem 1rem',
+            borderRadius: '6px',
+            fontWeight: 'bold'
+          }}>
+            📊 Dashboard
+          </Link>
+          <Link href="/admin/reorganize" style={{ color: '#007AFF', textDecoration: 'none' }}>
+            📁 Categorieën reorganiseren →
+          </Link>
+        </div>
       </div>
 
       <h1 style={{ marginBottom: '2rem' }}>Triggerwoorden Beheer</h1>
