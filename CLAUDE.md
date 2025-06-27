@@ -1,8 +1,8 @@
 # MindDumper App - Claude Development Notes
 
-## Project Status: COMPLETE ✅
+## Project Status: Admin Dashboard COMPLETE ✅ - Payment Integration PENDING 🚧
 
-Het MindDumper project is succesvol afgerond met alle gevraagde functionaliteiten geïmplementeerd.
+Het MindDumper project basis functionaliteiten zijn succesvol afgerond. Admin dashboard geïmplementeerd. **Volgende fase: Stripe Payment Integration voor betaalde toegang.**
 
 ## Belangrijke Opdrachten
 
@@ -455,3 +455,248 @@ verifyAdminSessionFromRequest() → Cookie validation → API access
 - **`/api/admin/stats`**: Comprehensive dashboard statistics
 - **Protected routes**: Automatic session verification
 - **Service role queries**: Full database access voor analytics
+
+---
+
+# 🚧 VOLGENDE FASE: Stripe Payment Integration
+
+## Overzicht Stripe Implementation
+Het doel is om van MindDumper een **betaalde service** te maken waarbij gebruikers moeten betalen voordat ze kunnen registreren. Huidige gratis signup wordt vervangen door een Stripe checkout proces.
+
+## 🎯 Key Requirements
+
+### 1. Configureerbare Pricing
+```bash
+# Environment Variables voor flexibele pricing
+PRODUCT_PRICE_EUROS=12                    # Hoofdprijs (aanpasbaar)
+PRODUCT_PRICE_CENTS=1200                  # Stripe amount in cents
+PRODUCT_CURRENCY=EUR
+PRODUCT_NAME="MindDumper Lifetime Access"
+PRODUCT_DESCRIPTION="Brain dump tool met triggerwoorden in 5 talen"
+
+# Voordelen: Prijs aanpassen zonder code deployment
+```
+
+### 2. Complete Billing Information
+```typescript
+// Checkout form requirements:
+interface CheckoutForm {
+  // Personal/Company Info
+  email: string
+  fullName: string
+  companyName?: string        // Optioneel voor particulieren
+  
+  // Address Information (VERPLICHT)
+  address: {
+    line1: string            // Straat + huisnummer
+    line2?: string           // Toevoeging
+    city: string
+    postalCode: string
+    country: string          // Dropdown
+    state?: string           // Voor niet-EU
+  }
+  
+  // Business Information
+  customerType: 'private' | 'business'
+  vatNumber?: string         // Verplicht voor bedrijven
+  newsletter: boolean        // Marketing opt-in
+}
+```
+
+### 3. BTW & Compliance
+- **BTW-nummer validatie**: EU VIES API integration
+- **Tax calculation**: Correct BTW handling voor EU/non-EU
+- **Invoice generation**: PDF facturen met alle billing details
+- **GDPR compliance**: Data retention en export functionality
+
+## 🏗️ Technical Architecture
+
+### Database Schema Uitbreiding
+```sql
+-- Extend profiles table
+ALTER TABLE profiles ADD COLUMNS:
+  -- Stripe & Payment
+  stripe_customer_id TEXT
+  stripe_payment_intent_id TEXT  
+  payment_status TEXT DEFAULT 'pending'
+  paid_at TIMESTAMP
+  amount_paid_cents INTEGER
+  currency TEXT DEFAULT 'EUR'
+  
+  -- Customer Information
+  customer_type TEXT DEFAULT 'private'
+  company_name TEXT
+  
+  -- Billing Address
+  billing_address_line1 TEXT
+  billing_address_line2 TEXT
+  billing_city TEXT
+  billing_postal_code TEXT
+  billing_country TEXT
+  billing_state TEXT
+  
+  -- Business Information
+  vat_number TEXT
+  vat_validated BOOLEAN DEFAULT false
+  
+  -- Marketing
+  newsletter_opted_in BOOLEAN DEFAULT false
+```
+
+### New Dependencies
+```bash
+npm install stripe @stripe/stripe-js
+npm install --save-dev @types/stripe
+```
+
+### Environment Variables
+```bash
+# Stripe Configuration
+STRIPE_SECRET_KEY=sk_...
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+# Pricing (configurable)
+PRODUCT_PRICE_EUROS=12
+PRODUCT_PRICE_CENTS=1200
+PRODUCT_CURRENCY=EUR
+PRODUCT_NAME="MindDumper Lifetime Access"
+
+# VAT Configuration
+VAT_RATE_PERCENTAGE=21
+VAT_INCLUDED_IN_PRICE=true
+```
+
+## 📁 Files to Create/Modify
+
+### New Files
+```
+/src/app/checkout/page.tsx              # Complete billing form
+/src/components/checkout-form.tsx       # Reusable form component
+/src/app/success/page.tsx               # Payment success page
+/src/app/api/stripe/checkout/route.ts   # Create Stripe session
+/src/app/api/stripe/webhook/route.ts    # Handle payment events
+/src/app/api/validate-vat/route.ts      # BTW-nummer validatie
+/src/lib/stripe.ts                      # Stripe configuration
+/src/lib/pricing.ts                     # Centralized pricing logic
+/src/lib/vat-validation.ts              # BTW validatie utilities
+/src/lib/address-validation.ts          # Adres validatie
+```
+
+### Modified Files
+```
+/src/app/auth/signup/page.tsx           # Redirect naar checkout
+/src/app/page.tsx                       # Dynamic price display
+/src/lib/supabase.ts                    # Payment-related types
+/src/app/app/page.tsx                   # Payment verification
+/src/components/protected-route.tsx     # Payment status check
+```
+
+## 🔄 Payment Flow
+
+### User Journey
+```
+1. Landing Page → "🔥 Koop Nu - €{PRICE}" (dynamic)
+2. Checkout Form → Email, naam, adres, BTW (if business)
+3. Stripe Payment → Secure card processing
+4. Webhook → Automatic account creation
+5. Success Page → Login credentials via email
+6. App Access → Direct naar protected app
+```
+
+### Technical Flow
+```typescript
+// Checkout Process
+User Input → Form Validation → Stripe Session → Payment → Webhook → Account Creation
+
+// Webhook Handler
+payment_intent.succeeded → 
+  Extract billing data → 
+  Create Supabase user → 
+  Send welcome email → 
+  Update payment status
+```
+
+## 🛡️ Security & Validation
+
+### Payment Security
+- **Webhook signature verification** via STRIPE_WEBHOOK_SECRET
+- **Amount validation**: Exact price matching
+- **Duplicate prevention**: Idempotency keys
+- **Customer validation**: Email + billing verification
+
+### Data Protection
+- **GDPR compliance**: Data retention policies
+- **Secure storage**: Encrypted billing information
+- **Access control**: Payment status based app access
+
+## 📊 Admin Dashboard Integration
+
+### Enhanced Analytics
+```typescript
+// New payment metrics in admin dashboard
+interface PaymentAnalytics {
+  totalRevenue: number
+  customerBreakdown: {
+    private: number
+    business: number
+  }
+  geographicDistribution: Record<string, number>
+  vatCollected: number
+  conversionRate: number
+}
+```
+
+### Customer Management
+- **Payment status overview**: Paid/pending/failed customers
+- **Billing information**: Complete customer details
+- **Revenue tracking**: Real-time payment analytics
+- **Refund handling**: Customer support tools
+
+## 🎯 Implementation Roadmap
+
+### Phase 1: Core Payment System
+1. **Setup Stripe integration** met configureerbare pricing
+2. **Create checkout form** met complete billing info
+3. **Implement webhook handler** voor account creation
+4. **Update protected routes** met payment verification
+5. **Test payment flow** end-to-end
+
+### Phase 2: Advanced Features
+1. **BTW-nummer validatie** via EU VIES API
+2. **Tax calculation logic** voor verschillende landen
+3. **Invoice generation** systeem (PDF)
+4. **Admin payment dashboard** integration
+5. **Customer support tools**
+
+### Phase 3: Optimization
+1. **A/B testing** voor pricing optimization
+2. **Conversion tracking** en analytics
+3. **Regional pricing** support
+4. **Promotional discount** systeem
+5. **Subscription upgrade** paths (future)
+
+## 💡 Strategic Benefits
+
+### Business Flexibility
+- **Dynamic pricing**: Test different price points zonder deployment
+- **Market adaptation**: Easy regional pricing adjustments
+- **Promotional campaigns**: Instant discount activation
+- **Revenue optimization**: Data-driven pricing decisions
+
+### Customer Experience
+- **Professional checkout**: Complete billing information collection
+- **Instant access**: Automatic account creation na payment
+- **Legal compliance**: Proper invoicing en BTW handling
+- **Trust building**: Secure Stripe payment processing
+
+### Technical Advantages
+- **Scalable architecture**: Ready voor volume growth
+- **Compliance ready**: GDPR, BTW, invoice requirements
+- **Admin visibility**: Complete payment en customer analytics
+- **Future proof**: Easy expansion naar subscriptions
+
+---
+
+**Status**: Planning compleet - Klaar voor implementatie 🚀
+**Next Session**: Begin met Stripe setup en checkout form development
