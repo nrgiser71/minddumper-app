@@ -26,9 +26,7 @@ export async function POST(request: NextRequest) {
       existingPrefs?.map(p => [p.system_word_id, p.is_enabled]) || []
     )
 
-    // Prepare bulk operations
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const toInsert: any[] = []
+    // Prepare bulk operations (using upsert for all changes)
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const toUpdate: any[] = []
     
@@ -44,8 +42,8 @@ export async function POST(request: NextRequest) {
           })
         }
       } else {
-        // Insert new preference (always insert explicit preferences)
-        toInsert.push({
+        // Insert new preference (only if it doesn't exist)
+        toUpdate.push({
           user_id: userId,
           system_word_id: systemWordId,
           is_enabled: isEnabled,
@@ -55,48 +53,31 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Execute bulk operations
+    // Execute bulk operations using upsert for all changes
     const results = []
     
-    if (toInsert.length > 0) {
-      const { error: insertError } = await supabase
-        .from('user_trigger_word_preferences')
-        .insert(toInsert)
-      
-      if (insertError) {
-        console.error('Bulk insert error:', insertError)
-        console.error('Failed to insert:', toInsert)
-        return NextResponse.json({ 
-          error: 'Insert failed', 
-          details: insertError,
-          failedData: toInsert.length > 5 ? `${toInsert.length} items` : toInsert
-        }, { status: 500 })
-      }
-      results.push(`Inserted ${toInsert.length} preferences`)
-    }
-
     if (toUpdate.length > 0) {
-      // Use upsert for updates
-      const { error: updateError } = await supabase
+      // Use upsert for all operations (handles both insert and update)
+      const { error: upsertError } = await supabase
         .from('user_trigger_word_preferences')
         .upsert(toUpdate, { onConflict: 'user_id,system_word_id' })
       
-      if (updateError) {
-        console.error('Bulk update error:', updateError)
-        console.error('Failed to update:', toUpdate)
+      if (upsertError) {
+        console.error('Bulk upsert error:', upsertError)
+        console.error('Failed to upsert:', toUpdate)
         return NextResponse.json({ 
-          error: 'Update failed', 
-          details: updateError,
+          error: 'Upsert failed', 
+          details: upsertError,
           failedData: toUpdate.length > 5 ? `${toUpdate.length} items` : toUpdate
         }, { status: 500 })
       }
-      results.push(`Updated ${toUpdate.length} preferences`)
+      results.push(`Upserted ${toUpdate.length} preferences`)
     }
 
     return NextResponse.json({
       success: true,
       results,
-      total_processed: toInsert.length + toUpdate.length
+      total_processed: toUpdate.length
     })
 
   } catch (error) {
