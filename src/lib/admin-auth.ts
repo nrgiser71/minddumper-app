@@ -29,7 +29,7 @@ export async function createAdminSession(): Promise<string> {
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     maxAge: 4 * 60 * 60, // 4 hours
-    path: '/admin'
+    path: '/'
   })
   
   return sessionData
