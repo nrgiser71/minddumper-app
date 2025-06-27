@@ -66,7 +66,7 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
         created_at: word.created_at
       }))
 
-    // Add user custom words
+    // Add user custom words (filtered by language)
     const { data: customWords } = await supabase
       .from('user_custom_trigger_words')
       .select(`
@@ -85,6 +85,7 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
         )
       `)
       .eq('user_id', user.user.id)
+      .eq('language', language)
       .eq('is_active', true)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -183,11 +184,12 @@ export async function getTriggerWordsList(language: string): Promise<string[]> {
       .filter(word => !disabledWordIds.has(word.id))
       .map(word => word.word)
 
-    // Get user custom words
+    // Get user custom words (filtered by language)
     const { data: customWords } = await supabase
       .from('user_custom_trigger_words')
       .select('word')
       .eq('user_id', user.user.id)
+      .eq('language', language)
       .eq('is_active', true)
 
     const customWordsList = customWords?.map(w => w.word) || []

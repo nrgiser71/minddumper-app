@@ -73,7 +73,7 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
         return isEnabled
       })
 
-    // Get user custom words with full structure
+    // Get user custom words with full structure (filtered by language)
     const { data: customWords } = await supabase
       .from('user_custom_trigger_words')
       .select(`
@@ -90,6 +90,7 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
         )
       `)
       .eq('user_id', user.user.id)
+      .eq('language', language)
       .eq('is_active', true)
 
     // Combine all words with their structure

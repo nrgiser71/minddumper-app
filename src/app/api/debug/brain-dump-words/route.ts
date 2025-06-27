@@ -40,7 +40,7 @@ export async function GET() {
       .select('system_word_id, is_enabled')
       .eq('user_id', userId)
 
-    // Get custom words
+    // Get custom words (filtered by language, matching Dutch system words)
     const { data: customWords } = await supabase
       .from('user_custom_trigger_words')
       .select(`
@@ -53,6 +53,7 @@ export async function GET() {
         )
       `)
       .eq('user_id', userId)
+      .eq('language', 'nl')
       .eq('is_active', true)
 
     const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
