@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
       existingPrefs?.map(p => [p.system_word_id, p.is_enabled]) || []
     )
 
-    // Prepare bulk operations (using upsert for all changes)
+    // Prepare bulk operations (separate insert and update)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const toInsert: any[] = []
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const toUpdate: any[] = []
     
@@ -39,12 +41,11 @@ export async function POST(request: NextRequest) {
             system_word_id: systemWordId,
             is_enabled: isEnabled,
             updated_at: new Date().toISOString()
-            // Don't include created_at for updates
           })
         }
       } else {
         // Insert new preference
-        toUpdate.push({
+        toInsert.push({
           user_id: userId,
           system_word_id: systemWordId,
           is_enabled: isEnabled,
@@ -54,31 +55,64 @@ export async function POST(request: NextRequest) {
       }
     })
 
-    // Execute bulk operations using upsert for all changes
+    // Execute bulk operations
     const results = []
     
-    if (toUpdate.length > 0) {
-      // Use upsert for all operations (handles both insert and update)
-      const { error: upsertError } = await supabase
+    if (toInsert.length > 0) {
+      // Use insert for new preferences with ignoreDuplicates to handle race conditions
+      const { error: insertError } = await supabase
         .from('user_trigger_word_preferences')
-        .upsert(toUpdate, { onConflict: 'user_id,system_word_id' })
+        .insert(toInsert)
+        .select()
       
-      if (upsertError) {
-        console.error('Bulk upsert error:', upsertError)
-        console.error('Failed to upsert:', toUpdate)
-        return NextResponse.json({ 
-          error: 'Upsert failed', 
-          details: upsertError,
-          failedData: toUpdate.length > 5 ? `${toUpdate.length} items` : toUpdate
-        }, { status: 500 })
+      if (insertError) {
+        // If insert fails due to duplicates, try upsert instead
+        console.log('Insert failed, trying upsert:', insertError.code)
+        const { error: upsertError } = await supabase
+          .from('user_trigger_word_preferences')
+          .upsert(toInsert, { onConflict: 'user_id,system_word_id' })
+        
+        if (upsertError) {
+          console.error('Bulk insert/upsert error:', upsertError)
+          console.error('Failed to insert:', toInsert)
+          return NextResponse.json({ 
+            error: 'Insert failed', 
+            details: upsertError,
+            failedData: toInsert.length > 5 ? `${toInsert.length} items` : toInsert
+          }, { status: 500 })
+        }
+        results.push(`Upserted ${toInsert.length} preferences`)
+      } else {
+        results.push(`Inserted ${toInsert.length} preferences`)
       }
-      results.push(`Upserted ${toUpdate.length} preferences`)
+    }
+
+    if (toUpdate.length > 0) {
+      // Process updates one by one to avoid bulk update issues
+      let updateCount = 0
+      for (const updateItem of toUpdate) {
+        const { error: updateError } = await supabase
+          .from('user_trigger_word_preferences')
+          .update({
+            is_enabled: updateItem.is_enabled,
+            updated_at: updateItem.updated_at
+          })
+          .eq('user_id', updateItem.user_id)
+          .eq('system_word_id', updateItem.system_word_id)
+        
+        if (updateError) {
+          console.error('Update error for item:', updateItem, updateError)
+        } else {
+          updateCount++
+        }
+      }
+      results.push(`Updated ${updateCount} preferences`)
     }
 
     return NextResponse.json({
       success: true,
       results,
-      total_processed: toUpdate.length
+      total_processed: toInsert.length + toUpdate.length
     })
 
   } catch (error) {
