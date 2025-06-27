@@ -87,25 +87,24 @@ export async function POST(request: NextRequest) {
     }
 
     if (toUpdate.length > 0) {
-      // Process updates one by one to avoid bulk update issues
-      let updateCount = 0
-      for (const updateItem of toUpdate) {
-        const { error: updateError } = await supabase
-          .from('user_trigger_word_preferences')
-          .update({
-            is_enabled: updateItem.is_enabled,
-            updated_at: updateItem.updated_at
-          })
-          .eq('user_id', updateItem.user_id)
-          .eq('system_word_id', updateItem.system_word_id)
-        
-        if (updateError) {
-          console.error('Update error for item:', updateItem, updateError)
-        } else {
-          updateCount++
-        }
+      // Use bulk upsert for updates - much faster than individual updates
+      const { error: updateError } = await supabase
+        .from('user_trigger_word_preferences')
+        .upsert(toUpdate, { 
+          onConflict: 'user_id,system_word_id',
+          ignoreDuplicates: false 
+        })
+      
+      if (updateError) {
+        console.error('Bulk update error:', updateError)
+        console.error('Failed to update:', toUpdate)
+        return NextResponse.json({ 
+          error: 'Update failed', 
+          details: updateError,
+          failedData: toUpdate.length > 5 ? `${toUpdate.length} items` : toUpdate
+        }, { status: 500 })
       }
-      results.push(`Updated ${updateCount} preferences`)
+      results.push(`Updated ${toUpdate.length} preferences`)
     }
 
     return NextResponse.json({
