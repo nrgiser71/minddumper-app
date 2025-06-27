@@ -65,7 +65,12 @@ export async function POST(request: NextRequest) {
       
       if (insertError) {
         console.error('Bulk insert error:', insertError)
-        return NextResponse.json({ error: 'Insert failed' }, { status: 500 })
+        console.error('Failed to insert:', toInsert)
+        return NextResponse.json({ 
+          error: 'Insert failed', 
+          details: insertError,
+          failedData: toInsert.length > 5 ? `${toInsert.length} items` : toInsert
+        }, { status: 500 })
       }
       results.push(`Inserted ${toInsert.length} preferences`)
     }
@@ -78,7 +83,12 @@ export async function POST(request: NextRequest) {
       
       if (updateError) {
         console.error('Bulk update error:', updateError)
-        return NextResponse.json({ error: 'Update failed' }, { status: 500 })
+        console.error('Failed to update:', toUpdate)
+        return NextResponse.json({ 
+          error: 'Update failed', 
+          details: updateError,
+          failedData: toUpdate.length > 5 ? `${toUpdate.length} items` : toUpdate
+        }, { status: 500 })
       }
       results.push(`Updated ${toUpdate.length} preferences`)
     }
