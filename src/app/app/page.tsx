@@ -16,6 +16,30 @@ import '../app.css'
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
 type Screen = 'home' | 'language' | 'minddump' | 'finish' | 'config' | 'history'
 
+// Category name translations
+const categoryTranslations = {
+  'nl': {
+    'Professioneel': 'Professioneel',
+    'Persoonlijk': 'Persoonlijk'
+  },
+  'en': {
+    'Professioneel': 'Professional',
+    'Persoonlijk': 'Personal'
+  },
+  'de': {
+    'Professioneel': 'Beruflich',
+    'Persoonlijk': 'Persönlich'
+  },
+  'fr': {
+    'Professioneel': 'Professionnel',
+    'Persoonlijk': 'Personnel'
+  },
+  'es': {
+    'Professioneel': 'Profesional',
+    'Persoonlijk': 'Personal'
+  }
+}
+
 interface CategoryStructure {
   mainCategory: string
   subCategories: {
@@ -33,6 +57,11 @@ interface StructuredSubCategory {
     word: string
     enabled: boolean
   }>
+}
+
+// Helper function to translate category names
+const translateCategory = (categoryName: string, language: Language): string => {
+  return categoryTranslations[language]?.[categoryName as keyof typeof categoryTranslations['nl']] || categoryName
 }
 
 function AppContent() {
@@ -716,7 +745,7 @@ function AppContent() {
               <div className="category-hierarchy">
                 {mainCategory && (
                   <div className="main-category-display">
-                    {mainCategory}
+                    {translateCategory(mainCategory, currentLanguage)}
                   </div>
                 )}
                 {subCategory && (
@@ -906,7 +935,7 @@ function AppContent() {
                             onChange={(e) => handleMainCategoryCheck(mainCategory.mainCategory, e.target.checked)}
                           />
                           <label htmlFor={`main-${mainIndex}`} className="main-category-label">
-                            <strong>{mainCategory.mainCategory}</strong>
+                            <strong>{translateCategory(mainCategory.mainCategory, currentLanguage)}</strong>
                           </label>
                         </div>
                         
@@ -1045,7 +1074,7 @@ function AppContent() {
                           >
                             <option value="">Hoofdcategorie...</option>
                             {availableCategories.mainCategories.map(cat => (
-                              <option key={cat} value={cat}>{cat}</option>
+                              <option key={cat} value={cat}>{translateCategory(cat, currentLanguage)}</option>
                             ))}
                           </select>
                           
