@@ -39,10 +39,11 @@ export async function POST(request: NextRequest) {
             system_word_id: systemWordId,
             is_enabled: isEnabled,
             updated_at: new Date().toISOString()
+            // Don't include created_at for updates
           })
         }
       } else {
-        // Insert new preference (only if it doesn't exist)
+        // Insert new preference
         toUpdate.push({
           user_id: userId,
           system_word_id: systemWordId,
