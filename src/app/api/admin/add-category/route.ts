@@ -18,7 +18,7 @@ export async function POST(request: Request) {
       }, { status: 400 })
     }
 
-    console.log(`🚀 Adding category: ${mainCategory} > ${subCategory}`)
+    // Adding category
 
     // Split comma-separated words and clean them up
     const wordList = words
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       .map((word: string) => word.trim())
       .filter((word: string) => word.length > 0)
 
-    console.log(`📝 Processing ${wordList.length} words:`, wordList)
+    // Processing words
 
     let successCount = 0
     let errorCount = 0
@@ -43,15 +43,15 @@ export async function POST(request: Request) {
         })
 
       if (error) {
-        console.error(`❌ Error inserting word "${word}":`, error)
+        // Error inserting word
         errorCount++
       } else {
-        console.log(`✅ Inserted word: "${word}"`)
+        // Inserted word
         successCount++
       }
     }
 
-    console.log(`✅ Category "${subCategory}" completed: ${successCount} success, ${errorCount} errors`)
+    // Category completed
     
     return NextResponse.json({ 
       success: true, 
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
     })
 
   } catch (error) {
-    console.error('❌ Error adding category:', error)
+    // Error adding category
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Onbekende fout' 

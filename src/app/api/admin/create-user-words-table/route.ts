@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function POST() {
   try {
-    console.log('🚀 Creating user_trigger_words table...')
+    // Creating user_trigger_words table
 
     // First check if table exists
     const { data: tables } = await supabase
@@ -19,7 +19,7 @@ export async function POST() {
       .eq('table_name', 'user_trigger_words')
 
     if (tables && tables.length > 0) {
-      console.log('✅ Table user_trigger_words already exists')
+      // Table user_trigger_words already exists
       return NextResponse.json({ 
         success: true, 
         message: 'Table user_trigger_words already exists'
@@ -59,8 +59,7 @@ export async function POST() {
       CREATE INDEX idx_user_trigger_words_active ON public.user_trigger_words(user_id, is_active);
     `
 
-    console.log('📝 SQL for manual execution in Supabase SQL Editor:')
-    console.log(createTableSQL)
+    // SQL for manual execution in Supabase SQL Editor
 
     return NextResponse.json({ 
       success: true, 
@@ -69,7 +68,7 @@ export async function POST() {
     })
 
   } catch (error) {
-    console.error('❌ Error:', error)
+    // Error
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

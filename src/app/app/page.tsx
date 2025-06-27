@@ -182,8 +182,8 @@ function AppContent() {
         )
       )
       setTriggerWordsData(allWords)
-    } catch (error) {
-      console.error('Error loading config trigger words:', error)
+    } catch {
+      // Error loading config trigger words
     }
     setConfigLoading(false)
   }
@@ -193,8 +193,8 @@ function AppContent() {
     try {
       const history = await getBrainDumpHistory()
       setBrainDumpHistory(history)
-    } catch (error) {
-      console.error('Error loading brain dump history:', error)
+    } catch {
+      // Error loading brain dump history
       setBrainDumpHistory([])
     }
     setHistoryLoading(false)
@@ -220,8 +220,8 @@ function AppContent() {
           setNewWordSubCategory((categories.subCategories as any)[categories.mainCategories[0]][0].name)
         }
       }
-    } catch (error) {
-      console.error('Error loading user words:', error)
+    } catch {
+      // Error loading user words
     }
     setUserWordsLoading(false)
   }
@@ -386,8 +386,6 @@ function AppContent() {
 
   const saveWordPreferences = async () => {
     setSavingPreferences(true)
-    console.log('🔍 Starting bulk save preferences...')
-    console.log('triggerWordsData length:', triggerWordsData.length)
     
     try {
       const { data: user } = await supabase.auth.getUser()
@@ -404,8 +402,6 @@ function AppContent() {
         isEnabled: checkedWords[word.word] ?? true
       }))
       
-      console.log('Sending bulk request with', preferences.length, 'preferences')
-      
       const response = await fetch('/api/admin/bulk-preferences', {
         method: 'POST',
         headers: {
@@ -420,11 +416,9 @@ function AppContent() {
       const result = await response.json()
       
       if (result.success) {
-        console.log('Bulk save results:', result)
         showToast('Voorkeuren opgeslagen!', 'success')
       } else {
         // Handle detailed error information
-        console.error('Error saving preferences:', result)
         
         let errorMessage = 'Fout bij opslaan van voorkeuren'
         
@@ -434,9 +428,8 @@ function AppContent() {
           errorMessage += ': ' + result.error
         }
         
-        // Log failed data for debugging if available
+        // Failed data for debugging if available
         if (result.failedData && result.failedData.length > 0) {
-          console.error('Failed to save preferences for:', result.failedData)
           errorMessage += ` (${result.failedData.length} items failed)`
         }
         
@@ -444,7 +437,6 @@ function AppContent() {
         return
       }
     } catch (error) {
-      console.error('Error saving preferences:', error)
       showToast('Fout bij opslaan van voorkeuren: ' + error, 'error')
     }
     setSavingPreferences(false)
@@ -466,8 +458,7 @@ function AppContent() {
       // Also load full data for category display
       const fullWords = await getTriggerWords(language)
       setTriggerWordsData(fullWords)
-    } catch (error) {
-      console.error('Error loading trigger words:', error)
+    } catch {
       // Fallback to empty array, database.ts will handle fallback
       setTriggerWords([])
       setTriggerWordsData([])
@@ -510,8 +501,7 @@ function AppContent() {
         total_words: currentWordIndex,
         duration_minutes: duration
       })
-    } catch (error) {
-      console.error('Error saving brain dump:', error)
+    } catch {
       // Continue anyway - user can still export
     }
     
@@ -519,7 +509,6 @@ function AppContent() {
   }
 
   const exportMindDump = () => {
-    console.log('🔍 Export Debug - allIdeas:', allIdeas)
     // Make sure we only export the plain ideas without any formatting
     const cleanIdeas = allIdeas.map(idea => {
       // If the idea contains semicolons, it might be formatted data - extract just the idea part
@@ -924,8 +913,8 @@ function AppContent() {
                     
                     // Reload user words and categories for the new language
                     await loadUserWords(newLanguage)
-                  } catch (error) {
-                    console.error('Error loading trigger words for new language:', error)
+                  } catch {
+                    // Error loading trigger words for new language
                   }
                   setConfigLoading(false)
                 }}

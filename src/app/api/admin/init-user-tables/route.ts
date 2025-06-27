@@ -8,7 +8,7 @@ const supabase = createClient(
 
 export async function POST() {
   try {
-    console.log('🚀 Initializing user tables...')
+    // Initializing user tables
 
     // Test if user_trigger_words table exists by trying to read from it
     const { error: testError } = await supabase
@@ -17,7 +17,7 @@ export async function POST() {
       .limit(0)
 
     if (!testError) {
-      console.log('✅ user_trigger_words table already exists')
+      // user_trigger_words table already exists
       return NextResponse.json({ 
         success: true, 
         message: 'user_trigger_words table already exists',
@@ -25,7 +25,7 @@ export async function POST() {
       })
     }
 
-    console.log('📋 Creating user_trigger_words table via insert operations...')
+    // Creating user_trigger_words table via insert operations
 
     // Since we can't execute DDL directly, we'll create the table structure
     // by exploiting Supabase's auto-table creation for new collections
@@ -63,7 +63,7 @@ export async function POST() {
 
     if (insertError) {
       // Expected - table doesn't exist
-      console.log('Table creation needed:', insertError.message)
+      // Table creation needed
       
       // Return SQL for manual execution
       return NextResponse.json({ 
@@ -111,7 +111,7 @@ CREATE INDEX idx_user_trigger_words_active ON public.user_trigger_words(user_id,
       .delete()
       .eq('word', '__init_table__')
 
-    console.log('✅ Table created and verified!')
+    // Table created and verified
     
     return NextResponse.json({ 
       success: true, 
@@ -119,7 +119,7 @@ CREATE INDEX idx_user_trigger_words_active ON public.user_trigger_words(user_id,
     })
 
   } catch (error) {
-    console.error('❌ Error initializing tables:', error)
+    // Error initializing tables
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

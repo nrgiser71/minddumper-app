@@ -126,20 +126,20 @@ const triggerWordsData = [
 
 export async function POST() {
   try {
-    console.log('🚀 Importing trigger words from PDFs...')
+    // Importing trigger words from PDFs
 
     // First, clear existing old trigger words
-    console.log('🗑️ Clearing old trigger words...')
+    // Clearing old trigger words
     const { error: deleteError } = await supabase
       .from('trigger_words')
       .delete()
       .neq('id', '00000000-0000-0000-0000-000000000000') // Delete all
 
     if (deleteError) {
-      console.error('Warning: Could not clear old data:', deleteError)
+      // Warning: Could not clear old data
     }
 
-    console.log('📝 Inserting new trigger words...')
+    // Inserting new trigger words
     let successCount = 0
     let errorCount = 0
 
@@ -159,14 +159,14 @@ export async function POST() {
         })
 
       if (error) {
-        console.error(`Error inserting word "${wordData.word}":`, error)
+        // Error inserting word
         errorCount++
       } else {
         successCount++
       }
     }
 
-    console.log('✅ Import completed!')
+    // Import completed
     
     return NextResponse.json({ 
       success: true, 
@@ -181,7 +181,7 @@ export async function POST() {
     })
 
   } catch (error) {
-    console.error('❌ Error importing trigger words:', error)
+    // Error importing trigger words
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

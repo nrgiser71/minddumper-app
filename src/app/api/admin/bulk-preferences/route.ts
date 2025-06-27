@@ -66,14 +66,13 @@ export async function POST(request: NextRequest) {
       
       if (insertError) {
         // If insert fails due to duplicates, try upsert instead
-        console.log('Insert failed, trying upsert:', insertError.code)
+        // Insert failed, trying upsert
         const { error: upsertError } = await supabase
           .from('user_trigger_word_preferences')
           .upsert(toInsert, { onConflict: 'user_id,system_word_id' })
         
         if (upsertError) {
-          console.error('Bulk insert/upsert error:', upsertError)
-          console.error('Failed to insert:', toInsert)
+          // Bulk insert/upsert error
           return NextResponse.json({ 
             error: 'Insert failed', 
             details: upsertError,
@@ -96,8 +95,7 @@ export async function POST(request: NextRequest) {
         })
       
       if (updateError) {
-        console.error('Bulk update error:', updateError)
-        console.error('Failed to update:', toUpdate)
+        // Bulk update error
         return NextResponse.json({ 
           error: 'Update failed', 
           details: updateError,
@@ -114,7 +112,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Bulk preferences error:', error)
+    // Bulk preferences error
     return NextResponse.json({ 
       error: 'Failed to update preferences',
       details: error 

@@ -84,7 +84,7 @@ const triggerWordsData = [
 
 export async function POST() {
   try {
-    console.log('🚀 Importing final correct trigger words structure...')
+    // Importing final correct trigger words structure
 
     let successCount = 0
     let errorCount = 0
@@ -103,7 +103,7 @@ export async function POST() {
           })
 
         if (error) {
-          console.error(`Error inserting word "${word}":`, error)
+          // Error inserting word
           errorCount++
         } else {
           successCount++
@@ -111,7 +111,7 @@ export async function POST() {
       }
     }
 
-    console.log('✅ Final trigger words import completed!')
+    // Final trigger words import completed
     
     // Count by main categories
     const professionalCount = triggerWordsData
@@ -135,7 +135,7 @@ export async function POST() {
     })
 
   } catch (error) {
-    console.error('❌ Error importing final trigger words:', error)
+    // Error importing final trigger words
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

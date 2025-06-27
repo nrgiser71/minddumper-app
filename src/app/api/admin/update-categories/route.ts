@@ -17,7 +17,7 @@ export async function POST(request: Request) {
       }, { status: 400 })
     }
 
-    console.log(`🔧 Updating categories:`, changes)
+    // Updating categories
 
     let updateCount = 0
     let errorCount = 0
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         .eq('language', 'nl')
 
       if (fetchError) {
-        console.error(`Error fetching words for ${subCategory}:`, fetchError)
+        // Error fetching words for category
         errorCount++
         continue
       }
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
         return word.category === subCategory
       }) || []
 
-      console.log(`Found ${matchingWords.length} words in category "${subCategory}"`)
+      // Found words in category
 
       // Update each matching word
       for (const word of matchingWords) {
@@ -57,7 +57,7 @@ export async function POST(request: Request) {
           .eq('id', word.id)
 
         if (updateError) {
-          console.error(`Error updating word:`, updateError)
+          // Error updating word
           errorCount++
         } else {
           updateCount++
@@ -65,7 +65,7 @@ export async function POST(request: Request) {
       }
     }
 
-    console.log(`✅ Updated ${updateCount} words, ${errorCount} errors`)
+    // Updated words
 
     return NextResponse.json({ 
       success: true,
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     })
 
   } catch (error) {
-    console.error('❌ Error updating categories:', error)
+    // Error updating categories
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Onbekende fout' 

@@ -50,7 +50,7 @@ const categoryMapping: Record<string, string> = {
 
 export async function POST() {
   try {
-    console.log('🔧 Fixing category mappings...')
+    // Fixing category mappings
 
     // Get all Dutch words
     const { data: words, error: fetchError } = await supabase
@@ -83,14 +83,14 @@ export async function POST() {
         .eq('id', word.id)
 
       if (updateError) {
-        console.error(`Error updating word ${word.word}:`, updateError)
+        // Error updating word
         errorCount++
       } else {
         updateCount++
       }
     }
 
-    console.log(`✅ Fixed ${updateCount} words, ${errorCount} errors`)
+    // Fixed words
 
     return NextResponse.json({ 
       success: true,
@@ -100,7 +100,7 @@ export async function POST() {
     })
 
   } catch (error) {
-    console.error('❌ Error fixing categories:', error)
+    // Error fixing categories
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

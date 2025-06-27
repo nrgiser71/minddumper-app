@@ -3,11 +3,9 @@ import { supabase, type BrainDump, type TriggerWord } from './supabase'
 // Fetch trigger words for a specific language with hierarchical structure
 export async function getTriggerWords(language: string): Promise<TriggerWord[]> {
   try {
-    console.log(`🔍 Fetching structured trigger words for language: ${language}`)
     
     const { data: user } = await supabase.auth.getUser()
     if (!user.user) {
-      console.log('⚠️ No authenticated user')
       return getMockTriggerWordsStructured(language)
     }
 
@@ -36,7 +34,6 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
       .eq('is_active', true)
 
     if (error) {
-      console.error('❌ Database error in getTriggerWords:', error)
       return getMockTriggerWordsStructured(language)
     }
 
@@ -124,16 +121,13 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
       return aSortOrder - bSortOrder
     })
     
-    console.log(`✅ Found ${triggerWords.length} system + ${customTriggerWords.length} custom = ${sortedWords.length} total structured trigger words`)
     
     if (sortedWords.length === 0) {
-      console.log('⚠️ No structured words found, using fallback')
       return getMockTriggerWordsStructured(language)
     }
     
     return sortedWords
-  } catch (error) {
-    console.error('❌ Error in getTriggerWords:', error)
+  } catch {
     return getMockTriggerWordsStructured(language)
   }
 }
@@ -141,11 +135,9 @@ export async function getTriggerWords(language: string): Promise<TriggerWord[]> 
 // Legacy function for simple word lists (now uses new database structure)
 export async function getTriggerWordsList(language: string): Promise<string[]> {
   try {
-    console.log(`🔍 Fetching trigger words for language: ${language} from new structure`)
     
     const { data: user } = await supabase.auth.getUser()
     if (!user.user) {
-      console.log('⚠️ No authenticated user')
       return ['Werk', 'Familie'] // Fallback
     }
 
@@ -166,7 +158,6 @@ export async function getTriggerWordsList(language: string): Promise<string[]> {
       .eq('is_active', true)
 
     if (systemError) {
-      console.error('❌ Database error:', systemError)
       return ['Werk', 'Familie'] // Fallback
     }
 
@@ -196,16 +187,13 @@ export async function getTriggerWordsList(language: string): Promise<string[]> {
 
     const allWords = [...enabledSystemWords, ...customWordsList]
     
-    console.log(`✅ Found ${enabledSystemWords.length} enabled system + ${customWordsList.length} custom words = ${allWords.length} total`)
     
     if (allWords.length === 0) {
-      console.log('⚠️ No words found, using fallback')
       return ['Werk', 'Familie']
     }
     
     return allWords
-  } catch (error) {
-    console.error('❌ Error in getTriggerWordsList:', error)
+  } catch {
     return ['Werk', 'Familie'] // Fallback
   }
 }
@@ -242,13 +230,11 @@ export async function saveBrainDump(brainDump: {
       .single()
 
     if (error) {
-      console.error('Error saving brain dump:', error)
       return null
     }
 
     return data?.id || null
-  } catch (error) {
-    console.error('Error:', error)
+  } catch {
     return null
   }
 }
@@ -270,13 +256,11 @@ export async function getBrainDumpHistory(): Promise<BrainDump[]> {
       .limit(10)
 
     if (error) {
-      console.error('Error fetching brain dump history:', error)
       return []
     }
 
     return data || []
-  } catch (error) {
-    console.error('Error:', error)
+  } catch {
     return []
   }
 }

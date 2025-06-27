@@ -8,7 +8,7 @@ const supabase = createClient(
 
 export async function GET() {
   try {
-    console.log('📊 Getting all categories...')
+    // Getting all categories
 
     // Get all Dutch words
     const { data: words, error } = await supabase
@@ -53,7 +53,7 @@ export async function GET() {
       words: data.words.sort()
     }))
 
-    console.log(`✅ Found ${categories.length} unique categories`)
+    // Found unique categories
 
     return NextResponse.json({ 
       success: true,
@@ -61,7 +61,7 @@ export async function GET() {
     })
 
   } catch (error) {
-    console.error('❌ Error getting categories:', error)
+    // Error getting categories
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

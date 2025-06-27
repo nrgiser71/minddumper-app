@@ -46,7 +46,7 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
       .eq('is_active', true)
 
     if (systemError) {
-      console.error('Error fetching system words:', systemError)
+      // Failed to fetch system words
       return []
     }
 
@@ -58,18 +58,13 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
 
     const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
 
-    console.log('🔍 Brain Dump Debug Info:')
-    console.log('Total system words:', systemWords?.length || 0)
-    console.log('Total user preferences:', preferences?.length || 0)
-    console.log('User preferences map:', Object.fromEntries(userPrefs))
+    // Debug: Track system words and user preferences
 
     // Filter based on user preferences (default to enabled if no preference)
     const enabledSystemWords = (systemWords || [])
       .filter(word => {
         const isEnabled = userPrefs.get(word.id) ?? true
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const wordData = word as any
-        console.log(`Word "${word.word}" (${wordData.sub_category?.main_category?.name}): ${isEnabled ? 'ENABLED' : 'DISABLED'}`)
+        // Check if word is enabled based on user preferences
         return isEnabled
       })
 
@@ -125,21 +120,11 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
 
     const sortedWords = allWords.map(w => w.word)
 
-    console.log('Final enabled system words:', enabledSystemWords.length)
-    console.log('Final custom words:', customWords?.length || 0)
-    console.log('Total words for brain dump:', sortedWords.length)
-    
-    // Debug: Show the order
-    console.log('🔤 Word order after sorting:')
-    allWords.forEach((word, index) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const w = word as any
-      console.log(`${index + 1}. "${w.word}" - ${w.sub_category?.main_category?.name} > ${w.sub_category?.name}`)
-    })
+    // Words have been sorted by category order and alphabetically
 
     return sortedWords
-  } catch (error) {
-    console.error('Error in getTriggerWordsForBrainDump:', error)
+  } catch {
+    // Error occurred while fetching trigger words
     return []
   }
 }
@@ -173,7 +158,7 @@ export async function getStructuredTriggerWords(language: string) {
       .eq('is_active', true)
 
     if (error) {
-      console.error('Error fetching structured words:', error)
+      // Failed to fetch structured words
       return { categories: [], preferences: {} }
     }
 
@@ -190,10 +175,7 @@ export async function getStructuredTriggerWords(language: string) {
 
     const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
     
-    console.log(`Loading preferences for language ${language}:`)
-    console.log(`- Total system words: ${systemWords?.length || 0}`)
-    console.log(`- User preferences found: ${preferences?.length || 0}`)
-    console.log(`- Missing preferences: ${(systemWords?.length || 0) - (preferences?.length || 0)}`)
+    // Load user preferences for the specified language
 
     // Build hierarchical structure
     type CategoryMapValue = {
@@ -246,10 +228,7 @@ export async function getStructuredTriggerWords(language: string) {
         enabled: isEnabled
       })
       
-      // Log missing preferences for debugging
-      if (!userPrefs.has(word.id)) {
-        console.log(`Missing preference for word "${word.word}" (ID: ${word.id}) - defaulting to enabled`)
-      }
+      // Default to enabled if no user preference exists
     })
 
     // Convert to array and sort
@@ -266,8 +245,8 @@ export async function getStructuredTriggerWords(language: string) {
       }))
 
     return { categories, preferences: userPrefs }
-  } catch (error) {
-    console.error('Error in getStructuredTriggerWords:', error)
+  } catch {
+    // Error occurred while fetching structured trigger words
     return { categories: [], preferences: {} }
   }
 }
@@ -292,13 +271,13 @@ export async function updateWordPreference(systemWordId: string, enabled: boolea
       })
 
     if (error) {
-      console.error('Error updating preference:', error)
+      // Failed to update preference
       return false
     }
 
     return true
-  } catch (error) {
-    console.error('Error in updateWordPreference:', error)
+  } catch {
+    // Error occurred while updating word preference
     return false
   }
 }
@@ -314,7 +293,7 @@ export async function ensureAllPreferencesExist(userId: string, language: string
       .eq('is_active', true)
 
     if (wordsError || !systemWords) {
-      console.error('Error fetching system words:', wordsError)
+      // Failed to fetch system words
       return false
     }
 
@@ -325,7 +304,7 @@ export async function ensureAllPreferencesExist(userId: string, language: string
       .eq('user_id', userId)
 
     if (prefError) {
-      console.error('Error fetching preferences:', prefError)
+      // Failed to fetch user preferences
       return false
     }
 
@@ -343,21 +322,20 @@ export async function ensureAllPreferencesExist(userId: string, language: string
       }))
 
     if (missingPrefs.length > 0) {
-      console.log(`Creating ${missingPrefs.length} missing preferences for language ${language}`)
-      
+      // Create missing preferences with default enabled state
       const { error: insertError } = await supabase
         .from('user_trigger_word_preferences')
         .insert(missingPrefs)
 
       if (insertError) {
-        console.error('Error inserting missing preferences:', insertError)
+        // Failed to insert missing preferences
         return false
       }
     }
 
     return true
-  } catch (error) {
-    console.error('Error in ensureAllPreferencesExist:', error)
+  } catch {
+    // Error occurred while ensuring preferences exist
     return false
   }
 }
@@ -384,7 +362,7 @@ export async function getAvailableCategoriesV2(language: string = 'nl') {
       .eq('system_trigger_words.is_active', true)
 
     if (error || !data) {
-      console.error('Error fetching categories:', error)
+      // Failed to fetch categories
       return { mainCategories: [], subCategories: {} }
     }
 
@@ -423,8 +401,8 @@ export async function getAvailableCategoriesV2(language: string = 'nl') {
       mainCategories: Array.from(mainCatsMap.values()).sort(),
       subCategories: subCats
     }
-  } catch (error) {
-    console.error('Error in getAvailableCategoriesV2:', error)
+  } catch {
+    // Error occurred while fetching available categories
     return { mainCategories: [], subCategories: {} }
   }
 }

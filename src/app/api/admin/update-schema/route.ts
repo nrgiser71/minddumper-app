@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function POST() {
   try {
-    console.log('🔧 Checking database schema for hierarchical structure...')
+    // Checking database schema for hierarchical structure
 
     // Check current schema
     const { data: existingWords, error: fetchError } = await supabase
@@ -25,10 +25,10 @@ export async function POST() {
     const sampleWord = existingWords?.[0]
     const hasHierarchy = sampleWord && 'main_category' in sampleWord
 
-    console.log('Current schema has hierarchy:', hasHierarchy)
+    // Current schema has hierarchy
     
     if (!hasHierarchy) {
-      console.log('⚠️ Schema does not support hierarchy yet')
+      // Schema does not support hierarchy yet
       
       return NextResponse.json({ 
         success: false, 
@@ -51,7 +51,7 @@ export async function POST() {
     })
 
   } catch (error) {
-    console.error('❌ Error checking schema:', error)
+    // Error checking schema
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

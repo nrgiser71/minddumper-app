@@ -8,7 +8,7 @@ const supabase = createClient(
 
 export async function GET() {
   try {
-    console.log('📦 Creating backup of all trigger words...')
+    // Creating backup of all trigger words
 
     // Get all trigger words with full structure
     const { data: words, error } = await supabase
@@ -65,7 +65,7 @@ export async function GET() {
     })
 
   } catch (error) {
-    console.error('❌ Error creating backup:', error)
+    // Error creating backup
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

@@ -45,13 +45,13 @@ export async function getUserCustomWords(language: string = 'nl'): Promise<UserC
       .order('created_at', { ascending: false })
 
     if (error) {
-      console.error('Error fetching user custom words:', error)
+      // Error fetching user custom words
       return []
     }
 
     return data || []
-  } catch (error) {
-    console.error('Error in getUserCustomWords:', error)
+  } catch {
+    // Error in getUserCustomWords
     return []
   }
 }
@@ -78,13 +78,13 @@ export async function addUserCustomWord(word: string, subCategoryId: string, lan
       if (error.code === '23505') { // Duplicate key
         return { success: false, error: 'Dit woord bestaat al in je lijst' }
       }
-      console.error('Error adding user word:', error)
+      // Error adding user word
       return { success: false, error: 'Database error' }
     }
 
     return { success: true }
-  } catch (error) {
-    console.error('Error in addUserCustomWord:', error)
+  } catch {
+    // Error in addUserCustomWord
     return { success: false, error: 'Unexpected error' }
   }
 }
@@ -109,13 +109,13 @@ export async function updateUserCustomWord(id: string, word: string, subCategory
       .eq('user_id', user.user.id)
 
     if (error) {
-      console.error('Error updating user word:', error)
+      // Error updating user word
       return { success: false, error: 'Database error' }
     }
 
     return { success: true }
-  } catch (error) {
-    console.error('Error in updateUserCustomWord:', error)
+  } catch {
+    // Error in updateUserCustomWord
     return { success: false, error: 'Unexpected error' }
   }
 }
@@ -135,13 +135,13 @@ export async function deleteUserCustomWord(id: string): Promise<{ success: boole
       .eq('user_id', user.user.id)
 
     if (error) {
-      console.error('Error deleting user word:', error)
+      // Error deleting user word
       return { success: false, error: 'Database error' }
     }
 
     return { success: true }
-  } catch (error) {
-    console.error('Error in deleteUserCustomWord:', error)
+  } catch {
+    // Error in deleteUserCustomWord
     return { success: false, error: 'Unexpected error' }
   }
 }

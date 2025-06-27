@@ -18,18 +18,17 @@ export async function POST(request: Request) {
       }, { status: 400 })
     }
 
-    console.log(`📥 Importing backup from ${backup.exportDate}...`)
-    console.log(`Language: ${backup.language}, Words: ${backup.totalWords}`)
+    // Importing backup
 
     // Clear existing words for this language
-    console.log('🗑️ Clearing existing words...')
+    // Clearing existing words
     const { error: deleteError } = await supabase
       .from('trigger_words')
       .delete()
       .eq('language', backup.language)
 
     if (deleteError) {
-      console.error('Warning: Could not clear existing words:', deleteError)
+      // Warning: Could not clear existing words
     }
 
     let successCount = 0
@@ -49,7 +48,7 @@ export async function POST(request: Request) {
             })
 
           if (error) {
-            console.error(`Error inserting word "${word}":`, error)
+            // Error inserting word
             errorCount++
           } else {
             successCount++
@@ -58,7 +57,7 @@ export async function POST(request: Request) {
       }
     }
 
-    console.log(`✅ Import completed: ${successCount} success, ${errorCount} errors`)
+    // Import completed
 
     return NextResponse.json({ 
       success: true,
@@ -69,7 +68,7 @@ export async function POST(request: Request) {
     })
 
   } catch (error) {
-    console.error('❌ Error importing backup:', error)
+    // Error importing backup
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

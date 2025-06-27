@@ -69,7 +69,7 @@ const personalTriggerWords = [
 
 export async function POST() {
   try {
-    console.log('🚀 Importing correctly structured personal trigger words...')
+    // Importing correctly structured personal trigger words
 
     let successCount = 0
     let errorCount = 0
@@ -86,7 +86,7 @@ export async function POST() {
           })
 
         if (error) {
-          console.error(`Error inserting word "${word}":`, error)
+          // Error inserting word
           errorCount++
         } else {
           successCount++
@@ -94,7 +94,7 @@ export async function POST() {
       }
     }
 
-    console.log('✅ Personal trigger words import completed!')
+    // Personal trigger words import completed
     
     return NextResponse.json({ 
       success: true, 
@@ -105,7 +105,7 @@ export async function POST() {
     })
 
   } catch (error) {
-    console.error('❌ Error importing personal trigger words:', error)
+    // Error importing personal trigger words
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

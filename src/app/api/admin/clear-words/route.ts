@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function POST() {
   try {
-    console.log('🗑️ Clearing all Dutch trigger words...')
+    // Clearing all Dutch trigger words
 
     const { error: deleteError } = await supabase
       .from('trigger_words')
@@ -17,14 +17,14 @@ export async function POST() {
       .eq('language', 'nl')
 
     if (deleteError) {
-      console.error('Error clearing words:', deleteError)
+      // Error clearing words
       return NextResponse.json({ 
         success: false, 
         error: deleteError.message 
       }, { status: 500 })
     }
 
-    console.log('✅ All Dutch trigger words cleared!')
+    // All Dutch trigger words cleared
     
     return NextResponse.json({ 
       success: true, 
@@ -32,7 +32,7 @@ export async function POST() {
     })
 
   } catch (error) {
-    console.error('❌ Error clearing words:', error)
+    // Error clearing words
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

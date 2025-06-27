@@ -9,10 +9,10 @@ const supabase = createClient(
 
 export async function POST() {
   try {
-    console.log('🚀 Running database improvements...')
+    // Running database improvements
 
     // First: Create user_trigger_words table if it doesn't exist
-    console.log('📋 Creating user_trigger_words table...')
+    // Creating user_trigger_words table
     
     // Execute each SQL statement separately
     const statements = [
@@ -44,15 +44,15 @@ export async function POST() {
       try {
         const { error } = await supabase.rpc('exec', { sql: statement })
         if (error) {
-          console.log(`⚠️ SQL statement result (might be normal):`, error.message)
+          // SQL statement result (might be normal)
         }
-      } catch (err) {
-        console.log(`⚠️ SQL execution (continuing):`, err)
+      } catch {
+        // SQL execution (continuing)
         // Continue anyway - some statements might fail if already exists
       }
     }
     
-    console.log('✅ user_trigger_words table setup completed!')
+    // user_trigger_words table setup completed
 
     // Improvement 1: Add more Dutch trigger words
     const dutchWords = [
@@ -91,7 +91,7 @@ export async function POST() {
       ['Doelen', 'education']
     ]
 
-    console.log('📝 Adding Dutch trigger words...')
+    // Adding Dutch trigger words
     for (const [word, category] of dutchWords) {
       const { error } = await supabase
         .from('trigger_words')
@@ -106,7 +106,7 @@ export async function POST() {
         })
       
       if (error) {
-        console.error(`Error adding Dutch word "${word}":`, error)
+        // Error adding Dutch word
       }
     }
 
@@ -147,7 +147,7 @@ export async function POST() {
       ['Goals', 'education']
     ]
 
-    console.log('📝 Adding English trigger words...')
+    // Adding English trigger words
     for (const [word, category] of englishWords) {
       const { error } = await supabase
         .from('trigger_words')
@@ -162,7 +162,7 @@ export async function POST() {
         })
       
       if (error) {
-        console.error(`Error adding English word "${word}":`, error)
+        // Error adding English word
       }
     }
 
@@ -179,7 +179,7 @@ export async function POST() {
       .eq('language', 'en')
       .eq('is_active', true)
 
-    console.log('✅ Database improvements completed!')
+    // Database improvements completed
     
     return NextResponse.json({ 
       success: true, 
@@ -191,7 +191,7 @@ export async function POST() {
     })
 
   } catch (error) {
-    console.error('❌ Error running database improvements:', error)
+    // Error running database improvements
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

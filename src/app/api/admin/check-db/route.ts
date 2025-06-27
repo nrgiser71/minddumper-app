@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function GET() {
   try {
-    console.log('🔍 Checking database structure...')
+    // Checking database structure
 
     // Get first few trigger words to see structure
     const { data: words, error: wordsError } = await supabase
@@ -19,7 +19,7 @@ export async function GET() {
       .limit(3)
 
     if (wordsError) {
-      console.error('Error fetching words:', wordsError)
+      // Error fetching words
       return NextResponse.json({ 
         success: false, 
         error: wordsError.message 
@@ -29,7 +29,7 @@ export async function GET() {
     const sampleWord = words?.[0]
     const columns = sampleWord ? Object.keys(sampleWord) : []
 
-    console.log('✅ Database check completed')
+    // Database check completed
     
     return NextResponse.json({ 
       success: true,
@@ -40,7 +40,7 @@ export async function GET() {
     })
 
   } catch (error) {
-    console.error('❌ Error checking database:', error)
+    // Error checking database
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 

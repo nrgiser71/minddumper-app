@@ -9,7 +9,7 @@ const supabase = createClient(
 
 export async function POST() {
   try {
-    console.log('🚀 Setting up user_trigger_words functionality...')
+    // Setting up user_trigger_words functionality
 
     // Check if table exists by trying to query it
     const { error: checkError } = await supabase
@@ -18,7 +18,7 @@ export async function POST() {
       .limit(1)
 
     if (!checkError) {
-      console.log('✅ user_trigger_words table already exists')
+      // user_trigger_words table already exists
       return NextResponse.json({ 
         success: true, 
         message: 'user_trigger_words table already exists and is ready to use',
@@ -26,7 +26,7 @@ export async function POST() {
       })
     }
 
-    console.log('📋 Table does not exist, creating via service operations...')
+    // Table does not exist, creating via service operations
 
     // Instead of direct SQL, we'll create a test record first to trigger table creation
     // This is a workaround approach
@@ -59,7 +59,7 @@ export async function POST() {
         })
 
       if (insertError) {
-        console.log('Expected error (table creation needed):', insertError.message)
+        // Expected error (table creation needed)
         
         return NextResponse.json({ 
           success: false, 
@@ -104,7 +104,7 @@ CREATE INDEX idx_user_trigger_words_active ON public.user_trigger_words(user_id,
         .delete()
         .eq('word', 'test_word_to_be_deleted')
 
-      console.log('✅ Table exists and is functional!')
+      // Table exists and is functional
       
       return NextResponse.json({ 
         success: true, 
@@ -112,7 +112,7 @@ CREATE INDEX idx_user_trigger_words_active ON public.user_trigger_words(user_id,
       })
 
     } catch (setupError) {
-      console.error('Setup error:', setupError)
+      // Setup error
       return NextResponse.json({ 
         success: false, 
         error: setupError instanceof Error ? setupError.message : 'Setup failed'
@@ -120,7 +120,7 @@ CREATE INDEX idx_user_trigger_words_active ON public.user_trigger_words(user_id,
     }
 
   } catch (error) {
-    console.error('❌ Error setting up user words:', error)
+    // Error setting up user words
     return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 
