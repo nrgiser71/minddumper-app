@@ -59,7 +59,32 @@ Dit voorkomt:
 
 ## Recente Wijzigingen
 
-### Toast Notification Systeem (Laatste Update)
+### Multilingual Support Systeem (Laatste Update - COMPLEET ✅)
+- **Volledig werkend multilingual systeem geïmplementeerd voor 5 talen:**
+  - Nederlands (nl), Engels (en), Duits (de), Frans (fr), Spaans (es)
+  - ~260 triggerwoorden per taal met AI-vertalingen
+  - Alle talen volledig functioneel met correcte hiërarchie
+
+### Taalspecifieke Features
+- **User preferences per taal**: Afvinken van woorden wordt apart bewaard per taal
+- **Language-specific custom words**: Eigen woorden toegevoegd per taal
+- **Brain dump per taal**: Alleen woorden van geselecteerde taal worden getoond
+- **Category name translations**: UI categorieën vertaald naar juiste taal
+- **Snelle taalwisseling**: Instant switching tussen talen met correcte data loading
+
+### Performance Optimalisaties (Multilingual)
+- **Language filtering**: Alle queries gefilterd op huidige taal voor performance
+- **Bulk operations**: Van 25 seconden naar <1 seconde voor preference opslag
+- **Race condition fixes**: Taalwisseling zonder data corruptie
+- **Cross-language isolation**: Geen data lekkage tussen talen
+
+### Database Migrations Uitgevoerd
+- **Added language field** to `user_custom_trigger_words` table
+- **Language-specific queries** voor alle user data
+- **Proper foreign key constraints** met language filtering
+- **Optimized bulk preference handling** met upsert operations
+
+### Toast Notification Systeem
 - Volledig toast notification systeem geïmplementeerd
 - Alle browser `alert()` popups vervangen door moderne, elegante toasts
 - Verschillende types: success (groen), error (rood), info (blauw)
@@ -118,6 +143,16 @@ Dit voorkomt:
 9. ✅ Export formaat problemen → Proper CSV met delimiters + tekstlijst
 10. ✅ Individuele woord controle → Granulaire voorkeuren binnen categorieën
 
+### Multilingual Problemen Opgelost
+11. ✅ **Critical language switching bugs** → Race conditions en state management gefixed
+12. ✅ **Cross-language preference contamination** → Language-specific filtering geïmplementeerd
+13. ✅ **Custom words appearing in all languages** → Database migration naar language-specific custom words
+14. ✅ **Brain dump showing wrong language words** → Query filters toegevoegd voor correct language isolation
+15. ✅ **25-second save performance issue** → Bulk upsert operations geoptimaliseerd
+16. ✅ **Category names not translating** → Translation helper functions geïmplementeerd
+17. ✅ **Duplicate key constraint violations** → Proper upsert handling met conflict resolution
+18. ✅ **Preferences lost on language switch** → Fixed loading logic met language-specific queries
+
 ### Belangrijke Gebruikerseisen
 - "Jij moet zoveel mogelijk doen" → Volledige automatisering waar mogelijk
 - "Geen instructies via md files" → Directe communicatie en implementatie
@@ -149,7 +184,7 @@ user_trigger_word_preferences:
   - Bulk API: /api/admin/bulk-preferences
 
 user_custom_trigger_words:
-  - id, user_id, sub_category_id, word, is_active, created_at, updated_at
+  - id, user_id, sub_category_id, word, language, is_active, created_at, updated_at
 
 brain_dumps:
   - user_id, language, ideas[], metadata
@@ -204,12 +239,12 @@ SUPABASE_SERVICE_ROLE_KEY=
 ## Gebruiksaanwijzing
 
 ### Voor Eindgebruikers
-1. Start brain dump sessie via hoofdpagina
-2. Kies taal (primair Nederlands)
-3. Reageer op triggerwoorden met ideeën
-4. Configureer persoonlijke voorkeuren (welke woorden wel/niet tonen)
-5. Voeg eigen triggerwoorden toe per categorie
-6. Exporteer resultaten als tekstbestand of CSV
+1. **Kies je taal**: Nederlands, Engels, Duits, Frans of Spaans
+2. **Configureer voorkeuren per taal**: Vink woorden aan/af die je wilt zien
+3. **Voeg eigen woorden toe per taal**: Persoonlijke triggerwoorden per categorie
+4. **Start brain dump sessie**: Alleen woorden van gekozen taal worden getoond
+5. **Switch tussen talen**: Voorkeuren blijven apart bewaard per taal
+6. **Exporteer resultaten**: Als tekstbestand of CSV
 
 ### Voor Beheerders
 1. Ga naar `/admin` voor categoriebeheer
@@ -238,15 +273,18 @@ SUPABASE_SERVICE_ROLE_KEY=
 ## Toekomstige Uitbreidingen
 
 ### Mogelijk Vervolgwerk
-- ✅ Gebruikersspecifieke triggerwoorden toevoegen (VOLTOOID)
-- Sessie geschiedenis met detail views
-- Multi-language uitbreiding voor andere talen
-- Analytics dashboard voor gebruiksstatistieken
-- ✅ Export naar andere formaten (CSV VOLTOOID)
+- ✅ **Gebruikersspecifieke triggerwoorden** toevoegen (VOLTOOID)
+- ✅ **Multi-language systeem** voor 5 talen (VOLTOOID)
+- ✅ **Language-specific preferences** en custom words (VOLTOOID)
+- ✅ **Export naar andere formaten** (CSV VOLTOOID)
+- Sessie geschiedenis met detail views per taal
+- **Subcategory name translations** (huidige issue: Nederlandse namen in andere talen)
+- Analytics dashboard voor gebruiksstatistieken per taal
 - Advanced toast types (warning, loading toasts)
 - Keyboard shortcuts voor power users
 - Batch export van meerdere sessies
-- Word kategorieën per gebruiker aanpassen
+- **Language detection** voor automatische taal selectie
+- **Import/export van user preferences** per taal
 
 ## Ontwikkelaar Notities
 
@@ -273,9 +311,56 @@ SUPABASE_SERVICE_ROLE_KEY=
 
 ---
 
-**Status**: Project volledig functioneel en deployed op Vercel
-**Laatste Update**: Toast notification systeem geïmplementeerd - alle browser popups vervangen door moderne notifications
-**Volgende Stappen**: Gebruikerstesting en eventuele fine-tuning op basis van feedback
+**Status**: Project volledig functioneel en deployed op Vercel - **MULTILINGUAL COMPLEET** 🌍
+**Laatste Update**: Multilingual support voor 5 talen volledig geïmplementeerd met language-specific features
+**Hoogtepunten**: 
+- ✅ 5 volledig werkende talen (NL, EN, DE, FR, ES)
+- ✅ Taalspecifieke user preferences en custom words
+- ✅ Performance optimalisaties (25s → <1s)
+- ✅ Database migrations succesvol uitgevoerd
+- ✅ Alle language switching bugs opgelost
+
+**Volgende Stappen**: Gebruikerstesting van multilingual features en eventuele subcategory translations
+
+## Multilingual System Implementation Details
+
+### Supported Languages
+- 🇳🇱 **Nederlands (nl)** - Primary language, ~264 triggerwoorden
+- 🇬🇧 **English (en)** - ~260 triggerwoorden  
+- 🇩🇪 **Deutsch (de)** - ~261 triggerwoorden
+- 🇫🇷 **Français (fr)** - ~262 triggerwoorden
+- 🇪🇸 **Español (es)** - ~262 triggerwoorden
+
+### Translation Process
+- **AI-assisted translations** voor alle triggerwoorden van Nederlands naar andere talen
+- **Category name translations** in frontend voor UI consistency
+- **Hierarchical structure preserved** over alle talen
+- **Professional/Personal ordering** consistent in alle talen
+
+### Database Migrations Executed
+```sql
+-- Added language support to custom words
+ALTER TABLE user_custom_trigger_words 
+ADD COLUMN language TEXT NOT NULL DEFAULT 'nl';
+
+-- All system_trigger_words already had language field
+-- User preferences automatically language-specific via system_word_id foreign key
+```
+
+### Language Switching Architecture
+1. **Frontend state management**: `currentLanguage` state tracked globally
+2. **Database queries**: All filtered by language parameter
+3. **Performance optimization**: Language-specific caching en filtering
+4. **Race condition prevention**: Direct language parameter passing
+5. **Cross-language isolation**: Geen data lekkage tussen talen
+
+### Key Technical Challenges Solved
+- **Race conditions** tijdens language switching
+- **Performance issues** (25 seconden → <1 seconde)
+- **Cross-language data contamination**
+- **Duplicate key constraint violations**
+- **Custom words appearing across languages**
+- **Brain dump showing wrong language data**
 
 ## Toast Notification Systeem Details
 
