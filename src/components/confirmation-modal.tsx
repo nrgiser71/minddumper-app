@@ -46,8 +46,8 @@ export function ConfirmationModal({
   if (!isOpen) return null
 
   const confirmButtonClass = confirmButtonStyle === 'danger' 
-    ? 'btn-danger' 
-    : 'btn-primary'
+    ? 'modal-btn-danger' 
+    : 'modal-btn-primary'
 
   return (
     <div className="modal-overlay" onClick={onCancel}>
@@ -66,7 +66,7 @@ export function ConfirmationModal({
         </div>
         
         <div className="modal-footer">
-          <button className="btn-secondary" onClick={onCancel}>
+          <button className="modal-btn-secondary" onClick={onCancel}>
             {cancelText}
           </button>
           <button className={confirmButtonClass} onClick={onConfirm}>
@@ -151,7 +151,7 @@ export function ConfirmationModal({
           background: #f9fafb;
         }
 
-        .btn-primary, .btn-secondary, .btn-danger {
+        .modal-btn-primary, .modal-btn-secondary, .modal-btn-danger {
           padding: 10px 20px;
           border-radius: 8px;
           font-weight: 500;
@@ -162,31 +162,31 @@ export function ConfirmationModal({
           min-width: 80px;
         }
 
-        .btn-primary {
+        .modal-btn-primary {
           background: #3b82f6;
           color: white;
         }
 
-        .btn-primary:hover {
+        .modal-btn-primary:hover {
           background: #2563eb;
         }
 
-        .btn-danger {
+        .modal-btn-danger {
           background: #ef4444;
           color: white;
         }
 
-        .btn-danger:hover {
+        .modal-btn-danger:hover {
           background: #dc2626;
         }
 
-        .btn-secondary {
+        .modal-btn-secondary {
           background: #f3f4f6;
           color: #374151;
           border: 1px solid #d1d5db;
         }
 
-        .btn-secondary:hover {
+        .modal-btn-secondary:hover {
           background: #e5e7eb;
         }
 
@@ -215,7 +215,7 @@ export function ConfirmationModal({
             flex-direction: column-reverse;
           }
           
-          .btn-primary, .btn-secondary, .btn-danger {
+          .modal-btn-primary, .modal-btn-secondary, .modal-btn-danger {
             width: 100%;
           }
         }
