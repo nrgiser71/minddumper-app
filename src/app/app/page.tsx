@@ -11,6 +11,7 @@ import type { TriggerWord, BrainDump } from '@/lib/supabase'
 import { supabase } from '@/lib/supabase'
 import { ToastProvider, useToast } from '@/components/toast-context'
 import { ToastContainer } from '@/components/toast-container'
+import { ConfirmationModal } from '@/components/confirmation-modal'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
@@ -179,6 +180,17 @@ function AppContent() {
     is_draft: boolean
     session_id: string
   }[]>([])
+  
+  // Confirmation modal state
+  const [confirmModal, setConfirmModal] = useState<{
+    isOpen: boolean
+    title: string
+    message: string
+    confirmText?: string
+    cancelText?: string
+    confirmButtonStyle?: 'primary' | 'danger'
+    onConfirm: () => void
+  }>({ isOpen: false, title: '', message: '', onConfirm: () => {} })
 
   // Check for existing session on component mount
   useEffect(() => {
@@ -187,12 +199,8 @@ function AppContent() {
     
     const savedSession = getSessionFromStorage()
     if (savedSession) {
-      // Show recovery dialog
-      const shouldRecover = window.confirm(
-        `Er is een onafgemaakte mind dump sessie gevonden van ${new Date(savedSession.lastSaved).toLocaleString('nl-NL')}. Wil je deze hervatten?`
-      )
-      
-      if (shouldRecover) {
+      // Show recovery dialog using modern modal
+      const restoreSession = () => {
         // Restore session data
         setSessionId(savedSession.sessionId)
         setCurrentLanguage(savedSession.language)
@@ -208,10 +216,15 @@ function AppContent() {
         setTimeout(() => {
           startAutoSave(savedSession.sessionId, savedSession.language)
         }, 100)
-      } else {
-        // Clear old session if user doesn't want to recover
-        clearSessionFromStorage()
       }
+      
+      showConfirmation({
+        title: 'Sessie Herstellen',
+        message: `Er is een onafgemaakte mind dump sessie gevonden van ${new Date(savedSession.lastSaved).toLocaleString('nl-NL')}. Wil je deze hervatten?`,
+        confirmText: 'Hervatten',
+        cancelText: 'Nieuwe Sessie',
+        onConfirm: restoreSession
+      })
     }
   }, [])
 
@@ -405,17 +418,22 @@ function AppContent() {
   }
 
   const handleDeleteUserWord = async (id: string) => {
-    if (!confirm('Weet je zeker dat je dit woord wilt verwijderen?')) {
-      return
-    }
-
-    const result = await deleteUserCustomWord(id)
-    if (result.success) {
-      showToast('Woord verwijderd!', 'success')
-      loadUserWords() // Refresh list
-    } else {
-      showToast(result.error || 'Er is een fout opgetreden', 'error')
-    }
+    showConfirmation({
+      title: 'Woord Verwijderen',
+      message: 'Weet je zeker dat je dit woord wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.',
+      confirmText: 'Verwijderen',
+      cancelText: 'Annuleren',
+      confirmButtonStyle: 'danger',
+      onConfirm: async () => {
+        const result = await deleteUserCustomWord(id)
+        if (result.success) {
+          showToast('Woord verwijderd!', 'success')
+          loadUserWords() // Refresh list
+        } else {
+          showToast(result.error || 'Er is een fout opgetreden', 'error')
+        }
+      }
+    })
   }
 
   const handleCancelEdit = () => {
@@ -607,6 +625,44 @@ function AppContent() {
       window.removeEventListener('beforeunload', handleBeforeUnload)
     }
   }, [currentScreen, allIdeas.length, pendingSaves.length])
+  
+  // Helper function to show confirmation modal
+  const showConfirmation = ({
+    title,
+    message,
+    confirmText = 'Bevestigen',
+    cancelText = 'Annuleren',
+    confirmButtonStyle = 'primary' as const,
+    onConfirm
+  }: {
+    title: string
+    message: string
+    confirmText?: string
+    cancelText?: string
+    confirmButtonStyle?: 'primary' | 'danger'
+    onConfirm: () => void
+  }) => {
+    setConfirmModal({
+      isOpen: true,
+      title,
+      message,
+      confirmText,
+      cancelText,
+      confirmButtonStyle,
+      onConfirm: () => {
+        setConfirmModal(prev => ({ ...prev, isOpen: false }))
+        onConfirm()
+      }
+    })
+  }
+  
+  const hideConfirmation = () => {
+    // Check if this was a session recovery modal - if so, clear the session
+    if (confirmModal.title === 'Sessie Herstellen') {
+      clearSessionFromStorage()
+    }
+    setConfirmModal(prev => ({ ...prev, isOpen: false }))
+  }
   
   const processPendingSaves = async () => {
     const saves = [...pendingSaves]
@@ -819,20 +875,16 @@ function AppContent() {
       return
     }
     
-    const shouldSave = window.confirm(
-      `Je hebt ${allIdeas.length} ideeën. Wil je deze opslaan voordat je teruggaat naar het hoofdmenu?`
-    )
-    
-    if (shouldSave) {
-      await finishMindDump()
-    } else {
-      // Clear localStorage and go back without saving
-      stopAutoSave()
-      clearSessionFromStorage()
-      setSessionId(null)
-      setAutoSaveStatus('')
-      setCurrentScreen('home')
-    }
+    // First show a modal asking if they want to save
+    showConfirmation({
+      title: 'Mind Dump Afsluiten',
+      message: `Je hebt ${allIdeas.length} ideeën verzameld. Wil je deze opslaan?`,
+      confirmText: 'Opslaan & Afsluiten',
+      cancelText: 'Doorgaan',
+      onConfirm: async () => {
+        await finishMindDump()
+      }
+    })
   }
 
   const exportMindDump = () => {
@@ -1566,6 +1618,18 @@ function AppContent() {
           </div>
         </div>
       )}
+      
+      {/* Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.title}
+        message={confirmModal.message}
+        confirmText={confirmModal.confirmText}
+        cancelText={confirmModal.cancelText}
+        confirmButtonStyle={confirmModal.confirmButtonStyle}
+        onConfirm={confirmModal.onConfirm}
+        onCancel={hideConfirmation}
+      />
     </div>
   )
 }
