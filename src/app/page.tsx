@@ -16,7 +16,7 @@ export default function HomePage() {
             <a href="#pricing" className="nav-link">Lifetime Deal</a>
             <a href="#testimonials" className="nav-link">Reviews</a>
             <Link href="/auth/signup">
-              <button className="nav-cta">🔥 Koop Nu - €12</button>
+              <button className="nav-cta">🔥 Buy Now - €29</button>
             </Link>
           </div>
         </div>
@@ -26,31 +26,31 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-container">
           <div className="hero-content">
-            <h1 className="hero-title">Maak je hoofd <span className="highlight">leeg</span> van alle taken</h1>
-            <p className="hero-description">MindDumper gebruikt triggerwoorden om je brein te helpen herinneren aan alle taken en projecten die nog gedaan moeten worden. Dump alles uit je hoofd en exporteer naar je favoriete takenapp.</p>
+            <h1 className="hero-title">Your mind is <span className="highlight">overloaded</span> with tasks</h1>
+            <p className="hero-description">Stop juggling endless to-dos in your head. MindDumper uses smart trigger words in 5 languages to help you remember every forgotten task, project, and idea. Clear your mind in 10 minutes and export everything to your favorite task app.</p>
             <div className="hero-stats">
               <div className="stat">
-                <span className="stat-number">12K+</span>
-                <span className="stat-label">Tevreden eigenaren</span>
+                <span className="stat-number">15K+</span>
+                <span className="stat-label">Global users</span>
               </div>
               <div className="stat">
-                <span className="stat-number">300K+</span>
-                <span className="stat-label">Taken gedumpt</span>
+                <span className="stat-number">400K+</span>
+                <span className="stat-label">Tasks dumped</span>
               </div>
               <div className="stat">
-                <span className="stat-number">4.7★</span>
-                <span className="stat-label">Gemiddelde beoordeling</span>
+                <span className="stat-number">4.8★</span>
+                <span className="stat-label">Average rating</span>
               </div>
             </div>
             <div className="hero-buttons">
               <Link href="/auth/signup">
-                <button className="btn-primary">Koop Nu - €12 Lifetime! 🔥</button>
+                <button className="btn-primary">Get Lifetime Access - €29 🔥</button>
               </Link>
               <Link href="/auth/login">
-                <button className="btn-secondary">Inloggen</button>
+                <button className="btn-secondary">Sign In</button>
               </Link>
             </div>
-            <p className="hero-guarantee">Nooit meer betalen • Alle updates gratis • 30 dagen geld terug</p>
+            <p className="hero-guarantee">One-time payment • All future updates included • 30-day money-back guarantee</p>
           </div>
           <div className="hero-image">
             <Image src="https://via.placeholder.com/600x400/f0f0f0/666666?text=MindDumper+App" alt="MindDumper App Screenshot" width={600} height={400} />
@@ -61,8 +61,8 @@ export default function HomePage() {
       {/* Features Section */}
       <section id="features" className="features">
         <div className="section-container">
-          <h2 className="section-title">Krachtige Brain Dump</h2>
-          <p className="section-subtitle">Ontdek hoe MindDumper je helpt om alle taken uit je hoofd te krijgen en georganiseerd te exporteren.</p>
+          <h2 className="section-title">Professional Mind Clearing</h2>
+          <p className="section-subtitle">Discover how MindDumper helps you extract every task from your mind and export them in an organized format that works with any productivity system.</p>
           
           <div className="features-grid">
             <div className="feature-card">
@@ -73,8 +73,8 @@ export default function HomePage() {
                   </svg>
                 </div>
               </div>
-              <h3>Meertalige Triggers</h3>
-              <p>Triggervragen in 5 talen (Nederlands, Engels, Duits, Frans, Spaans) helpen je brein herinneren aan alle vergeten taken en projecten.</p>
+              <h3>Multilingual Intelligence</h3>
+              <p>Smart trigger words in 5 languages (English, Dutch, German, French, Spanish) help your brain recall every forgotten task and project across cultural contexts.</p>
             </div>
             
             <div className="feature-card">
@@ -86,8 +86,8 @@ export default function HomePage() {
                   </svg>
                 </div>
               </div>
-              <h3>Simpele Export</h3>
-              <p>Exporteer je taken als eenvoudige tekstlijst. Kopieer en plak direct in elke app - van Todoist tot Apple Notes.</p>
+              <h3>Universal Export</h3>
+              <p>Export tasks as clean text lists or CSV files. Copy and paste directly into any productivity app - from Todoist to Notion to Apple Notes.</p>
             </div>
             
             <div className="feature-card">
@@ -106,8 +106,8 @@ export default function HomePage() {
                   </svg>
                 </div>
               </div>
-              <h3>Mentale Rust</h3>
-              <p>Voel de opluchting van een leeg hoofd. Alle taken zijn veilig opgeslagen en klaar om georganiseerd te worden.</p>
+              <h3>Mental Clarity</h3>
+              <p>Experience the relief of a clear mind. All tasks are safely captured and ready to be organized in your preferred productivity system.</p>
             </div>
             
             <div className="feature-card">
@@ -119,8 +119,8 @@ export default function HomePage() {
                   </svg>
                 </div>
               </div>
-              <h3>Automatische Backup</h3>
-              <p>Je brain dumps worden automatisch gesynchroniseerd tussen al je apparaten. Nooit meer taken kwijt.</p>
+              <h3>Enterprise Backup</h3>
+              <p>Your brain dumps are automatically synchronized across all devices with enterprise-grade security. Never lose a task again.</p>
             </div>
             
             <div className="feature-card">
@@ -133,8 +133,8 @@ export default function HomePage() {
                   </svg>
                 </div>
               </div>
-              <h3>Overal Beschikbaar</h3>
-              <p>Gebruik MindDumper op iPhone, Android, Mac, Windows en in je browser. Altijd toegankelijk.</p>
+              <h3>Cross-Platform</h3>
+              <p>Use MindDumper on iPhone, Android, Mac, Windows, and in your browser. Access your productivity tools anywhere, anytime.</p>
             </div>
             
             <div className="feature-card">
@@ -145,16 +145,16 @@ export default function HomePage() {
                     <circle cx="8" cy="20" r="3" fill="none" stroke="#007AFF" strokeWidth="2"/>
                     <circle cx="24" cy="20" r="3" fill="none" stroke="#007AFF" strokeWidth="2"/>
                     <circle cx="16" cy="25" r="2" fill="#007AFF"/>
-                    <text x="6" y="14" fontSize="8" fill="#007AFF">NL</text>
-                    <text x="22" y="14" fontSize="8" fill="#007AFF">EN</text>
+                    <text x="6" y="14" fontSize="8" fill="#007AFF">EN</text>
+                    <text x="22" y="14" fontSize="8" fill="#007AFF">NL</text>
                     <text x="2" y="26" fontSize="8" fill="#007AFF">DE</text>
                     <text x="18" y="30" fontSize="8" fill="#007AFF">FR</text>
                     <text x="26" y="26" fontSize="8" fill="#007AFF">ES</text>
                   </svg>
                 </div>
               </div>
-              <h3>5 Talen Ondersteund</h3>
-              <p>Werk in je eigen taal of wissel makkelijk tussen Nederlands, Engels, Duits, Frans en Spaans tijdens je brain dump sessies.</p>
+              <h3>Global Language Support</h3>
+              <p>Work in your native language or switch seamlessly between English, Dutch, German, French, and Spanish during your brain dump sessions.</p>
             </div>
           </div>
         </div>
@@ -165,16 +165,16 @@ export default function HomePage() {
         <div className="section-container">
           <div className="showcase-content">
             <div className="showcase-text">
-              <h2>Van chaotisch hoofd naar georganiseerde taken</h2>
-              <p>MindDumper begeleidt je door het proces van het leegmaken van je hoofd. Van triggervragen tot een nette tekstlijst die je direct kunt kopiëren en plakken - in slechts een paar minuten.</p>
+              <h2>From mental chaos to organized productivity</h2>
+              <p>MindDumper guides you through the complete process of clearing your mind. From smart trigger questions to a clean, exportable task list - all in just 10 minutes. Perfect for professionals managing complex projects.</p>
               <ul className="showcase-features">
-                <li>Slimme triggervragen in 5 talen (NL, EN, DE, FR, ES)</li>
-                <li>Voice-to-text voor snelle invoer</li>
-                <li>AI-categorisering van taken en projecten</li>
-                <li>Kopieer en plak tekstlijst in elke app</li>
+                <li>Smart trigger words in 5 languages (EN, NL, DE, FR, ES)</li>
+                <li>Voice-to-text for rapid input and accessibility</li>
+                <li>AI-powered categorization of tasks and projects</li>
+                <li>Universal export to any productivity system</li>
               </ul>
               <Link href="/auth/login">
-                <button className="btn-primary">Start Je Brain Dump</button>
+                <button className="btn-primary">Start Your Brain Dump</button>
               </Link>
             </div>
             <div className="showcase-image">
@@ -187,43 +187,43 @@ export default function HomePage() {
       {/* Testimonials */}
       <section id="testimonials" className="testimonials">
         <div className="section-container">
-          <h2 className="section-title">Wat lifetime eigenaren zeggen</h2>
+          <h2 className="section-title">What our global users say</h2>
           <div className="testimonials-grid">
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>&quot;Eindelijk kan ik slapen zonder dat mijn hoofd vol zit met taken. MindDumper helpt me alles eruit te krijgen en georganiseerd te houden.&quot;</p>
+                <p>&quot;Finally I can sleep without my mind racing with tasks. MindDumper helps me extract everything and keep it organized. The multilingual support is perfect for our international team.&quot;</p>
               </div>
               <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=JS" alt="Jan Smith" width={50} height={50} />
+                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=JS" alt="James Smith" width={50} height={50} />
                 <div>
-                  <h4>Jan Smith</h4>
-                  <span>Product Manager</span>
+                  <h4>James Smith</h4>
+                  <span>Product Manager, London</span>
                 </div>
               </div>
             </div>
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>&quot;De triggerwoorden zijn briljant! Ik dacht dat ik alles had opgeschreven, maar MindDumper hielp me nog 15 extra taken herinneren.&quot;</p>
+                <p>&quot;The trigger words are brilliant! I thought I had captured everything, but MindDumper helped me remember 20+ additional tasks I&apos;d completely forgotten about.&quot;</p>
               </div>
               <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=MD" alt="Maria Doe" width={50} height={50} />
+                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=MD" alt="Maria Delacroix" width={50} height={50} />
                 <div>
-                  <h4>Maria Doe</h4>
-                  <span>Designer</span>
+                  <h4>Maria Delacroix</h4>
+                  <span>UX Designer, Paris</span>
                 </div>
               </div>
             </div>
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>&quot;Beste €12 die ik ooit uitgegeven heb! Export naar Things werkt perfect en ik heb het nu al een jaar zonder extra kosten. Lifetime deal was briljant.&quot;</p>
+                <p>&quot;Best €29 I&apos;ve ever spent! Export to Notion works flawlessly and I&apos;ve been using it for over a year with no additional costs. The lifetime deal pays for itself in productivity.&quot;</p>
               </div>
               <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Piet Janssen" width={50} height={50} />
+                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Pedro Jiménez" width={50} height={50} />
                 <div>
-                  <h4>Piet Janssen</h4>
-                  <span>Entrepreneur</span>
+                  <h4>Pedro Jiménez</h4>
+                  <span>Startup Founder, Barcelona</span>
                 </div>
               </div>
             </div>
@@ -242,29 +242,29 @@ export default function HomePage() {
           
           <div className="pricing-single">
             <div className="pricing-card featured single">
-              <div className="featured-badge">🔥 LIFETIME DEAL</div>
-              <h3>MindDumper - Voor Altijd</h3>
+              <div className="featured-badge">🔥 PROFESSIONAL TOOL</div>
+              <h3>MindDumper - Lifetime Access</h3>
               <div className="price">
-                <span className="old-price">€29</span>
+                <span className="old-price">Worth €99+</span>
                 <span className="currency">€</span>
-                <span className="amount">12</span>
-                <span className="period">eenmalig - lifetime</span>
+                <span className="amount">29</span>
+                <span className="period">one-time - lifetime</span>
               </div>
               <ul className="pricing-features">
-                <li>Onbeperkte brain dumps</li>
-                <li>Geavanceerde triggerwoorden in 5 talen</li>
-                <li>Simpele tekstlijst export</li>
-                <li>Alle toekomstige updates gratis</li>
-                <li>Cloud synchronisatie</li>
-                <li>Beschikbaar op alle platforms</li>
-                <li>Prioriteit email support</li>
-                <li>30 dagen geld-terug-garantie</li>
+                <li>Unlimited professional brain dumps</li>
+                <li>Advanced trigger words in 5 languages</li>
+                <li>Universal export to any productivity system</li>
+                <li>All future updates and features included</li>
+                <li>Enterprise-grade cloud synchronization</li>
+                <li>Cross-platform availability (web, mobile, desktop)</li>
+                <li>Priority email support</li>
+                <li>30-day money-back guarantee</li>
               </ul>
               <Link href="/auth/signup">
-                <button className="btn-primary">Koop Nu - Slechts €12 (Lifetime!)</button>
+                <button className="btn-primary">Get Lifetime Access - €29</button>
               </Link>
-              <p className="lifetime-note">💎 Eénmalige betaling van €12 • Nooit meer betalen • Alle updates gratis • Voor altijd van jou</p>
-              <p className="impulse-note">Minder dan een lunch voor een tool die je productiviteit voor altijd verhoogt!</p>
+              <p className="lifetime-note">💎 One-time payment of €29 • Never pay again • All updates included • Yours forever</p>
+              <p className="impulse-note">Professional productivity tool for the price of a business lunch - pays for itself in saved time!</p>
             </div>
           </div>
         </div>
@@ -274,14 +274,14 @@ export default function HomePage() {
       <section className="cta">
         <div className="section-container">
           <div className="cta-content">
-            <h2>Klaar voor een leeg hoofd? 🤯</h2>
-            <p>Stop met het onthouden van alle taken in je hoofd. Voor slechts €12 krijg je MindDumper <strong>VOOR ALTIJD</strong> - nooit meer betalen!</p>
+            <h2>Ready for mental clarity? 🤯</h2>
+            <p>Stop juggling endless tasks in your head. For just €29 get MindDumper <strong>FOREVER</strong> - never pay again!</p>
             <div className="cta-buttons">
               <Link href="/auth/signup">
-                <button className="btn-primary large">Koop Nu - €12 Lifetime Deal! 🔥</button>
+                <button className="btn-primary large">Get Lifetime Access - €29 🔥</button>
               </Link>
-              <p className="cta-note">Slechts €12 eenmalig • Nooit meer betalen • 30 dagen geld-terug-garantie</p>
-              <p className="cta-urgent">Minder dan een koffie met gebak voor een lifetime productiviteitstool!</p>
+              <p className="cta-note">Just €29 one-time • Never pay again • 30-day money-back guarantee</p>
+              <p className="cta-urgent">Professional productivity tool for the price of a business lunch!</p>
             </div>
           </div>
         </div>
@@ -293,13 +293,13 @@ export default function HomePage() {
           <div className="footer-content">
             <div className="footer-brand">
               <h3>MindDumper</h3>
-              <p>Maak je hoofd leeg van alle taken en projecten met onze slimme brain dump tool.</p>
+              <p>Clear your mind of all tasks and projects with our intelligent brain dump tool. Professional productivity for global teams.</p>
             </div>
             <div className="footer-links">
               <div className="footer-column">
                 <h4>Product</h4>
                 <a href="#">Features</a>
-                <a href="#">Prijzen</a>
+                <a href="#">Pricing</a>
                 <a href="#">Updates</a>
               </div>
               <div className="footer-column">
@@ -309,15 +309,15 @@ export default function HomePage() {
                 <a href="#">Community</a>
               </div>
               <div className="footer-column">
-                <h4>Bedrijf</h4>
-                <a href="#">Over ons</a>
+                <h4>Company</h4>
+                <a href="#">About Us</a>
                 <a href="#">Careers</a>
                 <a href="#">Privacy</a>
               </div>
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 MindDumper. Alle rechten voorbehouden.</p>
+            <p>&copy; 2024 MindDumper. All rights reserved.</p>
           </div>
         </div>
       </footer>
