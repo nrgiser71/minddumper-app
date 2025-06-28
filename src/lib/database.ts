@@ -204,6 +204,8 @@ export async function saveBrainDump(brainDump: {
   ideas: string[]
   total_words: number
   duration_minutes: number
+  is_draft?: boolean
+  session_id?: string | null
 }): Promise<string | null> {
   try {
     const { data: user } = await supabase.auth.getUser()
@@ -212,22 +214,84 @@ export async function saveBrainDump(brainDump: {
       throw new Error('User not authenticated')
     }
 
-    const { data, error } = await supabase
-      .from('brain_dumps')
-      .insert({
-        user_id: user.user.id,
-        language: brainDump.language,
-        ideas: brainDump.ideas,
-        total_ideas: brainDump.ideas.length,
-        total_words: brainDump.total_words,
-        duration_minutes: brainDump.duration_minutes,
-        metadata: {
-          created_via: 'web_app',
-          version: '1.0'
-        }
-      })
-      .select('id')
-      .single()
+    let data, error
+    
+    if (brainDump.is_draft && brainDump.session_id) {
+      // For drafts, try to update existing record first
+      const { data: existingData, error: updateError } = await supabase
+        .from('brain_dumps')
+        .update({
+          ideas: brainDump.ideas,
+          total_ideas: brainDump.ideas.length,
+          total_words: brainDump.total_words,
+          duration_minutes: brainDump.duration_minutes,
+          updated_at: new Date().toISOString(),
+          metadata: {
+            created_via: 'web_app',
+            version: '1.0',
+            auto_save: true,
+            last_auto_save: new Date().toISOString()
+          }
+        })
+        .eq('session_id', brainDump.session_id)
+        .eq('user_id', user.user.id)
+        .eq('is_draft', true)
+        .select('id')
+        .maybeSingle()
+      
+      if (updateError || !existingData) {
+        // If update failed or no existing record, insert new one
+        const insertResult = await supabase
+          .from('brain_dumps')
+          .insert({
+            user_id: user.user.id,
+            language: brainDump.language,
+            ideas: brainDump.ideas,
+            total_ideas: brainDump.ideas.length,
+            total_words: brainDump.total_words,
+            duration_minutes: brainDump.duration_minutes,
+            is_draft: true,
+            session_id: brainDump.session_id,
+            metadata: {
+              created_via: 'web_app',
+              version: '1.0',
+              auto_save: true
+            }
+          })
+          .select('id')
+          .single()
+        
+        data = insertResult.data
+        error = insertResult.error
+      } else {
+        data = existingData
+        error = updateError
+      }
+    } else {
+      // For final saves, always insert new record
+      const insertResult = await supabase
+        .from('brain_dumps')
+        .insert({
+          user_id: user.user.id,
+          language: brainDump.language,
+          ideas: brainDump.ideas,
+          total_ideas: brainDump.ideas.length,
+          total_words: brainDump.total_words,
+          duration_minutes: brainDump.duration_minutes,
+          is_draft: false,
+          session_id: brainDump.session_id || null,
+          metadata: {
+            created_via: 'web_app',
+            version: '1.0',
+            auto_save: false
+          }
+        })
+        .select('id')
+        .single()
+      
+      data = insertResult.data
+      error = insertResult.error
+    }
 
     if (error) {
       return null

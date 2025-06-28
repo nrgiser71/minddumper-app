@@ -18,13 +18,50 @@ CREATE TABLE public.brain_dumps (
   id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
   user_id UUID REFERENCES auth.users NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
   language TEXT NOT NULL DEFAULT 'nl',
   total_ideas INTEGER DEFAULT 0,
   total_words INTEGER DEFAULT 0,
   duration_minutes INTEGER DEFAULT 0,
   ideas JSONB DEFAULT '[]'::jsonb,
-  metadata JSONB DEFAULT '{}'::jsonb
+  metadata JSONB DEFAULT '{}'::jsonb,
+  is_draft BOOLEAN DEFAULT false,
+  session_id TEXT NULL
 );
+
+-- Create index for efficient session_id lookups
+CREATE INDEX idx_brain_dumps_session_id ON public.brain_dumps(session_id) WHERE session_id IS NOT NULL;
+CREATE INDEX idx_brain_dumps_user_draft ON public.brain_dumps(user_id, is_draft) WHERE is_draft = true;
+
+-- Create function to automatically update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = timezone('utc'::text, now());
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create trigger to update updated_at on brain_dumps
+CREATE TRIGGER update_brain_dumps_updated_at
+  BEFORE UPDATE ON public.brain_dumps
+  FOR EACH ROW
+  EXECUTE FUNCTION update_updated_at_column();
+
+-- Create function to cleanup old draft sessions (older than 7 days)
+CREATE OR REPLACE FUNCTION cleanup_old_drafts()
+RETURNS INTEGER AS $$
+DECLARE
+  deleted_count INTEGER;
+BEGIN
+  DELETE FROM public.brain_dumps 
+  WHERE is_draft = true 
+    AND created_at < (NOW() - INTERVAL '7 days');
+  
+  GET DIAGNOSTICS deleted_count = ROW_COUNT;
+  RETURN deleted_count;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Create trigger_words table
 CREATE TABLE public.trigger_words (

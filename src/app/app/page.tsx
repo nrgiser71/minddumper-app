@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { ProtectedRoute } from '@/components/protected-route'
@@ -64,6 +64,93 @@ const translateCategory = (categoryName: string, language: Language): string => 
   return categoryTranslations[language]?.[categoryName as keyof typeof categoryTranslations['nl']] || categoryName
 }
 
+// localStorage utility functions
+const STORAGE_KEY = 'minddumper-session'
+
+interface SessionData {
+  sessionId: string
+  language: Language
+  triggerWords: string[]
+  allIdeas: string[]
+  currentWordIndex: number
+  startTime: string
+  lastSaved: string
+}
+
+const saveSessionToStorage = (sessionData: SessionData) => {
+  try {
+    console.log('💾 Saving to localStorage:', sessionData)
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
+    console.log('✅ Saved to localStorage successfully')
+  } catch (error) {
+    console.error('❌ Failed to save session to localStorage:', error)
+  }
+}
+
+const getSessionFromStorage = (): SessionData | null => {
+  try {
+    console.log('🔍 Checking localStorage for session...')
+    const data = localStorage.getItem(STORAGE_KEY)
+    console.log('📄 localStorage data:', data)
+    if (!data) {
+      console.log('❌ No session data found')
+      return null
+    }
+    const parsed = JSON.parse(data)
+    console.log('📋 Parsed session data:', parsed)
+    // Validate session data
+    if (!parsed.sessionId || !parsed.language) {
+      console.log('❌ Invalid session data')
+      return null
+    }
+    console.log('✅ Valid session found')
+    return parsed
+  } catch (error) {
+    console.error('❌ Failed to get session from localStorage:', error)
+    return null
+  }
+}
+
+const clearSessionFromStorage = () => {
+  try {
+    localStorage.removeItem(STORAGE_KEY)
+  } catch (error) {
+    console.error('Failed to clear session from localStorage:', error)
+  }
+}
+
+const generateSessionId = () => {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2)
+}
+
+const cleanupOldSessions = () => {
+  try {
+    const savedSession = localStorage.getItem(STORAGE_KEY)
+    if (savedSession) {
+      const data = JSON.parse(savedSession)
+      const lastSaved = new Date(data.lastSaved)
+      const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+      
+      // Remove sessions older than 7 days
+      if (lastSaved < sevenDaysAgo) {
+        localStorage.removeItem(STORAGE_KEY)
+        console.log('Cleaned up old session data')
+      }
+    }
+    
+    // Also cleanup any legacy keys that might exist
+    const keysToCheck = ['minddumper-backup', 'minddumper-temp', 'braindump-session']
+    keysToCheck.forEach(key => {
+      if (localStorage.getItem(key)) {
+        localStorage.removeItem(key)
+        console.log(`Cleaned up legacy key: ${key}`)
+      }
+    })
+  } catch (error) {
+    console.error('Failed to cleanup old sessions:', error)
+  }
+}
+
 function AppContent() {
   const { signOut } = useAuth()
   const { showToast } = useToast()
@@ -93,6 +180,52 @@ function AppContent() {
   const [editingWordId, setEditingWordId] = useState<string | null>(null)
   const [userWordsLoading, setUserWordsLoading] = useState(false)
   const [savingPreferences, setSavingPreferences] = useState(false)
+  const [autoSaveStatus, setAutoSaveStatus] = useState<string>('')
+  const autoSaveIntervalRef = useRef<NodeJS.Timeout | null>(null)
+  const [sessionId, setSessionId] = useState<string | null>(null)
+  const [isOnline, setIsOnline] = useState(true)
+  const [pendingSaves, setPendingSaves] = useState<{
+    language: string
+    ideas: string[]
+    total_words: number
+    duration_minutes: number
+    is_draft: boolean
+    session_id: string
+  }[]>([])
+
+  // Check for existing session on component mount
+  useEffect(() => {
+    // First cleanup old sessions
+    cleanupOldSessions()
+    
+    const savedSession = getSessionFromStorage()
+    if (savedSession) {
+      // Show recovery dialog
+      const shouldRecover = window.confirm(
+        `Er is een onafgemaakte mind dump sessie gevonden van ${new Date(savedSession.lastSaved).toLocaleString('nl-NL')}. Wil je deze hervatten?`
+      )
+      
+      if (shouldRecover) {
+        // Restore session data
+        setSessionId(savedSession.sessionId)
+        setCurrentLanguage(savedSession.language)
+        setTriggerWords(savedSession.triggerWords)
+        setAllIdeas(savedSession.allIdeas)
+        setCurrentWordIndex(savedSession.currentWordIndex)
+        setStartTime(new Date(savedSession.startTime))
+        setCurrentScreen('minddump')
+        setAutoSaveStatus('Sessie hersteld')
+        
+        // Start auto-save for recovered session
+        setTimeout(() => {
+          startAutoSave(savedSession.sessionId, savedSession.language)
+        }, 100)
+      } else {
+        // Clear old session if user doesn't want to recover
+        clearSessionFromStorage()
+      }
+    }
+  }, [])
 
   const showScreen = (screenId: Screen) => {
     setCurrentScreen(screenId)
@@ -384,6 +517,126 @@ function AppContent() {
     }
   }
 
+  const startAutoSave = (sessionId: string, language: Language) => {
+    // Clear any existing interval
+    if (autoSaveIntervalRef.current) {
+      clearInterval(autoSaveIntervalRef.current)
+    }
+    
+    // Start new interval for database saves (30 seconds)
+    autoSaveIntervalRef.current = setInterval(async () => {
+      if (allIdeas.length > 0) {
+        const duration = startTime ? Math.round((Date.now() - startTime.getTime()) / 60000) : 0
+        const saveData = {
+          language: language,
+          ideas: allIdeas,
+          total_words: currentWordIndex,
+          duration_minutes: duration,
+          is_draft: true,
+          session_id: sessionId
+        }
+        
+        if (isOnline) {
+          try {
+            await saveBrainDump(saveData)
+            setAutoSaveStatus('Automatisch opgeslagen')
+            setTimeout(() => setAutoSaveStatus(''), 2000)
+          } catch (error) {
+            console.error('Auto-save failed:', error)
+            setAutoSaveStatus('Auto-save mislukt - queued voor later')
+            setPendingSaves(prev => [...prev, saveData])
+            setTimeout(() => setAutoSaveStatus(''), 3000)
+          }
+        } else {
+          // Queue save for when online
+          setPendingSaves(prev => [...prev, saveData])
+          setAutoSaveStatus('Offline - save in wachtrij')
+          setTimeout(() => setAutoSaveStatus(''), 3000)
+        }
+      }
+    }, 30000) // 30 seconds
+  }
+  
+  const stopAutoSave = () => {
+    if (autoSaveIntervalRef.current) {
+      clearInterval(autoSaveIntervalRef.current)
+      autoSaveIntervalRef.current = null
+    }
+  }
+  
+  // Clean up interval on component unmount
+  useEffect(() => {
+    return () => {
+      stopAutoSave()
+    }
+  }, [])
+  
+  // Online/offline monitoring
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true)
+      setAutoSaveStatus('Verbinding hersteld')
+      setTimeout(() => setAutoSaveStatus(''), 2000)
+      
+      // Process any pending saves
+      if (pendingSaves.length > 0) {
+        setTimeout(() => processPendingSaves(), 100)
+      }
+    }
+    
+    const handleOffline = () => {
+      setIsOnline(false)
+      setAutoSaveStatus('Offline - alleen lokaal opgeslagen')
+    }
+    
+    // Set initial state
+    setIsOnline(navigator.onLine)
+    
+    // Add event listeners
+    window.addEventListener('online', handleOnline)
+    window.addEventListener('offline', handleOffline)
+    
+    return () => {
+      window.removeEventListener('online', handleOnline)
+      window.removeEventListener('offline', handleOffline)
+    }
+  }, [pendingSaves])
+  
+  // Warning before unload if session is active
+  useEffect(() => {
+    const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+      if (currentScreen === 'minddump' && (allIdeas.length > 0 || pendingSaves.length > 0)) {
+        const message = 'Je hebt een actieve mind dump sessie. Je voortgang is opgeslagen, maar weet je zeker dat je wilt afsluiten?'
+        e.preventDefault()
+        e.returnValue = message
+        return message
+      }
+    }
+    
+    window.addEventListener('beforeunload', handleBeforeUnload)
+    
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [currentScreen, allIdeas.length, pendingSaves.length])
+  
+  const processPendingSaves = async () => {
+    const saves = [...pendingSaves]
+    setPendingSaves([])
+    
+    for (const saveData of saves) {
+      try {
+        await saveBrainDump(saveData)
+        setAutoSaveStatus('Offline saves gesynchroniseerd')
+        setTimeout(() => setAutoSaveStatus(''), 2000)
+      } catch (error) {
+        console.error('Failed to process pending save:', error)
+        // Re-add failed saves back to queue
+        setPendingSaves(prev => [...prev, saveData])
+      }
+    }
+  }
+
   const saveWordPreferences = async () => {
     setSavingPreferences(true)
     
@@ -448,7 +701,12 @@ function AppContent() {
     setCurrentWordIndex(0)
     setCurrentIdeas([])
     setAllIdeas([])
-    setStartTime(new Date())
+    const sessionStartTime = new Date()
+    setStartTime(sessionStartTime)
+    
+    // Generate new session ID
+    const newSessionId = generateSessionId()
+    setSessionId(newSessionId)
     
     // Load trigger words from database
     try {
@@ -458,6 +716,22 @@ function AppContent() {
       // Also load full data for category display
       const fullWords = await getTriggerWords(language)
       setTriggerWordsData(fullWords)
+      
+      // Save initial session to localStorage
+      const sessionData: SessionData = {
+        sessionId: newSessionId,
+        language,
+        triggerWords: words,
+        allIdeas: [],
+        currentWordIndex: 0,
+        startTime: sessionStartTime.toISOString(),
+        lastSaved: new Date().toISOString()
+      }
+      saveSessionToStorage(sessionData)
+      
+      // Start auto-save
+      startAutoSave(newSessionId, language)
+      
     } catch {
       // Fallback to empty array, database.ts will handle fallback
       setTriggerWords([])
@@ -469,10 +743,30 @@ function AppContent() {
   }
 
   const handleIdeaSubmit = (idea: string) => {
+    console.log('📝 Idea submitted:', idea)
     if (idea.trim()) {
+      const newAllIdeas = [...allIdeas, idea]
+      console.log('📊 New ideas array:', newAllIdeas)
       setCurrentIdeas(prev => [...prev, idea])
-      setAllIdeas(prev => [...prev, idea])
+      setAllIdeas(newAllIdeas)
       setIdeaInput('')
+      
+      // Update localStorage immediately
+      if (sessionId && startTime) {
+        console.log('💾 Updating localStorage with sessionId:', sessionId)
+        const sessionData: SessionData = {
+          sessionId,
+          language: currentLanguage,
+          triggerWords,
+          allIdeas: newAllIdeas,
+          currentWordIndex,
+          startTime: startTime.toISOString(),
+          lastSaved: new Date().toISOString()
+        }
+        saveSessionToStorage(sessionData)
+      } else {
+        console.log('⚠️ Cannot save to localStorage - missing sessionId or startTime')
+      }
     } else {
       nextWord()
     }
@@ -486,26 +780,73 @@ function AppContent() {
       finishMindDump()
     } else {
       setCurrentWordIndex(nextIndex)
+      
+      // Update localStorage with new word index
+      if (sessionId && startTime) {
+        const sessionData: SessionData = {
+          sessionId,
+          language: currentLanguage,
+          triggerWords,
+          allIdeas,
+          currentWordIndex: nextIndex,
+          startTime: startTime.toISOString(),
+          lastSaved: new Date().toISOString()
+        }
+        saveSessionToStorage(sessionData)
+      }
     }
   }
 
   const finishMindDump = async () => {
+    // Stop auto-save
+    stopAutoSave()
+    
     // Calculate duration
     const duration = startTime ? Math.round((Date.now() - startTime.getTime()) / 60000) : 0
     
-    // Save to database (optional, continues even if it fails)
+    // Save final version to database (not a draft)
     try {
       await saveBrainDump({
         language: currentLanguage,
         ideas: allIdeas,
         total_words: currentWordIndex,
-        duration_minutes: duration
+        duration_minutes: duration,
+        is_draft: false,
+        session_id: sessionId
       })
     } catch {
       // Continue anyway - user can still export
     }
     
+    // Clear localStorage since session is complete
+    clearSessionFromStorage()
+    setSessionId(null)
+    setAutoSaveStatus('')
+    
     setCurrentScreen('finish')
+  }
+  
+  const saveAndExit = async () => {
+    if (allIdeas.length === 0) {
+      // No ideas to save, just go back
+      setCurrentScreen('home')
+      return
+    }
+    
+    const shouldSave = window.confirm(
+      `Je hebt ${allIdeas.length} ideeën. Wil je deze opslaan voordat je teruggaat naar het hoofdmenu?`
+    )
+    
+    if (shouldSave) {
+      await finishMindDump()
+    } else {
+      // Clear localStorage and go back without saving
+      stopAutoSave()
+      clearSessionFromStorage()
+      setSessionId(null)
+      setAutoSaveStatus('')
+      setCurrentScreen('home')
+    }
   }
 
   const exportMindDump = () => {
@@ -696,12 +1037,36 @@ function AppContent() {
         <div className="screen active">
           <div className="app-container">
             <div className="screen-header">
-              <button className="btn-back" onClick={() => showScreen('home')}>
+              <button className="btn-back" onClick={saveAndExit}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2"/>
                 </svg>
               </button>
               <h2>Brain Dump</h2>
+              {(autoSaveStatus || !isOnline || pendingSaves.length > 0) && (
+                <div className="status-indicators" style={{display: 'flex', alignItems: 'center', gap: '10px', fontSize: '12px', margin: '0 10px'}}>
+                  {!isOnline && (
+                    <div className="offline-indicator" style={{color: '#ff6b6b', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                      <span style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ff6b6b'}}></span>
+                      Offline
+                    </div>
+                  )}
+                  {pendingSaves.length > 0 && (
+                    <div className="pending-saves" style={{color: '#ffa500', display: 'flex', alignItems: 'center', gap: '4px'}}>
+                      <span style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ffa500'}}></span>
+                      {pendingSaves.length} save(s) in wachtrij
+                    </div>
+                  )}
+                  {autoSaveStatus && (
+                    <div className="auto-save-status" style={{
+                      color: autoSaveStatus.includes('mislukt') ? '#ff6b6b' : 
+                             autoSaveStatus.includes('hersteld') || autoSaveStatus.includes('opgeslagen') ? '#4caf50' : '#666'
+                    }}>
+                      {autoSaveStatus}
+                    </div>
+                  )}
+                </div>
+              )}
               <button className="btn-stop" onClick={finishMindDump}>Stop</button>
             </div>
             
