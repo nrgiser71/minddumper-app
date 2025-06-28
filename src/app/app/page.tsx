@@ -72,6 +72,7 @@ interface SessionData {
   language: Language
   triggerWords: string[]
   allIdeas: string[]
+  currentIdeas: string[]  // Ideas for current word
   currentWordIndex: number
   startTime: string
   lastSaved: string
@@ -79,34 +80,22 @@ interface SessionData {
 
 const saveSessionToStorage = (sessionData: SessionData) => {
   try {
-    console.log('💾 Saving to localStorage:', sessionData)
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData))
-    console.log('✅ Saved to localStorage successfully')
   } catch (error) {
-    console.error('❌ Failed to save session to localStorage:', error)
+    console.error('Failed to save session to localStorage:', error)
   }
 }
 
 const getSessionFromStorage = (): SessionData | null => {
   try {
-    console.log('🔍 Checking localStorage for session...')
     const data = localStorage.getItem(STORAGE_KEY)
-    console.log('📄 localStorage data:', data)
-    if (!data) {
-      console.log('❌ No session data found')
-      return null
-    }
+    if (!data) return null
     const parsed = JSON.parse(data)
-    console.log('📋 Parsed session data:', parsed)
     // Validate session data
-    if (!parsed.sessionId || !parsed.language) {
-      console.log('❌ Invalid session data')
-      return null
-    }
-    console.log('✅ Valid session found')
+    if (!parsed.sessionId || !parsed.language) return null
     return parsed
   } catch (error) {
-    console.error('❌ Failed to get session from localStorage:', error)
+    console.error('Failed to get session from localStorage:', error)
     return null
   }
 }
@@ -134,7 +123,6 @@ const cleanupOldSessions = () => {
       // Remove sessions older than 7 days
       if (lastSaved < sevenDaysAgo) {
         localStorage.removeItem(STORAGE_KEY)
-        console.log('Cleaned up old session data')
       }
     }
     
@@ -143,7 +131,6 @@ const cleanupOldSessions = () => {
     keysToCheck.forEach(key => {
       if (localStorage.getItem(key)) {
         localStorage.removeItem(key)
-        console.log(`Cleaned up legacy key: ${key}`)
       }
     })
   } catch (error) {
@@ -211,6 +198,7 @@ function AppContent() {
         setCurrentLanguage(savedSession.language)
         setTriggerWords(savedSession.triggerWords)
         setAllIdeas(savedSession.allIdeas)
+        setCurrentIdeas(savedSession.currentIdeas || [])  // Restore current word ideas
         setCurrentWordIndex(savedSession.currentWordIndex)
         setStartTime(new Date(savedSession.startTime))
         setCurrentScreen('minddump')
@@ -723,6 +711,7 @@ function AppContent() {
         language,
         triggerWords: words,
         allIdeas: [],
+        currentIdeas: [],
         currentWordIndex: 0,
         startTime: sessionStartTime.toISOString(),
         lastSaved: new Date().toISOString()
@@ -743,29 +732,25 @@ function AppContent() {
   }
 
   const handleIdeaSubmit = (idea: string) => {
-    console.log('📝 Idea submitted:', idea)
     if (idea.trim()) {
       const newAllIdeas = [...allIdeas, idea]
-      console.log('📊 New ideas array:', newAllIdeas)
       setCurrentIdeas(prev => [...prev, idea])
       setAllIdeas(newAllIdeas)
       setIdeaInput('')
       
       // Update localStorage immediately
       if (sessionId && startTime) {
-        console.log('💾 Updating localStorage with sessionId:', sessionId)
         const sessionData: SessionData = {
           sessionId,
           language: currentLanguage,
           triggerWords,
           allIdeas: newAllIdeas,
+          currentIdeas: [...currentIdeas, idea],  // Add new idea to current ideas
           currentWordIndex,
           startTime: startTime.toISOString(),
           lastSaved: new Date().toISOString()
         }
         saveSessionToStorage(sessionData)
-      } else {
-        console.log('⚠️ Cannot save to localStorage - missing sessionId or startTime')
       }
     } else {
       nextWord()
@@ -788,6 +773,7 @@ function AppContent() {
           language: currentLanguage,
           triggerWords,
           allIdeas,
+          currentIdeas: [],  // Reset current ideas for new word
           currentWordIndex: nextIndex,
           startTime: startTime.toISOString(),
           lastSaved: new Date().toISOString()
@@ -1119,6 +1105,20 @@ function AppContent() {
                   <div key={index} className="idea-item">{idea}</div>
                 ))}
               </div>
+              
+              {/* Show all ideas so far if session was recovered and has previous ideas */}
+              {sessionId && allIdeas.length > currentIdeas.length && (
+                <div className="previous-ideas" style={{marginTop: '20px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '8px'}}>
+                  <h4 style={{margin: '0 0 10px 0', fontSize: '14px', color: '#666'}}>Alle ideeën tot nu toe ({allIdeas.length}):</h4>
+                  <div className="ideas-list" style={{maxHeight: '120px', overflowY: 'auto'}}>
+                    {allIdeas.map((idea, index) => (
+                      <div key={index} className="idea-item" style={{fontSize: '13px', padding: '4px 8px'}}>
+                        {index + 1}. {idea}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

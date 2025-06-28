@@ -23,11 +23,11 @@ npm run typecheck
 
 ### 🚨 VERPLICHTE WORKFLOW VOOR CODE WIJZIGINGEN
 
-**BELANGRIJK: Vercel heeft een limiet van deploys per dag. Elke gefaalde build verspilt deze kostbare deploy quota.**
+**BELANGRIJK: We testen ALTIJD direct in productie - NOOIT lokaal.**
 
-**ALTIJD DEZE STAPPEN VOLGEN VOOR ELKE GIT COMMIT:**
+**ALTIJD DEZE STAPPEN VOLGEN VOOR ELKE WIJZIGING:**
 
-1. **Lokaal builden en testen**:
+1. **Lokaal builden (alleen voor validatie)**:
    ```bash
    npm run build
    ```
@@ -37,20 +37,31 @@ npm run typecheck
    - Geen ESLint errors  
    - Geen compilation failures
    
-3. **Dan pas naar Git**:
+3. **Direct naar productie pushen**:
    ```bash
    git add .
    git commit -m "beschrijving"
    git push
    ```
 
-**NOOIT direct naar Git pushen zonder lokale build check!**
+4. **Testen in productie**:
+   - Test nieuwe features op live website
+   - Check browser console voor errors
+   - Verifieer functionaliteit werkt correct
+
+**🎯 WORKFLOW: Build lokaal → Push → Test in productie**
 
 Dit voorkomt:
 - Verspilde deploy quota
 - Gefaalde production builds
 - Tijdverlies door debug cycles
 - Frustratie bij gebruiker
+
+**PRODUCTIE = TEST ENVIRONMENT**
+- Alle testing gebeurt op live website
+- Snelle iteratie cyclus via git push
+- Direct feedback van echte gebruikers
+- Geen lokale development server nodig
 
 ### Database Beheer
 - Admin interface: `/admin` - Voor het toevoegen van categorieën en triggerwoorden
@@ -339,16 +350,17 @@ ADMIN_PASSWORD=               # Admin dashboard wachtwoord
 
 ---
 
-**Status**: Project volledig functioneel en deployed op Vercel - **MULTILINGUAL COMPLEET** 🌍
-**Laatste Update**: Multilingual support voor 5 talen volledig geïmplementeerd met language-specific features
+**Status**: Project volledig functioneel en deployed op Vercel - **AUTO-SAVE SYSTEEM COMPLEET** 💾
+**Laatste Update**: Comprehensive auto-save systeem geïmplementeerd voor zero data loss
 **Hoogtepunten**: 
-- ✅ 5 volledig werkende talen (NL, EN, DE, FR, ES)
-- ✅ Taalspecifieke user preferences en custom words
-- ✅ Performance optimalisaties (25s → <1s)
-- ✅ Database migrations succesvol uitgevoerd
-- ✅ Alle language switching bugs opgelost
+- ✅ localStorage backup: Onmiddellijke opslag na elke idee
+- ✅ 30-second database auto-save met draft/final status
+- ✅ Session recovery: Automatische herstel na browser crash
+- ✅ Connection monitoring: Offline detection met sync queue
+- ✅ UI feedback: Real-time status indicators
+- ✅ Database schema updates: is_draft, session_id, updated_at kolommen
 
-**Volgende Stappen**: Gebruikerstesting van multilingual features en eventuele subcategory translations
+**Volgende Stappen**: Test auto-save systeem in productie en verifieer zero data loss garantie
 
 ## Multilingual System Implementation Details
 
