@@ -10,20 +10,12 @@ body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
     line-height: 1.5;
     color: #1D1D1F;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #4facfe 100%);
-    background-size: 400% 400%;
-    animation: gradientShift 15s ease infinite;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     min-height: 100vh;
     font-feature-settings: 'liga' 1, 'kern' 1;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-}
-
-@keyframes gradientShift {
-    0% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
 }
 
 /* Screen Management */
@@ -38,7 +30,7 @@ body {
 }
 
 .app-container {
-    max-width: 420px;
+    max-width: 840px;
     margin: 0 auto;
     padding: 32px 24px;
     position: relative;
