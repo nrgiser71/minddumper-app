@@ -44,7 +44,7 @@ export default function AdminLogin() {
   return (
     <div className="admin-login-container">
       <div className="login-card">
-        <img src="/logo.png" alt="MindDump" className="admin-logo" />
+        <img src="/Logo.png" alt="MindDump" className="admin-logo" />
         <h1 className="login-title">Admin Login</h1>
         <p className="login-subtitle">Toegang voor beheerders</p>
         
