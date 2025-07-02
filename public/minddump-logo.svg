@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="80" height="80" rx="20" fill="#FF6B35"/>
+  <g transform="translate(16, 16)">
+    <!-- Brain icon -->
+    <path d="M24 8C28.4183 8 32 11.5817 32 16C32 17.3333 31.6667 18.5833 31.0833 19.6667C35.5 20.5 39 24.3333 39 28.8333C39 34.0833 34.8333 38.25 29.5833 38.25C29.0833 38.25 28.5833 38.1667 28.1667 38.0833C27.0833 40.9167 24.3333 43 21 43C17.6667 43 14.9167 40.9167 13.8333 38.0833C13.4167 38.1667 12.9167 38.25 12.4167 38.25C7.16667 38.25 3 34.0833 3 28.8333C3 24.3333 6.5 20.5 10.9167 19.6667C10.3333 18.5833 10 17.3333 10 16C10 11.5817 13.5817 8 18 8C19.8333 8 21.5 8.66667 22.8333 9.75C23.5 8.66667 24.6667 8 26 8H24Z" fill="white" opacity="0.9"/>
+    
+    <!-- Mind map nodes -->
+    <circle cx="21" cy="24" r="3" fill="white"/>
+    <circle cx="13" cy="20" r="2" fill="white" opacity="0.8"/>
+    <circle cx="29" cy="20" r="2" fill="white" opacity="0.8"/>
+    <circle cx="16" cy="30" r="2" fill="white" opacity="0.8"/>
+    <circle cx="26" cy="30" r="2" fill="white" opacity="0.8"/>
+    
+    <!-- Connecting lines -->
+    <line x1="21" y1="24" x2="13" y2="20" stroke="white" stroke-width="1.5" opacity="0.6"/>
+    <line x1="21" y1="24" x2="29" y2="20" stroke="white" stroke-width="1.5" opacity="0.6"/>
+    <line x1="21" y1="24" x2="16" y2="30" stroke="white" stroke-width="1.5" opacity="0.6"/>
+    <line x1="21" y1="24" x2="26" y2="30" stroke="white" stroke-width="1.5" opacity="0.6"/>
+  </g>
+</svg>

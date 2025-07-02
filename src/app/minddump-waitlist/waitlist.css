@@ -1,0 +1,541 @@
+/* MindDump Waitlist Styling */
+
+:root {
+  /* MindDump color scheme */
+  --primary-color: #FF6B35;
+  --primary-hover: #E55A2B;
+  --macos-bg-primary: #ffffff;
+  --macos-bg-secondary: #f8f9fa;
+  --macos-text-primary: #1d1d1f;
+  --macos-text-secondary: #86868b;
+  --macos-gray-1: #f5f5f7;
+  --macos-gray-2: #e8e8ed;
+  --macos-gray-3: #d2d2d7;
+  --macos-blue: #007aff;
+  --macos-green: #34c759;
+  --macos-red: #ff3b30;
+  --macos-orange: #ff9500;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  line-height: 1.6;
+  color: var(--macos-text-primary);
+  background: var(--macos-bg-secondary);
+}
+
+.waitlist-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Waitlist Banner */
+.waitlist-banner {
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  color: white;
+  padding: 12px 24px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 14px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.banner-emoji {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+/* Container */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  flex: 1;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  padding: 80px 0 60px;
+}
+
+.logo {
+  width: 80px;
+  height: 80px;
+  border-radius: 20px;
+  margin-bottom: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.hero-title {
+  font-size: 48px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-subtitle {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--macos-text-primary);
+  margin-bottom: 16px;
+}
+
+.hero-description {
+  font-size: 18px;
+  color: var(--macos-text-secondary);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Signup Section */
+.signup-section {
+  background: var(--macos-bg-primary);
+  border-radius: 24px;
+  padding: 48px;
+  margin-bottom: 80px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  text-align: center;
+}
+
+.signup-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: var(--macos-text-primary);
+}
+
+.signup-subtitle {
+  font-size: 18px;
+  color: var(--macos-text-secondary);
+  margin-bottom: 32px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.waitlist-stats {
+  background: var(--macos-gray-1);
+  border-radius: 12px;
+  padding: 16px 24px;
+  margin-bottom: 32px;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.signup-form {
+  max-width: 400px;
+  margin: 0 auto 24px;
+}
+
+.name-fields {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid var(--macos-gray-2);
+  border-radius: 12px;
+  font-size: 16px;
+  background: var(--macos-bg-primary);
+  transition: all 0.2s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+}
+
+.email-input {
+  margin-bottom: 20px;
+}
+
+.signup-button {
+  width: 100%;
+  padding: 18px 24px;
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.signup-button:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+.signup-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.privacy-text {
+  font-size: 14px;
+  color: var(--macos-text-secondary);
+}
+
+/* Screenshots Section */
+.screenshots-section {
+  padding: 80px 0;
+  background: var(--macos-bg-secondary);
+}
+
+.screenshots-title {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 16px;
+  color: var(--macos-text-primary);
+}
+
+.screenshots-subtitle {
+  font-size: 18px;
+  color: var(--macos-text-secondary);
+  text-align: center;
+  margin-bottom: 48px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.screenshots-container {
+  overflow: hidden;
+}
+
+.screenshot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px;
+  transition: transform 0.3s ease;
+}
+
+.screenshot-item {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.screenshot-item:hover {
+  transform: translateY(-4px);
+}
+
+.macos-window {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+}
+
+.macos-titlebar {
+  background: #f6f6f6;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.macos-buttons {
+  display: flex;
+  gap: 8px;
+  margin-right: 12px;
+}
+
+.macos-button {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.macos-button.close {
+  background: #ff5f57;
+}
+
+.macos-button.minimize {
+  background: #ffbd2e;
+}
+
+.macos-button.maximize {
+  background: #28ca42;
+}
+
+.macos-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: #333;
+}
+
+.screenshot-image {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Mobile Carousel */
+.carousel-indicators {
+  display: none;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--macos-gray-3);
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.indicator.active {
+  background: var(--primary-color);
+}
+
+.demo-cta {
+  text-align: center;
+  margin-top: 48px;
+}
+
+.demo-button {
+  background: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 16px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-button:hover {
+  background: var(--primary-hover);
+  transform: translateY(-1px);
+}
+
+/* Features Section */
+.features-section {
+  padding: 80px 0;
+}
+
+.features-title {
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 48px;
+  color: var(--macos-text-primary);
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-card {
+  background: var(--macos-bg-primary);
+  border-radius: 16px;
+  padding: 32px;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: transform 0.2s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.feature-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+.feature-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: var(--macos-text-primary);
+}
+
+.feature-description {
+  font-size: 16px;
+  color: var(--macos-text-secondary);
+  line-height: 1.5;
+}
+
+/* Footer */
+.footer {
+  background: var(--macos-text-primary);
+  color: var(--macos-text-secondary);
+  text-align: center;
+  padding: 24px;
+  margin-top: auto;
+}
+
+/* Toast Notifications */
+.toast-container {
+  position: fixed;
+  top: 80px;
+  right: 24px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 400px;
+}
+
+.toast {
+  background: white;
+  border-radius: 12px;
+  padding: 16px 20px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  animation: slideIn 0.3s ease;
+  border-left: 4px solid;
+}
+
+.toast-success {
+  border-left-color: var(--macos-green);
+}
+
+.toast-error {
+  border-left-color: var(--macos-red);
+}
+
+.toast-info {
+  border-left-color: var(--macos-blue);
+}
+
+.toast-message {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: var(--macos-text-secondary);
+  cursor: pointer;
+  margin-left: 12px;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toast-close:hover {
+  color: var(--macos-text-primary);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 16px;
+  }
+  
+  .hero-title {
+    font-size: 36px;
+  }
+  
+  .hero-subtitle {
+    font-size: 20px;
+  }
+  
+  .signup-section {
+    padding: 32px 24px;
+    margin-bottom: 60px;
+  }
+  
+  .name-fields {
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .screenshot-grid {
+    display: flex;
+    overflow: hidden;
+    gap: 0;
+  }
+  
+  .screenshot-item {
+    min-width: 100%;
+    flex-shrink: 0;
+    padding: 0 12px;
+  }
+  
+  .carousel-indicators {
+    display: flex;
+  }
+  
+  .toast-container {
+    left: 16px;
+    right: 16px;
+    max-width: none;
+  }
+  
+  .toast {
+    margin: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 28px;
+  }
+  
+  .signup-title {
+    font-size: 24px;
+  }
+  
+  .features-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+}

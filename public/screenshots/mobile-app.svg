@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#f8f9fa"/>
+  
+  <!-- Mobile device frame -->
+  <rect x="150" y="30" width="100" height="180" rx="12" fill="#000" fill-opacity="0.9"/>
+  <rect x="155" y="40" width="90" height="160" rx="8" fill="#ffffff"/>
+  
+  <!-- Mobile status bar -->
+  <rect x="160" y="45" width="80" height="15" fill="#f0f0f0"/>
+  <circle cx="165" cy="52" r="2" fill="#34c759"/>
+  <rect x="230" y="50" width="8" height="4" rx="1" fill="#333"/>
+  
+  <!-- Mobile mind map -->
+  <circle cx="200" cy="120" r="15" fill="#FF6B35"/>
+  <text x="200" y="125" text-anchor="middle" font-family="Arial" font-size="8" fill="white">Ideas</text>
+  
+  <!-- Mobile nodes -->
+  <circle cx="170" cy="90" r="8" fill="#34c759"/>
+  <circle cx="230" cy="90" r="8" fill="#007aff"/>
+  <circle cx="170" cy="150" r="8" fill="#ff9500"/>
+  <circle cx="230" cy="150" r="8" fill="#ff3b30"/>
+  
+  <!-- Connection lines -->
+  <line x1="200" y1="120" x2="170" y2="90" stroke="#666" stroke-width="1"/>
+  <line x1="200" y1="120" x2="230" y2="90" stroke="#666" stroke-width="1"/>
+  <line x1="200" y1="120" x2="170" y2="150" stroke="#666" stroke-width="1"/>
+  <line x1="200" y1="120" x2="230" y2="150" stroke="#666" stroke-width="1"/>
+  
+  <!-- Touch indicator -->
+  <circle cx="200" cy="120" r="20" fill="none" stroke="#FF6B35" stroke-width="2" stroke-dasharray="3,3" opacity="0.5"/>
+  
+  <!-- Mobile UI elements -->
+  <rect x="160" y="170" width="80" height="20" rx="4" fill="#FF6B35"/>
+  <text x="200" y="182" text-anchor="middle" font-family="Arial" font-size="8" fill="white">Add Node</text>
+  
+  <!-- Desktop sync indicator -->
+  <rect x="50" y="100" width="80" height="60" rx="8" fill="#ffffff" stroke="#e1e5e9"/>
+  <text x="90" y="115" text-anchor="middle" font-family="Arial" font-size="10" fill="#333">Desktop</text>
+  <circle cx="90" cy="135" r="15" fill="#34c759"/>
+  <text x="90" y="140" text-anchor="middle" font-family="Arial" font-size="8" fill="white">Synced</text>
+  
+  <!-- Sync arrow -->
+  <path d="M130 130 Q140 130 145 130" stroke="#34c759" stroke-width="2" fill="none"/>
+  <polygon points="143,128 148,130 143,132" fill="#34c759"/>
+</svg>
