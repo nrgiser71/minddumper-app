@@ -67,9 +67,12 @@ export async function POST(request: NextRequest) {
     console.log(`✅ New MindDump waitlist signup: ${email}`)
     
     // Add to GoHighLevel if API key is configured
+    console.log('🔑 GHL_API_KEY configured:', !!process.env.GHL_API_KEY)
     if (process.env.GHL_API_KEY) {
       try {
         const locationId = process.env.GHL_LOCATION_ID || 'FLRLwGihIMJsxbRS39Kt'
+        console.log('🏢 Using Location ID:', locationId)
+        console.log('📧 Processing email:', email.toLowerCase().trim())
         
         // First, search for existing contact by email
         const searchResponse = await fetch(
@@ -88,10 +91,14 @@ export async function POST(request: NextRequest) {
 
         if (searchResponse.ok) {
           const searchData = await searchResponse.json()
+          console.log('🔍 GHL Search Response:', searchData)
           if (searchData.contact && searchData.contact.id) {
             contactId = searchData.contact.id
             console.log(`📍 Found existing contact: ${contactId}`)
           }
+        } else {
+          const errorText = await searchResponse.text()
+          console.error('❌ GHL Search Error:', searchResponse.status, errorText)
         }
 
         if (!contactId) {
@@ -122,8 +129,12 @@ export async function POST(request: NextRequest) {
 
           if (createResponse.ok) {
             const createData = await createResponse.json()
+            console.log('✅ GHL Create Response:', createData)
             contactId = createData.contact?.id
             console.log(`✅ New MindDump contact created: ${contactId}`)
+          } else {
+            const errorText = await createResponse.text()
+            console.error('❌ GHL Create Error:', createResponse.status, errorText)
           }
         } else {
           // Add tag to existing contact
@@ -141,6 +152,9 @@ export async function POST(request: NextRequest) {
 
           if (tagResponse.ok) {
             console.log(`✅ MindDump tag added to existing contact: ${contactId}`)
+          } else {
+            const errorText = await tagResponse.text()
+            console.error('❌ GHL Tag Error:', tagResponse.status, errorText)
           }
         }
 
