@@ -85,14 +85,14 @@ export default function MindDumpWaitlist() {
       const data = await response.json()
 
       if (response.ok) {
-        showToast(`🎉 Perfect! Je staat nu op positie ${data.position} op de wachtlijst. We houden je op de hoogte!`, 'success')
+        showToast('🎉 Perfect! Je staat nu op de MindDumper wachtlijst. We houden je op de hoogte!', 'success')
         setFirstname('')
         setLastname('')
         setEmail('')
         loadWaitlistStats() // Refresh stats
       } else {
         if (data.already_exists) {
-          showToast('Je staat al op de wachtlijst! We laten je weten zodra MindDump beschikbaar is.', 'error')
+          showToast('🎉 Perfect! Je staat al op de MindDumper wachtlijst. We houden je op de hoogte!', 'success')
         } else {
           showToast(data.error || 'Er is een fout opgetreden bij het aanmelden', 'error')
         }
