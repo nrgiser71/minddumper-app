@@ -228,8 +228,8 @@ body {
 
 .screenshot-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 32px;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 24px;
@@ -238,11 +238,34 @@ body {
 
 .screenshot-item {
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: all 0.3s ease;
+  position: relative;
 }
 
 .screenshot-item:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
+}
+
+.screenshot-item:hover .macos-window {
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+}
+
+.screenshot-info {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.screenshot-info h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--macos-text-primary);
+  margin-bottom: 8px;
+}
+
+.screenshot-info p {
+  font-size: 14px;
+  color: var(--macos-text-secondary);
+  line-height: 1.5;
 }
 
 .macos-window {
@@ -250,6 +273,7 @@ body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  transition: box-shadow 0.3s ease;
 }
 
 .macos-titlebar {
@@ -418,6 +442,96 @@ body {
   margin-top: auto;
 }
 
+/* Lightbox */
+.lightbox {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.lightbox-content {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  animation: scaleIn 0.3s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.lightbox-close {
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 48px;
+  font-weight: 300;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.lightbox-close:hover {
+  transform: rotate(90deg);
+  color: var(--primary-color);
+}
+
+.lightbox-image-container {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+}
+
+.lightbox-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(90vh - 60px);
+}
+
+.lightbox-title {
+  text-align: center;
+  color: white;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 20px;
+}
+
 /* Toast Notifications */
 .toast-container {
   position: fixed;
@@ -495,6 +609,23 @@ body {
   }
 }
 
+/* Tablet Responsive */
+@media (max-width: 1024px) {
+  .screenshot-grid {
+    gap: 24px;
+  }
+  
+  .lightbox-close {
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 32px;
+  }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .container {
@@ -526,19 +657,25 @@ body {
   }
   
   .screenshot-grid {
-    display: flex;
-    overflow: hidden;
-    gap: 0;
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 0 16px;
   }
   
   .screenshot-item {
-    min-width: 100%;
-    flex-shrink: 0;
-    padding: 0 12px;
+    width: 100%;
+  }
+  
+  .screenshot-info h3 {
+    font-size: 16px;
+  }
+  
+  .screenshot-info p {
+    font-size: 13px;
   }
   
   .carousel-indicators {
-    display: flex;
+    display: none;
   }
   
   .toast-container {
@@ -549,6 +686,27 @@ body {
   
   .toast {
     margin: 0;
+  }
+  
+  .lightbox {
+    padding: 20px;
+  }
+  
+  .lightbox-content {
+    width: 100%;
+  }
+  
+  .lightbox-close {
+    top: 10px;
+    right: 10px;
+    font-size: 32px;
+    width: 32px;
+    height: 32px;
+  }
+  
+  .lightbox-title {
+    font-size: 16px;
+    margin-top: 12px;
   }
 }
 

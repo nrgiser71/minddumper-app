@@ -17,6 +17,8 @@ export default function MindDumpWaitlist() {
   const [waitlistStats, setWaitlistStats] = useState('Bezig met laden...')
   const [toasts, setToasts] = useState<ToastType[]>([])
   const [currentSlide, setCurrentSlide] = useState(0)
+  const [lightboxOpen, setLightboxOpen] = useState(false)
+  const [lightboxImage, setLightboxImage] = useState({ src: '', title: '' })
 
   // Toast management
   const showToast = (message: string, type: ToastType['type'] = 'info') => {
@@ -119,6 +121,18 @@ export default function MindDumpWaitlist() {
   // Screenshot carousel for mobile
   const updateCarousel = (slideIndex: number) => {
     setCurrentSlide(slideIndex)
+  }
+
+  // Lightbox functions
+  const openLightbox = (screenshot: { src: string; title: string; description: string }) => {
+    setLightboxImage({ src: screenshot.src, title: screenshot.title })
+    setLightboxOpen(true)
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeLightbox = () => {
+    setLightboxOpen(false)
+    document.body.style.overflow = 'auto'
   }
 
   const screenshots = [
@@ -244,7 +258,11 @@ export default function MindDumpWaitlist() {
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
             >
               {screenshots.map((screenshot, index) => (
-                <div key={index} className="screenshot-item">
+                <div 
+                  key={index} 
+                  className="screenshot-item"
+                  onClick={() => openLightbox(screenshot)}
+                >
                   <div className="macos-window">
                     <div className="macos-titlebar">
                       <div className="macos-buttons">
@@ -260,6 +278,10 @@ export default function MindDumpWaitlist() {
                       className="screenshot-image" 
                       loading="lazy" 
                     />
+                  </div>
+                  <div className="screenshot-info">
+                    <h3>{screenshot.title}</h3>
+                    <p>{screenshot.description}</p>
                   </div>
                 </div>
               ))}
@@ -346,6 +368,25 @@ export default function MindDumpWaitlist() {
       <footer className="footer">
         <p>&copy; 2025 MindDump. Binnenkort beschikbaar.</p>
       </footer>
+
+      {/* Lightbox */}
+      {lightboxOpen && (
+        <div className="lightbox" onClick={closeLightbox}>
+          <div className="lightbox-content" onClick={(e) => e.stopPropagation()}>
+            <button className="lightbox-close" onClick={closeLightbox}>
+              ×
+            </button>
+            <div className="lightbox-image-container">
+              <img 
+                src={lightboxImage.src} 
+                alt={lightboxImage.title} 
+                className="lightbox-image"
+              />
+            </div>
+            <div className="lightbox-title">{lightboxImage.title}</div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
