@@ -303,63 +303,6 @@ export default function MindDumpWaitlist() {
             <button className="demo-button" onClick={scrollToSignup}>
               📋 Schrijf je in voor early access →
             </button>
-            <p className="landing-link">
-              <a href="/landing">🔍 Bekijk de volledige productpagina</a>
-            </p>
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section className="features-section">
-          <h2 className="features-title">Wat maakt MindDump uniek?</h2>
-          <div className="features-grid">
-            <div className="feature-card">
-              <span className="feature-icon">🧠</span>
-              <h3 className="feature-title">AI-Powered Mind Mapping</h3>
-              <p className="feature-description">
-                Intelligente suggesties en automatische structurering van je gedachten en ideeën.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <span className="feature-icon">🎨</span>
-              <h3 className="feature-title">Visuele Organisatie</h3>
-              <p className="feature-description">
-                Prachtige, intuïtieve interface om complexe projecten overzichtelijk te houden.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <span className="feature-icon">🔄</span>
-              <h3 className="feature-title">Real-time Synchronisatie</h3>
-              <p className="feature-description">
-                Werk samen aan mind maps die automatisch synchroniseren tussen al je devices.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <span className="feature-icon">📱</span>
-              <h3 className="feature-title">Cross-Platform</h3>
-              <p className="feature-description">
-                Beschikbaar op web, desktop, en mobile. Je mind maps overal bij de hand.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <span className="feature-icon">📊</span>
-              <h3 className="feature-title">Smart Analytics</h3>
-              <p className="feature-description">
-                Inzicht in je denkpatronen en productiviteit door geavanceerde analytics.
-              </p>
-            </div>
-
-            <div className="feature-card">
-              <span className="feature-icon">🎯</span>
-              <h3 className="feature-title">Focus Mode</h3>
-              <p className="feature-description">
-                Elimineer afleiding en focus op één onderdeel van je mind map tegelijk.
-              </p>
-            </div>
           </div>
         </section>
       </div>
