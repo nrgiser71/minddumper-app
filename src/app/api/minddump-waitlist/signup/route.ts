@@ -47,21 +47,16 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('MindDump waitlist signup error:', error)
       
-      // Handle duplicate email
+      // Handle duplicate email - but still process GoHighLevel
       if (error.code === '23505') {
+        console.log('📧 Duplicate email detected, but will still process GoHighLevel tag')
+        // Don't return yet - continue to GoHighLevel processing
+      } else {
         return NextResponse.json(
-          { 
-            error: 'Dit email adres staat al op de MindDump wachtlijst',
-            already_exists: true 
-          },
-          { status: 409 }
+          { error: 'Er is een fout opgetreden. Probeer het later opnieuw.' },
+          { status: 500 }
         )
       }
-      
-      return NextResponse.json(
-        { error: 'Er is een fout opgetreden. Probeer het later opnieuw.' },
-        { status: 500 }
-      )
     }
     
     console.log(`✅ New MindDump waitlist signup: ${email}`)
@@ -174,11 +169,21 @@ export async function POST(request: NextRequest) {
     
     const totalCount = count || 1
     
+    // Check if this was a duplicate email (no data returned from insert)
+    if (error && error.code === '23505') {
+      return NextResponse.json({ 
+        success: true, 
+        message: 'Je tag is toegevoegd! Je staat al op de MindDump wachtlijst.',
+        already_exists: true,
+        position: totalCount
+      })
+    }
+    
     return NextResponse.json({ 
       success: true, 
       message: 'Je staat nu op de MindDump wachtlijst!',
       position: totalCount,
-      id: data.id
+      id: data?.id
     })
     
   } catch (error) {
