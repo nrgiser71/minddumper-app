@@ -123,24 +123,29 @@ export default function MindDumpWaitlist() {
 
   const screenshots = [
     {
-      title: "Mind Map Creator",
-      description: "Creëer prachtige mind maps met drag & drop interface",
-      src: "/screenshots/mind-map-creator.svg"
+      title: "Hoofdpagina",
+      description: "Start direct met je brain dump - één druk op de knop en je bent vertrokken",
+      src: "/screenshots/Hoofdpagina.svg"
     },
     {
-      title: "AI Suggestions", 
-      description: "Intelligente suggesties helpen je gedachten structureren",
-      src: "/screenshots/ai-suggestions.svg"
+      title: "MindDump in Actie", 
+      description: "Triggerwoorden helpen je om alles uit je hoofd te krijgen - van taken tot ideeën",
+      src: "/screenshots/MindDump.svg"
     },
     {
-      title: "Collaboration",
-      description: "Real-time samenwerking aan mind maps", 
-      src: "/screenshots/collaboration.svg"
+      title: "Configuratie",
+      description: "Personaliseer je ervaring: voeg eigen woorden toe en kies uit 300+ triggerwoorden", 
+      src: "/screenshots/Configuratie.svg"
     },
     {
-      title: "Mobile App",
-      description: "Onderweg mind maps bekijken en bewerken",
-      src: "/screenshots/mobile-app.svg"
+      title: "Taalkeuzescherm",
+      description: "Kies je voorkeurstaal voor een natuurlijke brain dump ervaring",
+      src: "/screenshots/Talen.svg"
+    },
+    {
+      title: "Geschiedenis",
+      description: "Bekijk en exporteer al je eerdere brain dumps - jouw gedachten veilig bewaard",
+      src: "/screenshots/Geschiedenis.svg"
     }
   ]
 
