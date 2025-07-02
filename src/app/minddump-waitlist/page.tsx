@@ -276,6 +276,9 @@ export default function MindDumpWaitlist() {
             <button className="demo-button" onClick={scrollToSignup}>
               📋 Schrijf je in voor early access →
             </button>
+            <p className="landing-link">
+              <a href="/landing">🔍 Bekijk de volledige productpagina</a>
+            </p>
           </div>
         </section>
 

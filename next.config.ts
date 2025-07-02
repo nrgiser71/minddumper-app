@@ -32,6 +32,11 @@ const nextConfig: NextConfig = {
         destination: '/admin-login',
         permanent: false,
       },
+      {
+        source: '/home',
+        destination: '/landing',
+        permanent: false,
+      },
       // Redirect root to waitlist during pre-launch
       {
         source: '/',

@@ -338,6 +338,22 @@ body {
   transform: translateY(-1px);
 }
 
+.landing-link {
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+.landing-link a {
+  color: var(--macos-text-secondary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.landing-link a:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
 /* Features Section */
 .features-section {
   padding: 80px 0;
