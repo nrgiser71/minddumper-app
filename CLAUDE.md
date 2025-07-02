@@ -1,8 +1,8 @@
 # MindDumper App - Claude Development Notes
 
-## Project Status: SOBER INTERFACE REDESIGN COMPLEET ✅ - Payment Integration PENDING 🚧
+## Project Status: WAITLIST SYSTEEM LIVE ✅ - Production Ready 🚀
 
-Het MindDumper project basis functionaliteiten zijn succesvol afgerond. Admin dashboard geïmplementeerd. **Landingspagina getransformeerd naar Engels met €29 premium positioning.** **Interface redesigned naar sobere, functionele styling.** **Volgende fase: Stripe Payment Integration voor betaalde toegang.**
+Het MindDumper project is succesvol uitgebreid met een volledig werkend waitlist systeem. **Complete waitlist infrastructuur geïmplementeerd met GoHighLevel integratie en email automation.** **Landingspagina toegankelijk + Admin dashboard operationeel.** **Systeem is production-ready voor early access registraties.**
 
 ## Belangrijke Opdrachten
 
@@ -68,9 +68,53 @@ Dit voorkomt:
 - Reorganisatie: `/admin/reorganize` - Voor het verplaatsen van subcategorieën tussen hoofdcategorieën
 - Backup systeem ingebouwd voor export/import van gestructureerde data
 
+## 🌐 Live URLs & Deployment
+
+### **Production URLs**
+```
+https://minddumper.com/           # Waitlist (auto-redirect)
+https://minddumper.com/landing    # Product page (€29 pricing)
+https://minddumper.com/app        # Main MindDumper app
+https://minddumper.com/admin-login # Admin login
+```
+
+### **Vercel URLs (Direct API Access)**
+```
+https://minddumper-app.vercel.app/                    # Waitlist  
+https://minddumper-app.vercel.app/api/minddump-waitlist/signup  # API
+https://minddumper-app.vercel.app/api/minddump-waitlist/stats   # Stats
+https://minddumper-app.vercel.app/api/debug/env                 # Debug
+```
+
+### **Waitlist System Live Status**
+- ✅ **Database**: Supabase `minddump_waitlist` tabel operationeel
+- ✅ **API Endpoints**: Signup, stats, test endpoints werkend
+- ✅ **GoHighLevel**: Tag `minddump-waitlist-signup` automation live
+- ✅ **Email Workflow**: Bedankmail automatisch verzonden
+- ✅ **Frontend**: Responsive design met toast notifications
+- ✅ **Environment Variables**: GHL_API_KEY en GHL_LOCATION_ID geconfigureerd
+
+### **Domain Routing Note**
+- **Custom Domain**: `minddumper.com` heeft routing issues voor API endpoints
+- **Workaround**: Gebruik Vercel URL voor directe API testing
+- **Waitlist**: Werkt perfect via beide URLs
+
 ## Recente Wijzigingen
 
-### Sober Interface Redesign (Laatste Update - COMPLEET ✅)
+### MindDumper Waitlist Systeem (Juli 2025 - LIVE ✅)
+- **Complete waitlist infrastructuur geïmplementeerd in recordtempo (1.5 uur):**
+  - 🗄️ **Database Schema**: `minddump_waitlist` tabel met UUID, timestamps, IP tracking
+  - 🔌 **API Endpoints**: `/api/minddump-waitlist/signup`, `/api/minddump-waitlist/stats`, test endpoints
+  - 🎨 **Frontend Pagina**: Responsive waitlist met screenshot gallery en toast notifications
+  - 🔄 **Routing**: `/` → waitlist, `/landing` → product page, cross-navigation
+  - 🎯 **GoHighLevel Integratie**: Automatic contact creation met `minddump-waitlist-signup` tag
+  - 📧 **Email Automation**: Bedankmail workflow via GoHighLevel triggers
+  - 📱 **Mobile Responsive**: Screenshot carousel, toast notifications, full responsive design
+  - 🏷️ **Smart Tagging**: Nieuwe + bestaande contacten krijgen correcte tags
+  - 🎉 **Toast System**: Success/error feedback zonder browser popups
+  - 📊 **Real-time Stats**: Live waitlist counter met marketing boost (+10)
+
+### Sober Interface Redesign (Vorige Update - COMPLEET ✅)
 - **Complete UI overhaul van flashy naar functioneel:**
   - 🎨 Background: Statische light gray (#f8f9fa) i.p.v. animated gradients
   - 🔲 Buttons: Simpele blue primary + gray secondary (geen glassmorphism)
@@ -904,10 +948,53 @@ De volledige landingspagina is getransformeerd van Nederlands naar Engels met st
 - ✅ **Conversion Focus**: Clear CTAs throughout
 
 ### Results
-- **Live URL**: https://www.minddumper.com
+- **Live URL**: https://minddumper.com
 - **Target Market**: Global English-speaking professionals
 - **Price Point**: €29 positioned as premium business tool
 - **Value Prop**: Professional productivity for the price of business lunch
-- **Next Phase**: Stripe integration with €29 pricing
+
+---
+
+**Status**: Project volledig functioneel en deployed op Vercel - **WAITLIST SYSTEEM LIVE** 🚀📋
+**Laatste Update**: Complete waitlist infrastructuur geïmplementeerd met GoHighLevel integratie
+**Hoogtepunten**: 
+- ✅ **Waitlist Live**: Complete signup flow met database, API, en frontend
+- ✅ **GoHighLevel Integration**: Automatic contact creation + `minddump-waitlist-signup` tagging
+- ✅ **Email Automation**: Bedankmail workflow operationeel via GoHighLevel triggers
+- ✅ **Responsive Design**: Mobile-first waitlist met screenshot gallery en toast notifications
+- ✅ **Smart Routing**: `/` → waitlist, `/landing` → product page, cross-navigation
+- ✅ **Production Ready**: Environment variables geconfigureerd, API endpoints werkend
+- ✅ **Marketing Ready**: Real-time stats counter met marketing boost, professional messaging
+- ✅ **Error Handling**: Toast notifications, duplicate detection, graceful fallbacks
+
+**Resultaat**: **COMPLETE WAITLIST ECOSYSTEM** - Klaar voor early access registraties en lead generation
+
+## 🎯 Waitlist System Implementation Summary
+
+### **Database & API (✅ LIVE)**
+- **Supabase Table**: `minddump_waitlist` met UUID, timestamps, IP tracking
+- **API Endpoints**: `/api/minddump-waitlist/signup`, `/api/minddump-waitlist/stats`
+- **Test Endpoints**: `/api/test/minddump-ghl-tag`, `/api/debug/env`
+- **Error Handling**: Duplicate detection, validation, graceful fallbacks
+
+### **GoHighLevel Integration (✅ LIVE)**
+- **Environment Variables**: `GHL_API_KEY`, `GHL_LOCATION_ID` configured
+- **Contact Creation**: New contacts automatisch aangemaakt
+- **Smart Tagging**: Existing contacts krijgen `minddump-waitlist-signup` tag
+- **Email Workflow**: Bedankmail automation triggered via tag
+
+### **Frontend & UX (✅ LIVE)**
+- **Responsive Design**: Mobile carousel, desktop grid voor screenshots
+- **Toast Notifications**: Success/error feedback zonder browser popups
+- **Real-time Stats**: Live waitlist counter met marketing boost (+10)
+- **Professional Branding**: Custom logo, MindDumper color scheme, clean messaging
+
+### **Deployment & Infrastructure (✅ LIVE)**
+- **Vercel Deployment**: Automatic GitHub integration, environment variables
+- **Domain Routing**: Custom domain met fallback naar Vercel URLs
+- **Performance**: Build optimizations, lazy loading, responsive assets
+- **Monitoring**: Debug endpoints, console logging, error tracking
+
+**Total Implementation Time: 1.5 hours from concept to production** ⚡
 
 ---
