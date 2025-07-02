@@ -171,7 +171,7 @@ export default function MindDumpWaitlist() {
       <div className="container">
         {/* Header */}
         <header className="header">
-          <img src="/minddump-logo.svg" alt="MindDump" className="logo" />
+          <img src="/logo.png" alt="MindDump" className="logo" />
           <h1 className="hero-title">Binnenkort Beschikbaar</h1>
           <p className="hero-subtitle">De revolutionaire mind mapping app</p>
           <p className="hero-description">
