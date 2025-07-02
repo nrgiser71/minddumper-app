@@ -305,6 +305,60 @@ export default function MindDumpWaitlist() {
             </button>
           </div>
         </section>
+
+        {/* Features Section */}
+        <section className="features-section">
+          <h2 className="features-title">Wat maakt MindDumper anders?</h2>
+          <div className="features-grid">
+            <div className="feature-card">
+              <span className="feature-icon">🧠</span>
+              <h3 className="feature-title">Triggerwoorden Systeem</h3>
+              <p className="feature-description">
+                300+ zorgvuldig gekozen triggerwoorden helpen je om alles uit je hoofd te krijgen - van dagelijkse taken tot grote projecten.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <span className="feature-icon">⚡</span>
+              <h3 className="feature-title">Snelle Brain Dumps</h3>
+              <p className="feature-description">
+                Geen complexe interfaces. Eén klik en je bent begonnen met het leegmaken van je hoofd en het organiseren van je gedachten.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <span className="feature-icon">🎯</span>
+              <h3 className="feature-title">Categorieën & Talen</h3>
+              <p className="feature-description">
+                Kies uit verschillende categorieën (professioneel, persoonlijk, gezondheid) en werk in je eigen taal voor natuurlijke gedachtenstromen.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <span className="feature-icon">🔧</span>
+              <h3 className="feature-title">Volledig Aanpasbaar</h3>
+              <p className="feature-description">
+                Voeg je eigen triggerwoorden toe en pas de ervaring aan zodat het perfect bij jouw manier van denken past.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <span className="feature-icon">📚</span>
+              <h3 className="feature-title">Geschiedenis & Export</h3>
+              <p className="feature-description">
+                Alle je brain dumps worden veilig bewaard. Bekijk je geschiedenis en exporteer je gedachten naar verschillende formaten.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <span className="feature-icon">🎨</span>
+              <h3 className="feature-title">Clean & Focused</h3>
+              <p className="feature-description">
+                Geen afleidingen, alleen jij en je gedachten. Een mooie, simpele interface die je helpt focussen op wat belangrijk is.
+              </p>
+            </div>
+          </div>
+        </section>
       </div>
 
       {/* Footer */}
