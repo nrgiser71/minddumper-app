@@ -322,7 +322,7 @@ export default function MindDumpWaitlist() {
               <span className="feature-icon">⚡</span>
               <h3 className="feature-title">Snelle Brain Dumps</h3>
               <p className="feature-description">
-                Geen complexe interfaces. Eén klik en je bent begonnen met het leegmaken van je hoofd en het organiseren van je gedachten.
+                Geen complexe interfaces, geen muis nodig. Eén klik en je bent begonnen met het leegmaken van je hoofd en het organiseren van je gedachten.
               </p>
             </div>
 
@@ -330,7 +330,7 @@ export default function MindDumpWaitlist() {
               <span className="feature-icon">🎯</span>
               <h3 className="feature-title">Categorieën & Talen</h3>
               <p className="feature-description">
-                Kies uit verschillende categorieën (professioneel, persoonlijk, gezondheid) en werk in je eigen taal voor natuurlijke gedachtenstromen.
+                Kies uit verschillende categorieën en werk in je eigen taal voor natuurlijke gedachtenstromen.
               </p>
             </div>
 
@@ -347,6 +347,14 @@ export default function MindDumpWaitlist() {
               <h3 className="feature-title">Geschiedenis & Export</h3>
               <p className="feature-description">
                 Alle je brain dumps worden veilig bewaard. Bekijk je geschiedenis en exporteer je gedachten naar verschillende formaten.
+              </p>
+            </div>
+
+            <div className="feature-card">
+              <span className="feature-icon">📊</span>
+              <h3 className="feature-title">Export naar Taken Apps</h3>
+              <p className="feature-description">
+                Exporteer naar tekst en CSV formaten om je brain dump resultaten eenvoudig in je eigen taken app te krijgen.
               </p>
             </div>
 
