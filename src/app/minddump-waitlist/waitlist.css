@@ -444,14 +444,17 @@ body {
 
 .toast-success {
   border-left-color: var(--macos-green);
+  background: #f0f9f0;
 }
 
 .toast-error {
   border-left-color: var(--macos-red);
+  background: #fef2f2;
 }
 
 .toast-info {
   border-left-color: var(--macos-blue);
+  background: #f0f8ff;
 }
 
 .toast-message {
@@ -459,13 +462,14 @@ body {
   font-size: 14px;
   font-weight: 500;
   line-height: 1.4;
+  color: var(--macos-text-primary);
 }
 
 .toast-close {
   background: none;
   border: none;
   font-size: 18px;
-  color: var(--macos-text-secondary);
+  color: #666;
   cursor: pointer;
   margin-left: 12px;
   padding: 0;
@@ -477,7 +481,7 @@ body {
 }
 
 .toast-close:hover {
-  color: var(--macos-text-primary);
+  color: #333;
 }
 
 @keyframes slideIn {
