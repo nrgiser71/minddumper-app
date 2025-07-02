@@ -184,15 +184,15 @@ export default function MindDumpWaitlist() {
       {/* Waitlist Banner */}
       <div className="waitlist-banner">
         <span className="banner-emoji">⏳</span>
-        MindDump is nog niet openbaar beschikbaar - Schrijf je in voor early access!
+        MindDumper is nog niet openbaar beschikbaar - Schrijf je in voor early access!
       </div>
 
       <div className="container">
         {/* Header */}
         <header className="header">
-          <img src="/Logo.png" alt="MindDump" className="logo" />
+          <img src="/Logo.png" alt="MindDumper" className="logo" />
           <h1 className="hero-title">Binnenkort Beschikbaar</h1>
-          <p className="hero-subtitle">De revolutionaire mind mapping app</p>
+          <p className="hero-subtitle">De revolutionaire brain dump tool</p>
           <p className="hero-description">
             Organiseer je gedachten, projecten en ideeën zoals nooit tevoren. Schrijf je in voor de wachtlijst en krijg als eerste toegang.
           </p>
@@ -201,7 +201,7 @@ export default function MindDumpWaitlist() {
         {/* Signup Section */}
         <section className="signup-section">
           <h2 className="signup-title">🎯 Zet je op de wachtlijst</h2>
-          <p className="signup-subtitle">Krijg als eerste toegang wanneer MindDump live gaat en ontvang updates over de voortgang</p>
+          <p className="signup-subtitle">Krijg als eerste toegang wanneer MindDumper live gaat en ontvang updates over de voortgang</p>
           
           <div className="waitlist-stats">
             <span>{waitlistStats}</span>
@@ -243,14 +243,14 @@ export default function MindDumpWaitlist() {
           </form>
 
           <p className="privacy-text">
-            We respecteren je privacy. Geen spam, alleen updates over MindDump.
+            We respecteren je privacy. Geen spam, alleen updates over MindDumper.
           </p>
         </section>
 
         {/* Screenshots Section */}
         <section className="screenshots-section">
-          <h2 className="screenshots-title">Zie MindDump in actie</h2>
-          <p className="screenshots-subtitle">Ontdek hoe MindDump je helpt om je gedachten visueel te organiseren</p>
+          <h2 className="screenshots-title">Zie MindDumper in actie</h2>
+          <p className="screenshots-subtitle">Ontdek hoe MindDumper je helpt om je gedachten visueel te organiseren</p>
           
           <div className="screenshots-container">
             <div 
@@ -270,7 +270,7 @@ export default function MindDumpWaitlist() {
                         <span className="macos-button minimize"></span>
                         <span className="macos-button maximize"></span>
                       </div>
-                      <span className="macos-title">MindDump - {screenshot.title}</span>
+                      <span className="macos-title">MindDumper - {screenshot.title}</span>
                     </div>
                     <img 
                       src={screenshot.src} 
@@ -309,7 +309,7 @@ export default function MindDumpWaitlist() {
 
       {/* Footer */}
       <footer className="footer">
-        <p>&copy; 2025 MindDump. Binnenkort beschikbaar.</p>
+        <p>&copy; 2025 MindDumper. Binnenkort beschikbaar.</p>
       </footer>
 
       {/* Lightbox */}
