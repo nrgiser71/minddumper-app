@@ -16,11 +16,11 @@ export async function GET() {
         word,
         language,
         display_order,
-        sub_category:sub_categories!inner(
+        sub_category:sub_categories(
           id,
           name,
           display_order,
-          main_category:main_categories!inner(
+          main_category:main_categories(
             id,
             name,
             display_order
