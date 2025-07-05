@@ -18,8 +18,7 @@ export async function PUT(request: Request) {
     const { error } = await supabase
       .from('system_trigger_words')
       .update({ 
-        word: newWord.trim(),
-        updated_at: new Date().toISOString()
+        word: newWord.trim()
       })
       .eq('id', wordId)
 

@@ -18,8 +18,7 @@ export async function DELETE(request: Request) {
     const { error } = await supabase
       .from('system_trigger_words')
       .update({ 
-        is_active: false,
-        updated_at: new Date().toISOString()
+        is_active: false
       })
       .in('id', wordIds)
 

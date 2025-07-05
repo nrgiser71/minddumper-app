@@ -18,8 +18,7 @@ export async function PUT(request: Request) {
     const { error } = await supabase
       .from('system_trigger_words')
       .update({ 
-        sub_category_id: newSubCategoryId,
-        updated_at: new Date().toISOString()
+        sub_category_id: newSubCategoryId
       })
       .eq('id', wordId)
 
