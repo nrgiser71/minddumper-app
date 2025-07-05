@@ -67,6 +67,16 @@ export default function AdminPage() {
           }}>
             📊 Dashboard
           </Link>
+          <Link href="/admin/words-management" style={{ 
+            color: 'white', 
+            textDecoration: 'none',
+            backgroundColor: '#28a745',
+            padding: '0.5rem 1rem',
+            borderRadius: '6px',
+            fontWeight: 'bold'
+          }}>
+            📝 Woorden Beheer
+          </Link>
           <Link href="/admin/reorganize" style={{ color: '#007AFF', textDecoration: 'none' }}>
             📁 Categorieën reorganiseren →
           </Link>

@@ -8,9 +8,38 @@ const supabase = createClient(
 
 export async function GET() {
   try {
-    // Getting all categories
+    // Try new database structure first
+    const { data: mainCategories, error: mainError } = await supabase
+      .from('main_categories')
+      .select(`
+        id,
+        name,
+        display_order,
+        sub_categories (
+          id,
+          name,
+          display_order
+        )
+      `)
+      .eq('is_active', true)
+      .order('display_order')
 
-    // Get all Dutch words
+    if (!mainError && mainCategories && mainCategories.length > 0) {
+      // New structure exists, use it
+      const categories = mainCategories.map(mainCat => ({
+        id: mainCat.id,
+        name: mainCat.name,
+        display_order: mainCat.display_order,
+        subCategories: (mainCat.sub_categories || []).sort((a: {display_order: number}, b: {display_order: number}) => a.display_order - b.display_order)
+      }))
+
+      return NextResponse.json({ 
+        success: true,
+        categories: categories.sort((a, b) => a.display_order - b.display_order)
+      })
+    }
+
+    // Fallback to old structure
     const { data: words, error } = await supabase
       .from('trigger_words')
       .select('category, word')
@@ -52,8 +81,6 @@ export async function GET() {
       currentMain: data.mainCategory,
       words: data.words.sort()
     }))
-
-    // Found unique categories
 
     return NextResponse.json({ 
       success: true,
