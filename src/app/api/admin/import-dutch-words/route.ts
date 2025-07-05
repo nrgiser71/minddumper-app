@@ -129,8 +129,7 @@ export async function GET() {
           sub_category_id: subCategoryId,
           display_order: importedCount + 1,
           is_active: true,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
+          created_at: new Date().toISOString()
         })
         importedCount++
       } else {
