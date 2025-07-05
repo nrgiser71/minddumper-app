@@ -6,7 +6,7 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function POST() {
+export async function GET() {
   try {
     // Get all Dutch words from the old trigger_words table
     const { data: oldWords, error: oldError } = await supabase
