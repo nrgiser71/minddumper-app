@@ -8,6 +8,19 @@ const supabase = createClient(
 
 export async function GET() {
   try {
+    // First check if we have any Dutch words at all
+    const { data: allWords, error: allError } = await supabase
+      .from('system_trigger_words')
+      .select('language')
+      .eq('is_active', true)
+
+    const languageCounts = allWords?.reduce((acc: Record<string, number>, word) => {
+      acc[word.language] = (acc[word.language] || 0) + 1
+      return acc
+    }, {}) || {}
+
+    console.log('Language counts in system_trigger_words:', languageCounts)
+
     // Get all system words with their categories
     const { data: words, error } = await supabase
       .from('system_trigger_words')
@@ -16,6 +29,7 @@ export async function GET() {
         word,
         language,
         display_order,
+        sub_category_id,
         sub_category:sub_categories(
           id,
           name,
@@ -36,7 +50,40 @@ export async function GET() {
       return NextResponse.json({ success: false, error: error.message })
     }
 
-    return NextResponse.json({ success: true, words })
+    // Filter out words without proper category joins and log them
+    const wordsWithCategories = []
+    const wordsWithoutCategories = []
+
+    for (const word of words || []) {
+      if (word.sub_category && word.sub_category.main_category) {
+        wordsWithCategories.push(word)
+      } else {
+        wordsWithoutCategories.push({
+          id: word.id,
+          word: word.word,
+          language: word.language,
+          sub_category_id: word.sub_category_id
+        })
+      }
+    }
+
+    console.log(`Words with categories: ${wordsWithCategories.length}`)
+    console.log(`Words without categories: ${wordsWithoutCategories.length}`)
+    if (wordsWithoutCategories.length > 0) {
+      console.log('Sample words without categories:', wordsWithoutCategories.slice(0, 5))
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      words: wordsWithCategories,
+      debug: {
+        languageCounts,
+        totalWords: words?.length || 0,
+        wordsWithCategories: wordsWithCategories.length,
+        wordsWithoutCategories: wordsWithoutCategories.length,
+        sampleWithoutCategories: wordsWithoutCategories.slice(0, 3)
+      }
+    })
   } catch (error) {
     console.error('API Error:', error)
     return NextResponse.json({ success: false, error: String(error) })
