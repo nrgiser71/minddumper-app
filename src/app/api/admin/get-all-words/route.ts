@@ -50,7 +50,7 @@ export async function GET() {
       return NextResponse.json({ success: false, error: error.message })
     }
 
-    // Filter out words without proper category joins and log them
+    // Filter and fix words without proper category joins
     const wordsWithCategories = []
     const wordsWithoutCategories = []
 
@@ -58,6 +58,21 @@ export async function GET() {
       if (word.sub_category && word.sub_category.main_category) {
         wordsWithCategories.push(word)
       } else {
+        // For words without category joins, create a mock structure
+        const mockWord = {
+          ...word,
+          sub_category: {
+            id: word.sub_category_id || 'unknown',
+            name: 'Onbekende Categorie',
+            display_order: 999,
+            main_category: {
+              id: 'unknown-main',
+              name: word.language === 'nl' ? 'Persoonlijk' : 'Personal',
+              display_order: 999
+            }
+          }
+        }
+        wordsWithCategories.push(mockWord)
         wordsWithoutCategories.push({
           id: word.id,
           word: word.word,
@@ -79,7 +94,7 @@ export async function GET() {
       debug: {
         languageCounts,
         totalWords: words?.length || 0,
-        wordsWithCategories: wordsWithCategories.length,
+        wordsWithCategories: wordsWithCategories.length - wordsWithoutCategories.length,
         wordsWithoutCategories: wordsWithoutCategories.length,
         sampleWithoutCategories: wordsWithoutCategories.slice(0, 3)
       }
