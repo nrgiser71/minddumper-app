@@ -25,6 +25,8 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
     }
 
     // Get system words with user preferences
+    console.log(`🔍 [getTriggerWordsForBrainDump] Query for language: ${language}, user: ${user.user.id}`)
+    
     const { data: systemWords, error: systemError } = await supabase
       .from('system_trigger_words')
       .select(`
@@ -48,6 +50,11 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
       .eq('is_active', true)
       .eq('sub_category.language', language)
       .eq('sub_category.main_category.language', language)
+    
+    console.log(`📊 [getTriggerWordsForBrainDump] System words found: ${systemWords?.length || 0}`)
+    if (systemError) {
+      console.error(`❌ [getTriggerWordsForBrainDump] System words error:`, systemError)
+    }
 
     if (systemError) {
       // Failed to fetch system words
@@ -61,16 +68,16 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
       .eq('user_id', user.user.id)
 
     const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
-
-    // Debug: Track system words and user preferences
+    console.log(`👤 [getTriggerWordsForBrainDump] User preferences found: ${preferences?.length || 0}`)
 
     // Filter based on user preferences (default to enabled if no preference)
     const enabledSystemWords = (systemWords || [])
       .filter(word => {
         const isEnabled = userPrefs.get(word.id) ?? true
-        // Check if word is enabled based on user preferences
         return isEnabled
       })
+    
+    console.log(`✅ [getTriggerWordsForBrainDump] Enabled system words: ${enabledSystemWords.length}`)
 
     // Get user custom words with full structure (filtered by language)
     const { data: customWords } = await supabase
@@ -127,8 +134,9 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
     })
 
     const sortedWords = allWords.map(w => w.word)
-
-    // Words have been sorted by category order and alphabetically
+    
+    console.log(`🎯 [getTriggerWordsForBrainDump] Final result: ${sortedWords.length} words for language ${language}`)
+    console.log(`📝 [getTriggerWordsForBrainDump] Sample words:`, sortedWords.slice(0, 5))
 
     return sortedWords
   } catch {
