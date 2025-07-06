@@ -83,15 +83,31 @@ WHERE system_trigger_words.language = '${language}'
 
     const userPrefs = new Map(preferences?.map(p => [p.system_word_id, p.is_enabled]) || [])
     console.log(`👤 [getTriggerWordsForBrainDump] User preferences found: ${preferences?.length || 0}`)
+    
+    // Debug: Log first 5 system words
+    console.log(`🔍 [DEBUG] First 5 system words:`, (systemWords || []).slice(0, 5).map(w => ({ id: w.id, word: w.word })))
+    
+    // Debug: Log user preferences mapping
+    console.log(`🔍 [DEBUG] UserPrefs Map size:`, userPrefs.size)
+    if (userPrefs.size > 0) {
+      console.log(`🔍 [DEBUG] First 5 preferences:`, Array.from(userPrefs.entries()).slice(0, 5))
+    }
 
     // Filter based on user preferences (default to enabled if no preference)
     const enabledSystemWords = (systemWords || [])
       .filter(word => {
         const isEnabled = userPrefs.get(word.id) ?? true
+        // Debug: Log filtering for first 10 words
+        if ((systemWords || []).indexOf(word) < 10) {
+          console.log(`🔍 [DEBUG] Word "${word.word}" (${word.id}): preference=${userPrefs.get(word.id)}, enabled=${isEnabled}`)
+        }
         return isEnabled
       })
     
     console.log(`✅ [getTriggerWordsForBrainDump] Enabled system words: ${enabledSystemWords.length}`)
+    
+    // Debug: Log the enabled words
+    console.log(`🔍 [DEBUG] All ${enabledSystemWords.length} enabled words:`, enabledSystemWords.map(w => w.word))
 
     // Get user custom words with full structure (filtered by language)
     const { data: customWords } = await supabase
