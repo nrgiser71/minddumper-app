@@ -277,6 +277,12 @@ function AppContent() {
           
           subCat.words.forEach((word: {id: string, word: string, enabled: boolean}) => {
             wordChecks[word.word] = word.enabled
+            
+            // Debug: Log enabled words (should be 0 according to user)
+            if (word.enabled) {
+              console.log(`🟢 [UI] Word "${word.word}" (${word.id}) is marked as ENABLED in UI`)
+            }
+            
             if (!word.enabled) {
               subCatAllEnabled = false
               mainCatAllEnabled = false
