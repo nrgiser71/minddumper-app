@@ -1414,9 +1414,6 @@ function AppContent() {
                     ))}
                   </div>
                   
-                  <div className="show-more-triggers">
-                    {configTriggerWords.length} woorden beschikbaar
-                  </div>
                   
                   <div className="save-preferences-section" style={{ marginTop: '20px', textAlign: 'center' }}>
                     <button 
