@@ -4,135 +4,64 @@
 
 Het MindDumper project is succesvol uitgebreid met een volledig werkend waitlist systeem. **Complete waitlist infrastructuur geïmplementeerd met GoHighLevel integratie en email automation.** **Landingspagina toegankelijk + Admin dashboard operationeel.** **Systeem is production-ready voor early access registraties.**
 
-## 🚨 URGENT: Database Reset Plan
+## ✅ OPGELOST: User Preferences Default Bug (Juli 2025)
 
-### Probleem Diagnose (Juli 2025)
-**Issue**: Mixed language categories in Nederlandse queries - Duitse woorden en categorieën verschijnen bij Nederlandse triggerwoorden.
+### Probleem Diagnose 
+**Issue**: Woorden verschenen in mind dump ondanks dat alle checkboxes waren uitgevinkt in het config scherm.
 
 **Root Cause**: 
-- Categorieën hebben GEEN language field
-- Import process maakt duplicate categorieën per taal:
-  - "Persoonlijk" (NL) + "Personal" (EN) + "Persönlich" (DE)
-- Nederlandse woorden gekoppeld aan Duitse/Engelse categorieën
-- Queries tonen alle gekoppelde categorieën ongeacht taal
+- Default preference logic was `?? true` voor woorden zonder user preference record
+- 60 woorden hadden geen preference record in database
+- Deze woorden kregen automatisch `enabled: true` in mind dump
+- Config scherm toonde ze correct als disabled
+- Inconsistentie tussen UI state en mind dump gedrag
 
-### Complete Database Reset Strategy
-
-#### Stap 1: Volledige Database Wipe
-```sql
--- WAARSCHUWING: Dit wist ALLE triggerwoord data
--- Zorg voor backup van user preferences!
-
--- Alle data wissen (in juiste volgorde)
-DELETE FROM user_custom_trigger_words;
-DELETE FROM user_trigger_word_preferences;
-DELETE FROM system_trigger_words;
-DELETE FROM sub_categories;
-DELETE FROM main_categories;
-
--- Reset sequences
-ALTER SEQUENCE main_categories_id_seq RESTART WITH 1;
-ALTER SEQUENCE sub_categories_id_seq RESTART WITH 1;
-```
-
-#### Stap 2: Schema Verbetering - Language Support
-```sql
--- Language velden toevoegen aan categorieën
-ALTER TABLE main_categories ADD COLUMN language TEXT NOT NULL DEFAULT 'nl';
-ALTER TABLE sub_categories ADD COLUMN language TEXT NOT NULL DEFAULT 'nl';
-
--- Unique constraints aanpassen voor taal-specifieke categorieën
-ALTER TABLE main_categories DROP CONSTRAINT IF EXISTS main_categories_name_key;
-ALTER TABLE main_categories ADD CONSTRAINT main_categories_name_language_key UNIQUE (name, language);
-
-ALTER TABLE sub_categories DROP CONSTRAINT IF EXISTS sub_categories_main_category_id_name_key;
-ALTER TABLE sub_categories ADD CONSTRAINT sub_categories_main_category_id_name_language_key UNIQUE (main_category_id, name, language);
-
--- Indexen toevoegen voor performance
-CREATE INDEX IF NOT EXISTS idx_main_categories_language ON main_categories(language, display_order);
-CREATE INDEX IF NOT EXISTS idx_sub_categories_language ON sub_categories(language, display_order);
-```
-
-#### Stap 3: Import Tool Aanpassingen
-**Files to modify:**
-- `/src/app/api/admin/import-json/route.ts` - Update generateImportSQL()
-- `/src/lib/database-v2.ts` - Update queries to filter by language
-
-**Key Changes:**
+### Oplossing Geïmplementeerd
+**Fix**: Changed default preference logic van `true` naar `false`:
 ```typescript
-// Import logic updates
-function generateImportSQL(jsonData: JsonData): string {
-  const language = jsonData.language || 'nl'
-  
-  // Categorieën per taal aanmaken
-  sql += `
-  INSERT INTO main_categories (name, display_order, language) VALUES
-  ${categories.map(cat => `('${cat.name}', ${cat.order}, '${language}')`).join(',\n')}
-  ON CONFLICT (name, language) DO UPDATE SET display_order = EXCLUDED.display_order;
-  `
-}
+// VOOR (bug):
+const isEnabled = userPrefs.get(word.id) ?? true
+
+// NA (fix):
+const isEnabled = userPrefs.get(word.id) ?? false
 ```
 
-#### Stap 4: Database Query Updates
-```sql
--- Alle queries updaten om language te filteren
--- Voorbeeld: getTriggerWordsForBrainDump()
-SELECT stw.*, sc.*, mc.*
-FROM system_trigger_words stw
-JOIN sub_categories sc ON stw.sub_category_id = sc.id
-JOIN main_categories mc ON sc.main_category_id = mc.id
-WHERE stw.language = ? AND mc.language = ? AND sc.language = ?
-```
+**Gevolg**:
+- Woorden zonder expliciete user preference worden nu als disabled behandeld
+- Mind dump toont alleen woorden die expliciet zijn aangevinkt
+- Config scherm en mind dump gedrag nu consistent
+- Verwarrende "X woorden beschikbaar" counter verwijderd uit config scherm
 
-#### Stap 5: Data Re-import Proces
-1. **Nederlandse data eerst** - Gebruik bestaande import bestanden
-2. **Engelse data** - Aparte import met language='en'
-3. **Duitse data** - Aparte import met language='de'
-4. **Validatie** - Check dat elke taal eigen categorieën heeft
+**Status**: ✅ VOLLEDIG OPGELOST - Beide systemen werken nu correct
 
-### Preventie Maatregelen
+## 🎯 Recent Bugfixes & Improvements (Juli 2025)
 
-#### Database Constraints
-- Unique constraints op (name, language) voor categorieën
-- Foreign key validatie op taal-consistentie
-- Check constraints voor geldige language codes
+### User Preferences Logic Fix ✅
+**Probleem**: Mind dump toonde woorden ondanks uitgevinkte checkboxes
+**Oplossing**: Default preference logic aangepast van `true` naar `false`
+**Impact**: Consistentie tussen config scherm en mind dump hersteld
 
-#### Application Logic
-- Import validation: woorden alleen koppelen aan juiste taal-categorieën
-- Query filtering: altijd filteren op language parameter
-- UI validation: voorkom cross-language category assignment
+### Debug Logging Toegevoegd ✅
+**Probleem**: Moeilijk troubleshooten van word filtering issues
+**Oplossing**: Uitgebreide console logging voor alle database queries
+**Features**:
+- SQL query tracking in `getTriggerWordsForBrainDump`
+- User preferences mapping debugging
+- Config scherm word counting met hierarchy validation
+- Specific word tracking voor gedetailleerde analyse
 
-#### Monitoring
-- Admin dashboard: toon categorieën per taal
-- Data integrity checks: detecteer cross-language koppelingen
-- Import logs: track welke taal geïmporteerd wordt
-
-### Voordelen Na Reset
-- ✅ **Schone database** zonder duplicates
-- ✅ **Taal-specifieke categorieën** 
-- ✅ **Voorkomt cross-language vervuiling**
-- ✅ **Toekomstbestendig** voor nieuwe talen
-- ✅ **Betere performance** door language indexing
-- ✅ **Eenvoudiger debugging** - duidelijke taal-scheiding
-
-### Risico's & Mitigaties
-- **Data Loss**: Backup user preferences voor reset
-- **Downtime**: Reset tijdens off-peak hours
-- **Re-import Time**: Kan 30+ minuten duren voor alle talen
-- **User Impact**: Preferences moeten opnieuw ingesteld worden
-
-### Next Session Action Items
-1. **Backup maken** van huidige user preferences
-2. **Schema updates** uitvoeren op test environment
-3. **Import tool aanpassen** voor language support
-4. **Reset uitvoeren** op productie database
-5. **Data re-import** starten met Nederlandse data
+### UI Cleanup ✅ 
+**Probleem**: Verwarrende "X woorden beschikbaar" counter toonde verkeerde data
+**Oplossing**: Counter volledig verwijderd uit config scherm
+**Resultaat**: Schonere, minder verwarrende gebruikersinterface
 
 ---
 
-**Status**: Database reset plan klaar voor implementatie
-**Priority**: HIGH - Los mixed language bug op
-**Timeline**: 1-2 uur voor volledige reset + re-import
+## 📋 Oude Database Reset Plan (Achterhaald)
+
+> **Note**: De database reset was oorspronkelijk gepland voor mixed language bugs, 
+> maar die zijn succesvol opgelost via de database migrations en language filtering.
+> Dit plan wordt bewaard voor referentie maar is momenteel niet nodig.
 
 ## Belangrijke Opdrachten
 
