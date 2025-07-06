@@ -97,6 +97,16 @@ WHERE system_trigger_words.language = '${language}'
     const enabledSystemWords = (systemWords || [])
       .filter(word => {
         const isEnabled = userPrefs.get(word.id) ?? true
+        
+        // Debug: Specific word tracking
+        if (word.word === 'Reparaties' || word.word === 'Amusement') {
+          console.log(`🎯 [SPECIFIC] Word "${word.word}" (${word.id}):`)
+          console.log(`   - userPrefs.get(${word.id}) = ${userPrefs.get(word.id)}`)
+          console.log(`   - userPrefs.has(${word.id}) = ${userPrefs.has(word.id)}`)
+          console.log(`   - Final isEnabled = ${isEnabled}`)
+          console.log(`   - Will be included = ${isEnabled}`)
+        }
+        
         // Debug: Log filtering for first 10 words
         if ((systemWords || []).indexOf(word) < 10) {
           console.log(`🔍 [DEBUG] Word "${word.word}" (${word.id}): preference=${userPrefs.get(word.id)}, enabled=${isEnabled}`)
