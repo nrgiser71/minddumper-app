@@ -194,6 +194,8 @@ export async function getStructuredTriggerWords(language: string) {
     }
 
     // Get all system words with structure
+    console.log(`🔍 [getStructuredTriggerWords] Query for language: ${language}`)
+    
     const { data: systemWords, error } = await supabase
       .from('system_trigger_words')
       .select(`
@@ -213,8 +215,9 @@ export async function getStructuredTriggerWords(language: string) {
       .eq('language', language)
       .eq('is_active', true)
 
+    console.log(`📊 [getStructuredTriggerWords] System words found: ${systemWords?.length || 0}`)
     if (error) {
-      // Failed to fetch structured words
+      console.error(`❌ [getStructuredTriggerWords] Error:`, error)
       return { categories: [], preferences: {} }
     }
 
@@ -253,6 +256,13 @@ export async function getStructuredTriggerWords(language: string) {
     const categoryMap = new Map() as Map<string, CategoryMapValue>
 
     (systemWords as unknown as SystemWordWithCategories[] | null)?.forEach((word) => {
+      // Debug: Check for missing category data
+      if (!word.sub_category || !word.sub_category.main_category) {
+        console.log(`⚠️ [getStructuredTriggerWords] Word "${word.word}" (${word.id}) has missing category data:`)
+        console.log(`   - sub_category:`, word.sub_category)
+        return // Skip this word
+      }
+      
       const mainCat = word.sub_category.main_category
       const subCat = word.sub_category
 
@@ -299,6 +309,17 @@ export async function getStructuredTriggerWords(language: string) {
             words: subCat.words.sort((a, b) => a.word.localeCompare(b.word))
           }))
       }))
+
+    // Count total words in hierarchical structure
+    const totalWordsInHierarchy = categories.reduce((total, mainCat) => {
+      return total + mainCat.subCategories.reduce((catTotal, subCat) => {
+        return catTotal + subCat.words.length
+      }, 0)
+    }, 0)
+    
+    console.log(`🎯 [getStructuredTriggerWords] Final hierarchy contains ${totalWordsInHierarchy} words`)
+    console.log(`🔍 [getStructuredTriggerWords] Raw systemWords: ${systemWords?.length || 0}`)
+    console.log(`📊 [getStructuredTriggerWords] Missing words: ${(systemWords?.length || 0) - totalWordsInHierarchy}`)
 
     return { categories, preferences: userPrefs }
   } catch {
