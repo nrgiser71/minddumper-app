@@ -35,15 +35,19 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
           id,
           name,
           display_order,
+          language,
           main_category:main_categories!inner(
             id,
             name,
-            display_order
+            display_order,
+            language
           )
         )
       `)
       .eq('language', language)
       .eq('is_active', true)
+      .eq('sub_category.language', language)
+      .eq('sub_category.main_category.language', language)
 
     if (systemError) {
       // Failed to fetch system words
@@ -77,16 +81,20 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
           id,
           name,
           display_order,
+          language,
           main_category:main_categories!inner(
             id,
             name,
-            display_order
+            display_order,
+            language
           )
         )
       `)
       .eq('user_id', user.user.id)
       .eq('language', language)
       .eq('is_active', true)
+      .eq('sub_category.language', language)
+      .eq('sub_category.main_category.language', language)
 
     // Combine all words with their structure
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

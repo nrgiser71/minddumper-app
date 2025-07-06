@@ -31,7 +31,7 @@ export async function GET() {
     }
 
     // Check all languages in the table
-    const { data: allLanguages, error: langError } = await supabase
+    const { data: allLanguages } = await supabase
       .from('system_trigger_words')
       .select('language')
 

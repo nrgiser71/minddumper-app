@@ -6,8 +6,12 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
+    // Get language parameter, default to 'nl'
+    const url = new URL(request.url)
+    const language = url.searchParams.get('language') || 'nl'
+
     // Try new database structure first
     const { data: mainCategories, error: mainError } = await supabase
       .from('main_categories')
@@ -15,13 +19,17 @@ export async function GET() {
         id,
         name,
         display_order,
-        sub_categories (
+        language,
+        sub_categories!inner (
           id,
           name,
-          display_order
+          display_order,
+          language
         )
       `)
       .eq('is_active', true)
+      .eq('language', language)
+      .eq('sub_categories.language', language)
       .order('display_order')
 
     if (!mainError && mainCategories && mainCategories.length > 0) {

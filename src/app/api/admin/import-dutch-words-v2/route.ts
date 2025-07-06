@@ -29,7 +29,7 @@ export async function GET() {
     console.log(`Found ${oldWords?.length || 0} Dutch words to import`)
 
     // Get existing German words with their subcategory mappings to use as a reference
-    const { data: germanWords, error: germanError } = await supabase
+    const { error: germanError } = await supabase
       .from('system_trigger_words')
       .select('word, sub_category_id')
       .eq('language', 'de')

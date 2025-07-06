@@ -58,10 +58,10 @@ function generateImportSQL(jsonData: JsonData): string {
 -- Clear existing data for this language only
 DELETE FROM system_trigger_words WHERE language = '${language}';
 
--- Insert/Update main categories (safe for multiple languages)
-INSERT INTO main_categories (name, display_order) VALUES
-${Object.keys(structure).map((mainCat, index) => `('${mainCat}', ${index + 1})`).join(',\n')}
-ON CONFLICT (name) DO UPDATE SET display_order = EXCLUDED.display_order;
+-- Insert/Update main categories with language support
+INSERT INTO main_categories (name, display_order, language) VALUES
+${Object.keys(structure).map((mainCat, index) => `('${mainCat}', ${index + 1}, '${language}')`).join(',\n')}
+ON CONFLICT (name, language) DO UPDATE SET display_order = EXCLUDED.display_order;
 
 -- Insert/Update subcategories
 `
@@ -72,14 +72,14 @@ ON CONFLICT (name) DO UPDATE SET display_order = EXCLUDED.display_order;
     if (subCatNames.length > 0) {
       sql += `
 -- Subcategories for ${mainCategoryName}
-INSERT INTO sub_categories (main_category_id, name, display_order)
-SELECT mc.id, subcats.name, subcats.display_order
+INSERT INTO sub_categories (main_category_id, name, display_order, language)
+SELECT mc.id, subcats.name, subcats.display_order, '${language}'
 FROM main_categories mc,
 (VALUES
 ${subCatNames.map((subCat, index) => `  ('${subCat.replace(/'/g, "''")}', ${index + 1})`).join(',\n')}
 ) AS subcats(name, display_order)
-WHERE mc.name = '${mainCategoryName}'
-ON CONFLICT (main_category_id, name) DO UPDATE SET display_order = EXCLUDED.display_order;
+WHERE mc.name = '${mainCategoryName}' AND mc.language = '${language}'
+ON CONFLICT (main_category_id, name, language) DO UPDATE SET display_order = EXCLUDED.display_order;
 `
     }
   }
@@ -102,11 +102,11 @@ SELECT
   words.display_order,
   true as is_active
 FROM main_categories mc
-JOIN sub_categories sc ON sc.main_category_id = mc.id AND sc.name = '${subCategoryName.replace(/'/g, "''")}'
+JOIN sub_categories sc ON sc.main_category_id = mc.id AND sc.name = '${subCategoryName.replace(/'/g, "''")}' AND sc.language = '${language}'
 CROSS JOIN (VALUES
 ${words.map((word, index) => `  ('${word.replace(/'/g, "''")}', ${index + 1})`).join(',\n')}
 ) AS words(word, display_order)
-WHERE mc.name = '${mainCategoryName}';
+WHERE mc.name = '${mainCategoryName}' AND mc.language = '${language}';
 `
       }
     }

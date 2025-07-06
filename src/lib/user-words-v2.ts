@@ -33,15 +33,19 @@ export async function getUserCustomWords(language: string = 'nl'): Promise<UserC
         sub_category:sub_categories!inner(
           id,
           name,
+          language,
           main_category:main_categories!inner(
             id,
-            name
+            name,
+            language
           )
         )
       `)
       .eq('user_id', user.user.id)
       .eq('language', language)
       .eq('is_active', true)
+      .eq('sub_category.language', language)
+      .eq('sub_category.main_category.language', language)
       .order('created_at', { ascending: false })
 
     if (error) {

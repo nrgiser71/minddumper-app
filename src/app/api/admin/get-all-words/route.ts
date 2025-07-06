@@ -9,7 +9,7 @@ const supabase = createClient(
 export async function GET() {
   try {
     // First check if we have any Dutch words at all
-    const { data: allWords, error: allError } = await supabase
+    const { data: allWords } = await supabase
       .from('system_trigger_words')
       .select('language')
       .eq('is_active', true)
@@ -55,8 +55,14 @@ export async function GET() {
     const wordsWithoutCategories = []
 
     for (const word of words || []) {
-      if (word.sub_category && word.sub_category.main_category) {
-        wordsWithCategories.push(word)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const subCategory = Array.isArray(word.sub_category) ? word.sub_category[0] : word.sub_category as any
+      
+      if (subCategory && subCategory.main_category) {
+        wordsWithCategories.push({
+          ...word,
+          sub_category: subCategory
+        })
       } else {
         // For words without category joins, create a mock structure
         const mockWord = {
