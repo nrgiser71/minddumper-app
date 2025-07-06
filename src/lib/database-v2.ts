@@ -27,7 +27,8 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
     // Get system words with user preferences
     console.log(`🔍 [getTriggerWordsForBrainDump] Query for language: ${language}, user: ${user.user.id}`)
     
-    const { data: systemWords, error: systemError } = await supabase
+    // Build and log the actual SQL query
+    const query = supabase
       .from('system_trigger_words')
       .select(`
         id,
@@ -50,6 +51,19 @@ export async function getTriggerWordsForBrainDump(language: string): Promise<str
       .eq('is_active', true)
       .eq('sub_category.language', language)
       .eq('sub_category.main_category.language', language)
+    
+    console.log(`🔎 [SQL QUERY] Full query:`, query)
+    console.log(`🔎 [SQL QUERY] Simplified SQL: 
+SELECT system_trigger_words.*, sub_categories.*, main_categories.*
+FROM system_trigger_words
+JOIN sub_categories ON system_trigger_words.sub_category_id = sub_categories.id
+JOIN main_categories ON sub_categories.main_category_id = main_categories.id
+WHERE system_trigger_words.language = '${language}'
+  AND system_trigger_words.is_active = true
+  AND sub_categories.language = '${language}'
+  AND main_categories.language = '${language}'`)
+    
+    const { data: systemWords, error: systemError } = await query
     
     console.log(`📊 [getTriggerWordsForBrainDump] System words found: ${systemWords?.length || 0}`)
     if (systemError) {
