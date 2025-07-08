@@ -9,17 +9,25 @@ export async function GET(request: NextRequest) {
     // First, simple test - get all words without joins
     const { data: simpleWords } = await supabase
       .from('system_trigger_words')
-      .select('id, word, language')
+      .select('id, word, language, is_active')
+      .eq('language', language)
+      .limit(5)
+      
+    // Also test without active filter
+    const { data: allWords } = await supabase
+      .from('system_trigger_words')
+      .select('id, word, language, is_active')
       .eq('language', language)
       .eq('is_active', true)
       .limit(5)
       
     console.log(`[DEBUG] Simple query for ${language}: ${simpleWords?.length || 0} words`)
+    console.log(`[DEBUG] Active query for ${language}: ${allWords?.length || 0} words`)
     if (simpleWords && simpleWords.length > 0) {
-      console.log(`[DEBUG] First word: ${simpleWords[0].word}`)
+      console.log(`[DEBUG] First word: ${simpleWords[0].word}, is_active: ${simpleWords[0].is_active}`)
     }
     
-    // Get all system words for the specified language with category information
+    // Get all system words for the specified language with category information - use same query as get-all-words
     const { data: words, error } = await supabase
       .from('system_trigger_words')
       .select(`
@@ -41,6 +49,7 @@ export async function GET(request: NextRequest) {
       `)
       .eq('language', language)
       .eq('is_active', true)
+      .order('language')
       .order('display_order')
 
     console.log(`[get-words-by-language] Language: ${language}, Raw words count: ${words?.length || 0}`)
@@ -150,6 +159,7 @@ export async function GET(request: NextRequest) {
       language,
       debug: {
         simpleWordsCount: simpleWords?.length || 0,
+        activeWordsCount: allWords?.length || 0,
         rawWordsCount: words?.length || 0,
         processedWordsCount: wordsWithCategories?.length || 0
       }
