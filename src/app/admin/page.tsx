@@ -54,7 +54,7 @@ export default function AdminPage() {
     <div style={{ padding: '2rem', maxWidth: '800px', margin: '0 auto', fontFamily: 'system-ui' }}>
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <Link href="/app" style={{ color: '#007AFF', textDecoration: 'none' }}>
-          ← Terug naar app
+          ← Back to app
         </Link>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <Link href="/admin/dashboard" style={{ 
@@ -75,7 +75,7 @@ export default function AdminPage() {
             borderRadius: '6px',
             fontWeight: 'bold'
           }}>
-            📝 Woorden Beheer
+            📝 Words Management
           </Link>
           <Link href="/admin/edit-trigger-words" style={{ 
             color: 'white', 
@@ -88,27 +88,27 @@ export default function AdminPage() {
             ✏️ Edit by Language
           </Link>
           <Link href="/admin/reorganize" style={{ color: '#007AFF', textDecoration: 'none' }}>
-            📁 Categorieën reorganiseren →
+            📁 Reorganize Categories →
           </Link>
         </div>
       </div>
 
-      <h1 style={{ marginBottom: '2rem' }}>Triggerwoorden Beheer</h1>
+      <h1 style={{ marginBottom: '2rem' }}>Trigger Words Management</h1>
       
       <div style={{ background: '#f5f5f7', padding: '1rem', borderRadius: '8px', marginBottom: '2rem' }}>
-        <h3>Instructies:</h3>
+        <h3>Instructions:</h3>
         <ul>
-          <li>Kies eerst de hoofdcategorie (Professioneel of Persoonlijk)</li>
-          <li>Vul de subcategorie naam in</li>
-          <li>Vul de woorden in, gescheiden door komma&apos;s</li>
-          <li>De woorden worden automatisch opgesplitst en opgeslagen</li>
+          <li>First choose the main category (Professional or Personal)</li>
+          <li>Fill in the subcategory name</li>
+          <li>Fill in the words, separated by commas</li>
+          <li>The words are automatically split and saved</li>
         </ul>
       </div>
 
       <form onSubmit={handleSubmit} style={{ marginBottom: '2rem' }}>
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Hoofdcategorie:
+            Main category:
           </label>
           <select 
             value={mainCategory}
@@ -121,20 +121,20 @@ export default function AdminPage() {
               fontSize: '1rem'
             }}
           >
-            <option value="Professioneel">Professioneel</option>
-            <option value="Persoonlijk">Persoonlijk</option>
+            <option value="Professioneel">Professional</option>
+            <option value="Persoonlijk">Personal</option>
           </select>
         </div>
 
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Subcategorie naam:
+            Subcategory name:
           </label>
           <input
             type="text"
             value={subCategory}
             onChange={(e) => setSubCategory(e.target.value)}
-            placeholder="Bijv: Projecten, Financieel, Familie..."
+            placeholder="E.g.: Projects, Financial, Family..."
             style={{ 
               width: '100%', 
               padding: '0.75rem', 
@@ -147,12 +147,12 @@ export default function AdminPage() {
 
         <div style={{ marginBottom: '1rem' }}>
           <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold' }}>
-            Triggerwoorden (gescheiden door komma&apos;s):
+            Trigger words (separated by commas):
           </label>
           <textarea
             value={words}
             onChange={(e) => setWords(e.target.value)}
-            placeholder="Bijv: Gestart maar niet afgerond, Nog te starten, Nog te beoordelen"
+            placeholder="E.g.: Started but not finished, Yet to start, To be evaluated"
             rows={6}
             style={{ 
               width: '100%', 
@@ -180,7 +180,7 @@ export default function AdminPage() {
             width: '100%'
           }}
         >
-          {loading ? 'Bezig met opslaan...' : 'Categorie opslaan'}
+          {loading ? 'Saving...' : 'Save Category'}
         </button>
       </form>
 
@@ -197,11 +197,11 @@ export default function AdminPage() {
       )}
 
       <div style={{ marginTop: '3rem', padding: '1rem', background: '#f0f0f0', borderRadius: '8px' }}>
-        <h3>Voorbeeld:</h3>
-        <p><strong>Hoofdcategorie:</strong> Professioneel</p>
-        <p><strong>Subcategorie:</strong> Projecten</p>
-        <p><strong>Woorden:</strong> Gestart maar niet afgerond, Nog te starten, Nog te beoordelen</p>
-        <p><em>Dit wordt automatisch opgesplitst in 3 aparte triggerwoorden.</em></p>
+        <h3>Example:</h3>
+        <p><strong>Main category:</strong> Professional</p>
+        <p><strong>Subcategory:</strong> Projects</p>
+        <p><strong>Words:</strong> Started but not finished, Yet to start, To be evaluated</p>
+        <p><em>This will be automatically split into 3 separate trigger words.</em></p>
       </div>
 
       <div style={{ marginTop: '3rem', padding: '1rem', background: '#fff3cd', borderRadius: '8px', border: '1px solid #ffeaa7' }}>

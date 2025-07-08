@@ -22,13 +22,13 @@ export default function SignupPage() {
     setMessage('')
 
     if (password !== confirmPassword) {
-      setError('Wachtwoorden komen niet overeen')
+      setError('Passwords do not match')
       setLoading(false)
       return
     }
 
     if (password.length < 6) {
-      setError('Wachtwoord moet minimaal 6 karakters zijn')
+      setError('Password must be at least 6 characters')
       setLoading(false)
       return
     }
@@ -55,11 +55,11 @@ export default function SignupPage() {
           router.push('/app')
         } else {
           // User needs to confirm email
-          setMessage('Check je email voor een bevestigingslink voordat je kunt inloggen.')
+          setMessage('Check your email for a confirmation link before you can log in.')
         }
       }
     } catch {
-      setError('Er is een fout opgetreden bij het registreren')
+      setError('An error occurred during registration')
     } finally {
       setLoading(false)
     }
@@ -92,7 +92,7 @@ export default function SignupPage() {
             MindDumper
           </h1>
           <p style={{ color: '#666', fontSize: '1rem' }}>
-            Maak een account aan om je brain dumps op te slaan.
+            Create an account to save your brain dumps.
           </p>
         </div>
 
@@ -104,7 +104,7 @@ export default function SignupPage() {
               fontWeight: '500',
               color: '#333'
             }}>
-              Volledige naam
+              Full name
             </label>
             <input
               id="fullName"
@@ -120,7 +120,7 @@ export default function SignupPage() {
                 fontSize: '1rem',
                 boxSizing: 'border-box'
               }}
-              placeholder="Je volledige naam"
+              placeholder="Your full name"
             />
           </div>
 
@@ -147,7 +147,7 @@ export default function SignupPage() {
                 fontSize: '1rem',
                 boxSizing: 'border-box'
               }}
-              placeholder="je@voorbeeld.nl"
+              placeholder="you@example.com"
             />
           </div>
 
@@ -158,7 +158,7 @@ export default function SignupPage() {
               fontWeight: '500',
               color: '#333'
             }}>
-              Wachtwoord
+              Password
             </label>
             <input
               id="password"
@@ -174,7 +174,7 @@ export default function SignupPage() {
                 fontSize: '1rem',
                 boxSizing: 'border-box'
               }}
-              placeholder="Minimaal 6 karakters"
+              placeholder="At least 6 characters"
             />
           </div>
 
@@ -185,7 +185,7 @@ export default function SignupPage() {
               fontWeight: '500',
               color: '#333'
             }}>
-              Bevestig wachtwoord
+              Confirm password
             </label>
             <input
               id="confirmPassword"
@@ -201,7 +201,7 @@ export default function SignupPage() {
                 fontSize: '1rem',
                 boxSizing: 'border-box'
               }}
-              placeholder="Herhaal je wachtwoord"
+              placeholder="Repeat your password"
             />
           </div>
 
@@ -247,15 +247,15 @@ export default function SignupPage() {
               marginBottom: '1rem'
             }}
           >
-            {loading ? 'Registreren...' : 'Account aanmaken'}
+            {loading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
         <div style={{ textAlign: 'center' }}>
           <p style={{ color: '#666', fontSize: '0.875rem' }}>
-            Al een account?{' '}
+            Already have an account?{' '}
             <Link href="/auth/login" style={{ color: '#007AFF', textDecoration: 'none' }}>
-              Log hier in
+              Log in here
             </Link>
           </p>
           <Link href="/" style={{ 
@@ -265,7 +265,7 @@ export default function SignupPage() {
             display: 'inline-block',
             marginTop: '0.5rem'
           }}>
-            ← Terug naar website
+            ← Back to website
           </Link>
         </div>
       </div>

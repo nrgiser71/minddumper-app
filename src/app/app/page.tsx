@@ -210,7 +210,7 @@ function AppContent() {
         setCurrentWordIndex(savedSession.currentWordIndex)
         setStartTime(new Date(savedSession.startTime))
         setCurrentScreen('minddump')
-        setAutoSaveStatus('Sessie hersteld')
+        setAutoSaveStatus('Session restored')
         
         // Start auto-save for recovered session
         setTimeout(() => {
@@ -219,10 +219,10 @@ function AppContent() {
       }
       
       showConfirmation({
-        title: 'Sessie Herstellen',
-        message: `Er is een onafgemaakte mind dump sessie gevonden van ${new Date(savedSession.lastSaved).toLocaleString('nl-NL')}. Wil je deze hervatten?`,
-        confirmText: 'Hervatten',
-        cancelText: 'Nieuwe Sessie',
+        title: 'Restore Session',
+        message: `An unfinished mind dump session was found from ${new Date(savedSession.lastSaved).toLocaleString('en-US')}. Do you want to resume?`,
+        confirmText: 'Resume',
+        cancelText: 'New Session',
         onConfirm: restoreSession
       })
     }
@@ -368,7 +368,7 @@ function AppContent() {
 
   const handleAddUserWord = async () => {
     if (!newWordText.trim() || !newWordMainCategory || !newWordSubCategory) {
-      showToast('Vul alle velden in', 'error')
+      showToast('Fill in all fields', 'error')
       return
     }
 
@@ -376,17 +376,17 @@ function AppContent() {
     const subCatOptions = availableCategories.subCategories[newWordMainCategory] || []
     const subCat = subCatOptions.find(s => s.name === newWordSubCategory)
     if (!subCat) {
-      showToast('Ongeldige subcategorie', 'error')
+      showToast('Invalid subcategory', 'error')
       return
     }
 
     const result = await addUserCustomWord(newWordText, subCat.id, currentLanguage)
     if (result.success) {
       setNewWordText('')
-      showToast('Woord toegevoegd!', 'success')
+      showToast('Word added!', 'success')
       loadUserWords() // Refresh list
     } else {
-      showToast(result.error || 'Er is een fout opgetreden', 'error')
+      showToast(result.error || 'An error occurred', 'error')
     }
   }
 
@@ -408,7 +408,7 @@ function AppContent() {
     const subCatOptions = availableCategories.subCategories[newWordMainCategory] || []
     const subCat = subCatOptions.find(s => s.name === newWordSubCategory)
     if (!subCat) {
-      showToast('Ongeldige subcategorie', 'error')
+      showToast('Invalid subcategory', 'error')
       return
     }
 
@@ -416,27 +416,27 @@ function AppContent() {
     if (result.success) {
       setEditingWordId(null)
       setNewWordText('')
-      showToast('Woord bijgewerkt!', 'success')
+      showToast('Word updated!', 'success')
       loadUserWords() // Refresh list
     } else {
-      showToast(result.error || 'Er is een fout opgetreden', 'error')
+      showToast(result.error || 'An error occurred', 'error')
     }
   }
 
   const handleDeleteUserWord = async (id: string) => {
     showConfirmation({
-      title: 'Woord Verwijderen',
-      message: 'Weet je zeker dat je dit woord wilt verwijderen? Deze actie kan niet ongedaan worden gemaakt.',
-      confirmText: 'Verwijderen',
-      cancelText: 'Annuleren',
+      title: 'Delete Word',
+      message: 'Are you sure you want to delete this word? This action cannot be undone.',
+      confirmText: 'Delete',
+      cancelText: 'Cancel',
       confirmButtonStyle: 'danger',
       onConfirm: async () => {
         const result = await deleteUserCustomWord(id)
         if (result.success) {
-          showToast('Woord verwijderd!', 'success')
+          showToast('Word deleted!', 'success')
           loadUserWords() // Refresh list
         } else {
-          showToast(result.error || 'Er is een fout opgetreden', 'error')
+          showToast(result.error || 'An error occurred', 'error')
         }
       }
     })
@@ -551,18 +551,18 @@ function AppContent() {
         if (isOnline) {
           try {
             await saveBrainDump(saveData)
-            setAutoSaveStatus('Automatisch opgeslagen')
+            setAutoSaveStatus('Auto-saved')
             setTimeout(() => setAutoSaveStatus(''), 2000)
           } catch (error) {
             console.error('Auto-save failed:', error)
-            setAutoSaveStatus('Auto-save mislukt - queued voor later')
+            setAutoSaveStatus('Auto-save failed - queued for later')
             setPendingSaves(prev => [...prev, saveData])
             setTimeout(() => setAutoSaveStatus(''), 3000)
           }
         } else {
           // Queue save for when online
           setPendingSaves(prev => [...prev, saveData])
-          setAutoSaveStatus('Offline - save in wachtrij')
+          setAutoSaveStatus('Offline - save queued')
           setTimeout(() => setAutoSaveStatus(''), 3000)
         }
       }
@@ -587,7 +587,7 @@ function AppContent() {
   useEffect(() => {
     const handleOnline = () => {
       setIsOnline(true)
-      setAutoSaveStatus('Verbinding hersteld')
+      setAutoSaveStatus('Connection restored')
       setTimeout(() => setAutoSaveStatus(''), 2000)
       
       // Process any pending saves
@@ -598,7 +598,7 @@ function AppContent() {
     
     const handleOffline = () => {
       setIsOnline(false)
-      setAutoSaveStatus('Offline - alleen lokaal opgeslagen')
+      setAutoSaveStatus('Offline - saved locally only')
     }
     
     // Set initial state
@@ -618,7 +618,7 @@ function AppContent() {
   useEffect(() => {
     const handleBeforeUnload = (e: BeforeUnloadEvent) => {
       if (currentScreen === 'minddump' && (allIdeas.length > 0 || pendingSaves.length > 0)) {
-        const message = 'Je hebt een actieve mind dump sessie. Je voortgang is opgeslagen, maar weet je zeker dat je wilt afsluiten?'
+        const message = 'You have an active mind dump session. Your progress is saved, but are you sure you want to exit?'
         e.preventDefault()
         e.returnValue = message
         return message
@@ -636,8 +636,8 @@ function AppContent() {
   const showConfirmation = ({
     title,
     message,
-    confirmText = 'Bevestigen',
-    cancelText = 'Annuleren',
+    confirmText = 'Confirm',
+    cancelText = 'Cancel',
     confirmButtonStyle = 'primary' as const,
     onConfirm
   }: {
@@ -664,7 +664,7 @@ function AppContent() {
   
   const hideConfirmation = () => {
     // Check if this was a session recovery modal - if so, clear the session
-    if (confirmModal.title === 'Sessie Herstellen') {
+    if (confirmModal.title === 'Restore Session') {
       clearSessionFromStorage()
     }
     setConfirmModal(prev => ({ ...prev, isOpen: false }))
@@ -677,7 +677,7 @@ function AppContent() {
     for (const saveData of saves) {
       try {
         await saveBrainDump(saveData)
-        setAutoSaveStatus('Offline saves gesynchroniseerd')
+        setAutoSaveStatus('Offline saves synchronized')
         setTimeout(() => setAutoSaveStatus(''), 2000)
       } catch (error) {
         console.error('Failed to process pending save:', error)
@@ -693,7 +693,7 @@ function AppContent() {
     try {
       const { data: user } = await supabase.auth.getUser()
       if (!user.user) {
-        showToast('Niet ingelogd', 'error')
+        showToast('Not logged in', 'error')
         return
       }
 
@@ -719,11 +719,11 @@ function AppContent() {
       const result = await response.json()
       
       if (result.success) {
-        showToast('Voorkeuren opgeslagen!', 'success')
+        showToast('Preferences saved!', 'success')
       } else {
         // Handle detailed error information
         
-        let errorMessage = 'Fout bij opslaan van voorkeuren'
+        let errorMessage = 'Error saving preferences'
         
         if (result.details) {
           errorMessage += ': ' + result.details
@@ -740,7 +740,7 @@ function AppContent() {
         return
       }
     } catch (error) {
-      showToast('Fout bij opslaan van voorkeuren: ' + error, 'error')
+      showToast('Error saving preferences: ' + error, 'error')
     }
     setSavingPreferences(false)
   }
@@ -883,10 +883,10 @@ function AppContent() {
     
     // First show a modal asking if they want to save
     showConfirmation({
-      title: 'Mind Dump Afsluiten',
-      message: `Je hebt ${allIdeas.length} ideeën verzameld. Wil je deze opslaan?`,
-      confirmText: 'Opslaan & Afsluiten',
-      cancelText: 'Doorgaan',
+      title: 'Exit Mind Dump',
+      message: `You have collected ${allIdeas.length} ideas. Do you want to save them?`,
+      confirmText: 'Save & Exit',
+      cancelText: 'Continue',
       onConfirm: async () => {
         await finishMindDump()
       }
@@ -914,7 +914,7 @@ function AppContent() {
     a.click()
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url)
-    showToast('Je mind dump is geëxporteerd als tekstbestand!', 'success')
+    showToast('Your mind dump has been exported as a text file!', 'success')
   }
 
   const exportMindDumpCSV = () => {
@@ -931,7 +931,7 @@ function AppContent() {
     
     // Create proper CSV with semicolon delimiter (standard for Dutch Excel)
     const csvRows = [
-      'Idee;',  // Header with delimiter
+      'Idea;',  // Header with delimiter
       ...cleanIdeas.map(idea => `"${idea.replace(/"/g, '""')}";`)  // Each idea with delimiter
     ]
     const csvContent = csvRows.join('\n')
@@ -945,7 +945,7 @@ function AppContent() {
     a.click()
     document.body.removeChild(a)
     window.URL.revokeObjectURL(url)
-    showToast('Je mind dump is geëxporteerd als CSV bestand!', 'success')
+    showToast('Your mind dump has been exported as a CSV file!', 'success')
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -982,7 +982,7 @@ function AppContent() {
           <div className="app-container">
             <div className="app-header">
               <h1 className="app-title">MindDumper</h1>
-              <p className="app-subtitle">Maak je hoofd leeg van alle taken</p>
+              <p className="app-subtitle">Clear your mind of all tasks</p>
             </div>
             
             <div className="main-actions">
@@ -998,7 +998,7 @@ function AppContent() {
                   <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
                   <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="2"/>
                 </svg>
-                Configuratie
+                Configuration
               </button>
             </div>
             
@@ -1008,19 +1008,19 @@ function AppContent() {
                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
                   <polyline points="12,6 12,12 16,14" stroke="currentColor" strokeWidth="2"/>
                 </svg>
-                Geschiedenis bekijken
+                View History
               </button>
               <button className="btn-text" onClick={() => signOut()}>
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2"/>
                 </svg>
-                Uitloggen
+                Log Out
               </button>
               <Link href="/" className="btn-text">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" strokeWidth="2"/>
                 </svg>
-                Terug naar website
+                Back to website
               </Link>
             </div>
           </div>
@@ -1037,7 +1037,7 @@ function AppContent() {
                   <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2"/>
                 </svg>
               </button>
-              <h2>Kies je taal</h2>
+              <h2>Choose Your Language</h2>
             </div>
             
             <div className="language-grid">
@@ -1069,7 +1069,7 @@ function AppContent() {
             
             {loading && (
               <div style={{textAlign: 'center', marginTop: '2rem', color: '#666'}}>
-                Triggerwoorden laden...
+                Loading trigger words...
               </div>
             )}
           </div>
@@ -1098,13 +1098,13 @@ function AppContent() {
                   {pendingSaves.length > 0 && (
                     <div className="pending-saves" style={{color: '#ffa500', display: 'flex', alignItems: 'center', gap: '4px'}}>
                       <span style={{width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ffa500'}}></span>
-                      {pendingSaves.length} save(s) in wachtrij
+                      {pendingSaves.length} save(s) queued
                     </div>
                   )}
                   {autoSaveStatus && (
                     <div className="auto-save-status" style={{
                       color: autoSaveStatus.includes('mislukt') ? '#ff6b6b' : 
-                             autoSaveStatus.includes('hersteld') || autoSaveStatus.includes('opgeslagen') ? '#4caf50' : '#666'
+                             autoSaveStatus.includes('restored') || autoSaveStatus.includes('saved') ? '#4caf50' : '#666'
                     }}>
                       {autoSaveStatus}
                     </div>
@@ -1140,24 +1140,24 @@ function AppContent() {
               >
                 {currentWord}
               </div>
-              <div className="trigger-description">Wat komt er in je op bij dit woord?</div>
+              <div className="trigger-description">What comes to mind with this word?</div>
             </div>
             
             <div className="input-container">
               <input 
                 type="text" 
                 className="idea-input" 
-                placeholder="Type je idee en druk op Enter..." 
+                placeholder="Type your idea and press Enter..." 
                 value={ideaInput}
                 onChange={(e) => setIdeaInput(e.target.value)}
                 onKeyPress={handleKeyPress}
                 autoFocus
               />
-              <div className="input-help">Druk Enter zonder tekst om naar het volgende woord te gaan</div>
+              <div className="input-help">Press Enter without text to go to the next word</div>
             </div>
             
             <div className="current-ideas">
-              <h3>Ideeën voor &quot;{currentWord}&quot;:</h3>
+              <h3>Ideas for &quot;{currentWord}&quot;:</h3>
               <div className="ideas-list">
                 {currentIdeas.map((idea, index) => (
                   <div key={index} className="idea-item">{idea}</div>
@@ -1167,7 +1167,7 @@ function AppContent() {
               {/* Show all ideas so far if session was recovered and has previous ideas */}
               {sessionId && allIdeas.length > currentIdeas.length && (
                 <div className="previous-ideas" style={{marginTop: '20px', padding: '15px', backgroundColor: '#f5f5f5', borderRadius: '8px'}}>
-                  <h4 style={{margin: '0 0 10px 0', fontSize: '14px', color: '#666'}}>Alle ideeën tot nu toe ({allIdeas.length}):</h4>
+                  <h4 style={{margin: '0 0 10px 0', fontSize: '14px', color: '#666'}}>All ideas so far ({allIdeas.length}):</h4>
                   <div className="ideas-list" style={{maxHeight: '120px', overflowY: 'auto'}}>
                     {allIdeas.map((idea, index) => (
                       <div key={index} className="idea-item" style={{fontSize: '13px', padding: '4px 8px'}}>
@@ -1187,33 +1187,33 @@ function AppContent() {
         <div className="screen active">
           <div className="app-container">
             <div className="screen-header">
-              <h2>Brain Dump Voltooid! 🎉</h2>
+              <h2>Brain Dump Completed! 🎉</h2>
             </div>
             
             <div className="summary-stats">
               <div className="stat">
                 <span className="stat-number">{allIdeas.length}</span>
-                <span className="stat-label">Ideeën gevonden</span>
+                <span className="stat-label">Ideas found</span>
               </div>
               <div className="stat">
                 <span className="stat-number">{currentWordIndex}</span>
-                <span className="stat-label">Triggerwoorden gebruikt</span>
+                <span className="stat-label">Trigger words used</span>
               </div>
               <div className="stat">
                 <span className="stat-number">~{Math.ceil(currentWordIndex / 2)}</span>
-                <span className="stat-label">Minuten</span>
+                <span className="stat-label">Minutes</span>
               </div>
             </div>
             
             <div className="ideas-overview">
-              <h3>Alle gevonden ideeën:</h3>
+              <h3>All ideas found:</h3>
               <div className="ideas-export-list">
                 {allIdeas.slice(0, 10).map((idea, index) => (
                   <div key={index} className="export-item">{idea}</div>
                 ))}
               </div>
               {allIdeas.length > 10 && (
-                <div className="show-more">... en nog {allIdeas.length - 10} ideeën</div>
+                <div className="show-more">... and {allIdeas.length - 10} more ideas</div>
               )}
             </div>
             
@@ -1222,18 +1222,18 @@ function AppContent() {
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" strokeWidth="2"/>
                 </svg>
-                Exporteer Tekstlijst
+                Export Text List
               </button>
               
               <button className="btn-primary large" onClick={exportMindDumpCSV}>
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" strokeWidth="2"/>
                 </svg>
-                Exporteer CSV
+                Export CSV
               </button>
               
               <button className="btn-secondary large" onClick={() => showScreen('home')}>
-                Nieuwe Brain Dump
+                New Brain Dump
               </button>
             </div>
           </div>
@@ -1250,11 +1250,11 @@ function AppContent() {
                   <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2"/>
                 </svg>
               </button>
-              <h2>Configuratie</h2>
+              <h2>Configuration</h2>
             </div>
             
             <div className="config-section">
-              <h3>Taal</h3>
+              <h3>Language</h3>
               <select 
                 className="language-select" 
                 value={currentLanguage} 
@@ -1351,14 +1351,14 @@ function AppContent() {
             </div>
             
             <div className="config-section">
-              <h3>Triggerwoorden</h3>
+              <h3>Trigger Words</h3>
               <div className="search-container">
-                <input type="text" className="search-input" placeholder="Zoek triggerwoorden..." />
+                <input type="text" className="search-input" placeholder="Search trigger words..." />
               </div>
               
               {configLoading ? (
                 <div style={{textAlign: 'center', margin: '2rem 0', color: '#666'}}>
-                  Triggerwoorden laden...
+                  Loading trigger words...
                 </div>
               ) : (
                 <>
@@ -1431,7 +1431,7 @@ function AppContent() {
                         cursor: savingPreferences ? 'not-allowed' : 'pointer'
                       }}
                     >
-                      {savingPreferences ? 'Voorkeuren opslaan...' : 'Voorkeuren Opslaan'}
+                      {savingPreferences ? 'Saving Preferences...' : 'Save Preferences'}
                     </button>
                   </div>
                 </>
@@ -1439,17 +1439,17 @@ function AppContent() {
             </div>
             
             <div className="config-section">
-              <h3>Mijn Woorden</h3>
+              <h3>My Words</h3>
               
               {userWordsLoading ? (
                 <div style={{textAlign: 'center', margin: '2rem 0', color: '#666'}}>
-                  Laden...
+                  Loading...
                 </div>
               ) : (
                 <>
                   {userWords.length > 0 && (
                     <div className="user-words-list">
-                      <h4>Jouw toegevoegde woorden:</h4>
+                      <h4>Your added words:</h4>
                       {userWords.map((word) => (
                         <div key={word.id} className="user-word-item">
                           <div className="user-word-info">
@@ -1462,14 +1462,14 @@ function AppContent() {
                             <button 
                               className="btn-edit"
                               onClick={() => handleEditUserWord(word)}
-                              title="Bewerken"
+                              title="Edit"
                             >
                               ✏️
                             </button>
                             <button 
                               className="btn-delete"
                               onClick={() => handleDeleteUserWord(word.id)}
-                              title="Verwijderen"
+                              title="Delete"
                             >
                               🗑️
                             </button>
@@ -1480,14 +1480,14 @@ function AppContent() {
                   )}
 
                   <div className="add-user-word-section">
-                    <h4>{editingWordId ? 'Woord bewerken' : 'Nieuw woord toevoegen'}</h4>
+                    <h4>{editingWordId ? 'Edit Word' : 'Add New Word'}</h4>
                     
                     <div className="add-word-form">
                       <div className="form-row">
                         <input 
                           type="text" 
                           className="add-word-input" 
-                          placeholder="Triggerwoord..." 
+                          placeholder="Trigger word..." 
                           value={newWordText}
                           onChange={(e) => setNewWordText(e.target.value)}
                         />
@@ -1507,7 +1507,7 @@ function AppContent() {
                               }
                             }}
                           >
-                            <option value="">Hoofdcategorie...</option>
+                            <option value="">Main category...</option>
                             {availableCategories.mainCategories.map(cat => (
                               <option key={cat} value={cat}>{translateCategory(cat, currentLanguage)}</option>
                             ))}
@@ -1519,7 +1519,7 @@ function AppContent() {
                             onChange={(e) => setNewWordSubCategory(e.target.value)}
                             disabled={!newWordMainCategory}
                           >
-                            <option value="">Subcategorie...</option>
+                            <option value="">Subcategory...</option>
                             {newWordMainCategory && availableCategories.subCategories[newWordMainCategory]?.map(subCat => (
                               <option key={subCat.id} value={subCat.name}>{subCat.name}</option>
                             ))}
@@ -1535,13 +1535,13 @@ function AppContent() {
                               onClick={handleUpdateUserWord}
                               disabled={!newWordText.trim() || !newWordMainCategory || !newWordSubCategory}
                             >
-                              Bijwerken
+                              Update
                             </button>
                             <button 
                               className="btn-secondary"
                               onClick={handleCancelEdit}
                             >
-                              Annuleren
+                              Cancel
                             </button>
                           </>
                         ) : (
@@ -1550,7 +1550,7 @@ function AppContent() {
                             onClick={handleAddUserWord}
                             disabled={!newWordText.trim() || !newWordMainCategory || !newWordSubCategory}
                           >
-                            Toevoegen
+                            Add
                           </button>
                         )}
                       </div>
@@ -1573,18 +1573,18 @@ function AppContent() {
                   <path d="M19 12H5M12 19l-7-7 7-7" stroke="currentColor" strokeWidth="2"/>
                 </svg>
               </button>
-              <h2>Geschiedenis</h2>
+              <h2>History</h2>
             </div>
             
             <div className="history-list">
               {historyLoading ? (
                 <div style={{textAlign: 'center', margin: '2rem 0', color: '#666'}}>
-                  Geschiedenis laden...
+                  Loading history...
                 </div>
               ) : brainDumpHistory.length === 0 ? (
                 <div style={{textAlign: 'center', margin: '2rem 0', color: '#666'}}>
-                  <p>Nog geen brain dumps gemaakt.</p>
-                  <p>Start je eerste sessie om hier je geschiedenis te zien!</p>
+                  <p>No brain dumps created yet.</p>
+                  <p>Start your first session to see your history here!</p>
                 </div>
               ) : (
                 brainDumpHistory.map((dump) => (
@@ -1604,14 +1604,14 @@ function AppContent() {
                       })}
                     </div>
                     <div className="history-stats">
-                      <span className="stat">{dump.total_ideas || 0} ideeën</span>
-                      <span className="stat">{dump.total_words || 0} triggerwoorden</span>
+                      <span className="stat">{dump.total_ideas || 0} ideas</span>
+                      <span className="stat">{dump.total_words || 0} trigger words</span>
                       <span className="stat">{dump.duration_minutes || 0} min</span>
                     </div>
                     <div className="history-preview">
                       {dump.ideas && dump.ideas.length > 0 
                         ? dump.ideas.slice(0, 3).join(', ') + (dump.ideas.length > 3 ? '...' : '')
-                        : 'Geen ideeën opgeslagen'
+                        : 'No ideas saved'
                       }
                     </div>
                   </div>

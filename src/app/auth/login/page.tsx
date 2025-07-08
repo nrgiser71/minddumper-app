@@ -32,7 +32,7 @@ export default function LoginPage() {
         router.push('/app')
       }
     } catch {
-      setError('Er is een fout opgetreden bij het inloggen')
+      setError('An error occurred during login')
     } finally {
       setLoading(false)
     }
@@ -65,7 +65,7 @@ export default function LoginPage() {
             MindDumper
           </h1>
           <p style={{ color: '#666', fontSize: '1rem' }}>
-            Welkom terug! Log in om verder te gaan.
+            Welcome back! Log in to continue.
           </p>
         </div>
 
@@ -93,7 +93,7 @@ export default function LoginPage() {
                 fontSize: '1rem',
                 boxSizing: 'border-box'
               }}
-              placeholder="je@voorbeeld.nl"
+              placeholder="you@example.com"
             />
           </div>
 
@@ -104,7 +104,7 @@ export default function LoginPage() {
               fontWeight: '500',
               color: '#333'
             }}>
-              Wachtwoord
+              Password
             </label>
             <input
               id="password"
@@ -120,7 +120,7 @@ export default function LoginPage() {
                 fontSize: '1rem',
                 boxSizing: 'border-box'
               }}
-              placeholder="Je wachtwoord"
+              placeholder="Your password"
             />
           </div>
 
@@ -153,15 +153,15 @@ export default function LoginPage() {
               marginBottom: '1rem'
             }}
           >
-            {loading ? 'Inloggen...' : 'Inloggen'}
+            {loading ? 'Logging in...' : 'Log In'}
           </button>
         </form>
 
         <div style={{ textAlign: 'center' }}>
           <p style={{ color: '#666', fontSize: '0.875rem' }}>
-            Nog geen account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/auth/signup" style={{ color: '#007AFF', textDecoration: 'none' }}>
-              Registreer je hier
+              Sign up here
             </Link>
           </p>
           <Link href="/" style={{ 
@@ -171,7 +171,7 @@ export default function LoginPage() {
             display: 'inline-block',
             marginTop: '0.5rem'
           }}>
-            ← Terug naar website
+            ← Back to website
           </Link>
         </div>
       </div>
