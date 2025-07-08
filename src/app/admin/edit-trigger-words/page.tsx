@@ -41,6 +41,9 @@ export default function EditTriggerWordsPage() {
   const [editingValue, setEditingValue] = useState('')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
+  const [deleting, setDeleting] = useState<string | null>(null)
+  const [showDeleteModal, setShowDeleteModal] = useState(false)
+  const [wordToDelete, setWordToDelete] = useState<{ id: string; word: string } | null>(null)
 
   // Load data for selected language
   useEffect(() => {
@@ -123,6 +126,62 @@ export default function EditTriggerWordsPage() {
     } else if (e.key === 'Escape') {
       cancelEditing()
     }
+  }
+
+  const handleModalKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      cancelDelete()
+    }
+  }
+
+  const confirmDelete = (wordId: string, word: string) => {
+    setWordToDelete({ id: wordId, word })
+    setShowDeleteModal(true)
+  }
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false)
+    setWordToDelete(null)
+  }
+
+  const deleteWord = async () => {
+    if (!wordToDelete) return
+
+    setDeleting(wordToDelete.id)
+    try {
+      const response = await fetch('/api/admin/delete-word', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          wordId: wordToDelete.id
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setMessage('✅ Woord succesvol verwijderd')
+        // Remove word from local data
+        setData(prevData => 
+          prevData.map(mainCat => ({
+            ...mainCat,
+            subcategories: mainCat.subcategories.map(subCat => ({
+              ...subCat,
+              words: subCat.words.filter(word => word.id !== wordToDelete.id)
+            }))
+          }))
+        )
+        setShowDeleteModal(false)
+        setWordToDelete(null)
+      } else {
+        setMessage(`❌ Fout bij verwijderen: ${result.error}`)
+      }
+    } catch (error) {
+      setMessage(`❌ Fout bij verwijderen: ${error}`)
+    }
+    setDeleting(null)
   }
 
   const totalWords = data.reduce((total, mainCat) => 
@@ -313,19 +372,39 @@ export default function EditTriggerWordsPage() {
                               </button>
                             </div>
                           ) : (
-                            <div 
-                              onClick={() => startEditing(word.id, word.word)}
-                              style={{ 
-                                cursor: 'pointer',
-                                fontSize: '0.9rem',
-                                padding: '0.25rem',
-                                borderRadius: '4px',
-                                transition: 'background-color 0.2s'
-                              }}
-                              onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
-                              onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
-                            >
-                              {word.word}
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                              <div 
+                                onClick={() => startEditing(word.id, word.word)}
+                                style={{ 
+                                  cursor: 'pointer',
+                                  fontSize: '0.9rem',
+                                  padding: '0.25rem',
+                                  borderRadius: '4px',
+                                  transition: 'background-color 0.2s',
+                                  flex: 1
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#e9ecef'}
+                                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                              >
+                                {word.word}
+                              </div>
+                              <button
+                                onClick={() => confirmDelete(word.id, word.word)}
+                                disabled={deleting === word.id}
+                                style={{
+                                  background: deleting === word.id ? '#ccc' : '#dc3545',
+                                  color: 'white',
+                                  border: 'none',
+                                  padding: '0.25rem 0.5rem',
+                                  borderRadius: '4px',
+                                  cursor: deleting === word.id ? 'not-allowed' : 'pointer',
+                                  fontSize: '0.8rem',
+                                  minWidth: '24px'
+                                }}
+                                title="Verwijder woord"
+                              >
+                                {deleting === word.id ? '...' : '🗑️'}
+                              </button>
                             </div>
                           )}
                         </div>
@@ -336,6 +415,77 @@ export default function EditTriggerWordsPage() {
               ))}
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {showDeleteModal && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}
+          onClick={cancelDelete}
+          onKeyDown={handleModalKeyDown}
+        >
+          <div 
+            style={{
+              backgroundColor: 'white',
+              padding: '2rem',
+              borderRadius: '8px',
+              maxWidth: '500px',
+              width: '90%',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ marginBottom: '1rem', color: '#dc3545' }}>Woord verwijderen</h3>
+            <p style={{ marginBottom: '1.5rem' }}>
+              Weet je zeker dat je het woord <strong>&quot;{wordToDelete?.word}&quot;</strong> wilt verwijderen?
+            </p>
+            <p style={{ marginBottom: '1.5rem', fontSize: '0.9rem', color: '#666' }}>
+              Dit woord wordt gedeactiveerd en zal niet meer beschikbaar zijn voor gebruikers.
+            </p>
+            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+              <button
+                onClick={cancelDelete}
+                style={{
+                  background: '#6c757d',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                Annuleren
+              </button>
+              <button
+                onClick={deleteWord}
+                disabled={deleting === wordToDelete?.id}
+                style={{
+                  background: deleting === wordToDelete?.id ? '#ccc' : '#dc3545',
+                  color: 'white',
+                  border: 'none',
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '4px',
+                  cursor: deleting === wordToDelete?.id ? 'not-allowed' : 'pointer',
+                  fontSize: '1rem'
+                }}
+              >
+                {deleting === wordToDelete?.id ? 'Verwijderen...' : 'Verwijderen'}
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -351,6 +501,7 @@ export default function EditTriggerWordsPage() {
         <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
           <li>Klik op een woord om het te bewerken</li>
           <li>Druk Enter om op te slaan, Escape om te annuleren</li>
+          <li>Klik op het 🗑️ icoon om een woord te verwijderen</li>
           <li>Wijzigingen worden direct opgeslagen in de database</li>
           <li>Gebruik de taal selector om tussen talen te schakelen</li>
         </ul>
