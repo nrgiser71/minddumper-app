@@ -14,11 +14,12 @@ export async function GET(request: NextRequest) {
         word,
         language,
         display_order,
-        sub_category:sub_categories!inner(
+        sub_category_id,
+        sub_category:sub_categories(
           id,
           name,
           display_order,
-          main_category:main_categories!inner(
+          main_category:main_categories(
             id,
             name,
             display_order
@@ -53,8 +54,39 @@ export async function GET(request: NextRequest) {
       }>
     }
 
+    // Filter and fix words without proper category joins
+    const wordsWithCategories = []
+    
+    for (const word of words || []) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const subCategory = Array.isArray(word.sub_category) ? word.sub_category[0] : word.sub_category as any
+      
+      if (subCategory && subCategory.main_category) {
+        wordsWithCategories.push({
+          ...word,
+          sub_category: subCategory
+        })
+      } else {
+        // For words without category joins, create a mock structure
+        const mockWord = {
+          ...word,
+          sub_category: {
+            id: word.sub_category_id || 'unknown',
+            name: 'Onbekende Categorie',
+            display_order: 999,
+            main_category: {
+              id: 'unknown-main',
+              name: language === 'nl' ? 'Persoonlijk' : 'Personal',
+              display_order: 999
+            }
+          }
+        }
+        wordsWithCategories.push(mockWord)
+      }
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const groupedWords = words?.reduce((acc: Record<string, GroupedWord>, word: any) => {
+    const groupedWords = wordsWithCategories?.reduce((acc: Record<string, GroupedWord>, word: any) => {
       const mainCat = word.sub_category.main_category
       const subCat = word.sub_category
       
@@ -101,7 +133,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ 
       success: true, 
       data: sortedData,
-      totalWords: words?.length || 0,
+      totalWords: wordsWithCategories?.length || 0,
       language 
     })
 
