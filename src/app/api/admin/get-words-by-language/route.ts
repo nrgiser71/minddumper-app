@@ -13,18 +13,20 @@ export async function GET(request: NextRequest) {
       .eq('language', language)
       .limit(5)
       
-    // Also test without active filter
-    const { data: allWords } = await supabase
+    // Test: get ALL words and filter manually
+    const { data: allDbWords } = await supabase
       .from('system_trigger_words')
       .select('id, word, language, is_active')
-      .eq('language', language)
       .eq('is_active', true)
-      .limit(5)
+      .limit(10)
+      
+    const dutchWords = allDbWords?.filter(w => w.language === language) || []
       
     console.log(`[DEBUG] Simple query for ${language}: ${simpleWords?.length || 0} words`)
-    console.log(`[DEBUG] Active query for ${language}: ${allWords?.length || 0} words`)
-    if (simpleWords && simpleWords.length > 0) {
-      console.log(`[DEBUG] First word: ${simpleWords[0].word}, is_active: ${simpleWords[0].is_active}`)
+    console.log(`[DEBUG] Manual filter for ${language}: ${dutchWords?.length || 0} words`)
+    console.log(`[DEBUG] All DB words: ${allDbWords?.length || 0} words`)
+    if (allDbWords && allDbWords.length > 0) {
+      console.log(`[DEBUG] First DB word: ${allDbWords[0].word}, language: ${allDbWords[0].language}`)
     }
     
     // Get all system words for the specified language with category information - use same query as get-all-words
@@ -159,7 +161,8 @@ export async function GET(request: NextRequest) {
       language,
       debug: {
         simpleWordsCount: simpleWords?.length || 0,
-        activeWordsCount: allWords?.length || 0,
+        manualFilterCount: dutchWords?.length || 0,
+        allDbWordsCount: allDbWords?.length || 0,
         rawWordsCount: words?.length || 0,
         processedWordsCount: wordsWithCategories?.length || 0
       }
