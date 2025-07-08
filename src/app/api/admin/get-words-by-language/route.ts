@@ -6,6 +6,19 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const language = searchParams.get('language') || 'nl'
 
+    // First, simple test - get all words without joins
+    const { data: simpleWords } = await supabase
+      .from('system_trigger_words')
+      .select('id, word, language')
+      .eq('language', language)
+      .eq('is_active', true)
+      .limit(5)
+      
+    console.log(`[DEBUG] Simple query for ${language}: ${simpleWords?.length || 0} words`)
+    if (simpleWords && simpleWords.length > 0) {
+      console.log(`[DEBUG] First word: ${simpleWords[0].word}`)
+    }
+    
     // Get all system words for the specified language with category information
     const { data: words, error } = await supabase
       .from('system_trigger_words')
@@ -134,7 +147,12 @@ export async function GET(request: NextRequest) {
       success: true, 
       data: sortedData,
       totalWords: wordsWithCategories?.length || 0,
-      language 
+      language,
+      debug: {
+        simpleWordsCount: simpleWords?.length || 0,
+        rawWordsCount: words?.length || 0,
+        processedWordsCount: wordsWithCategories?.length || 0
+      }
     })
 
   } catch (error) {
