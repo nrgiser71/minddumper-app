@@ -28,10 +28,10 @@ export async function GET(request: NextRequest) {
       `)
       .eq('language', language)
       .eq('is_active', true)
-      .eq('sub_category.is_active', true)
-      .eq('sub_category.main_category.is_active', true)
       .order('display_order')
 
+    console.log(`[get-words-by-language] Language: ${language}, Raw words count: ${words?.length || 0}`)
+    
     if (error) {
       console.error('Error fetching words by language:', error)
       return NextResponse.json({ error: 'Failed to fetch words' }, { status: 500 })
