@@ -59,10 +59,10 @@ export default function EditTriggerWordsPage() {
       if (result.success) {
         setData(result.data)
       } else {
-        setMessage(`❌ Fout bij laden: ${result.error}`)
+        setMessage(`❌ Error loading: ${result.error}`)
       }
     } catch (error) {
-      setMessage(`❌ Fout bij laden: ${error}`)
+      setMessage(`❌ Error loading: ${error}`)
     }
     setLoading(false)
   }
@@ -96,7 +96,7 @@ export default function EditTriggerWordsPage() {
       const result = await response.json()
 
       if (result.success) {
-        setMessage('✅ Woord succesvol bijgewerkt')
+        setMessage('✅ Word successfully updated')
         // Update local data
         setData(prevData => 
           prevData.map(mainCat => ({
@@ -112,10 +112,10 @@ export default function EditTriggerWordsPage() {
         setEditingWordId(null)
         setEditingValue('')
       } else {
-        setMessage(`❌ Fout bij opslaan: ${result.error}`)
+        setMessage(`❌ Error saving: ${result.error}`)
       }
     } catch (error) {
-      setMessage(`❌ Fout bij opslaan: ${error}`)
+      setMessage(`❌ Error saving: ${error}`)
     }
     setSaving(false)
   }
@@ -162,7 +162,7 @@ export default function EditTriggerWordsPage() {
       const result = await response.json()
 
       if (result.success) {
-        setMessage('✅ Woord succesvol verwijderd')
+        setMessage('✅ Word successfully deleted')
         // Remove word from local data
         setData(prevData => 
           prevData.map(mainCat => ({
@@ -176,10 +176,10 @@ export default function EditTriggerWordsPage() {
         setShowDeleteModal(false)
         setWordToDelete(null)
       } else {
-        setMessage(`❌ Fout bij verwijderen: ${result.error}`)
+        setMessage(`❌ Error deleting: ${result.error}`)
       }
     } catch (error) {
-      setMessage(`❌ Fout bij verwijderen: ${error}`)
+      setMessage(`❌ Error deleting: ${error}`)
     }
     setDeleting(null)
   }
@@ -195,7 +195,7 @@ export default function EditTriggerWordsPage() {
       {/* Navigation */}
       <div style={{ marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem' }}>
         <Link href="/admin" style={{ color: '#007AFF', textDecoration: 'none' }}>
-          ← Terug naar Admin
+          ← Back to Admin
         </Link>
         <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
           <Link href="/admin/dashboard" style={{ 
@@ -216,22 +216,22 @@ export default function EditTriggerWordsPage() {
             borderRadius: '6px',
             fontWeight: 'bold'
           }}>
-            📝 Woorden Beheer
+            📝 Words Management
           </Link>
         </div>
       </div>
 
       {/* Header */}
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ marginBottom: '1rem' }}>Triggerwoorden Bewerken per Taal</h1>
+        <h1 style={{ marginBottom: '1rem' }}>Edit Trigger Words by Language</h1>
         <p style={{ color: '#666', fontSize: '0.9rem' }}>
-          Klik op een woord om het te bewerken. Druk Enter om op te slaan, Escape om te annuleren.
+          Click on a word to edit it. Press Enter to save, Escape to cancel.
         </p>
       </div>
 
       {/* Language Selector */}
       <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-        <label style={{ fontWeight: 'bold' }}>Taal:</label>
+        <label style={{ fontWeight: 'bold' }}>Language:</label>
         <select 
           value={language}
           onChange={(e) => setLanguage(e.target.value as Language)}
@@ -248,7 +248,7 @@ export default function EditTriggerWordsPage() {
         </select>
         {!loading && (
           <span style={{ color: '#666', fontSize: '0.9rem' }}>
-            {totalWords} woorden geladen
+            {totalWords} words loaded
           </span>
         )}
       </div>
@@ -282,7 +282,7 @@ export default function EditTriggerWordsPage() {
       {/* Content */}
       {loading ? (
         <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <div style={{ fontSize: '1.2rem', color: '#666' }}>Laden...</div>
+          <div style={{ fontSize: '1.2rem', color: '#666' }}>Loading...</div>
         </div>
       ) : (
         <div>
@@ -304,7 +304,7 @@ export default function EditTriggerWordsPage() {
                     marginBottom: '0.5rem',
                     fontSize: '1.1rem'
                   }}>
-                    {subcategory.name} ({subcategory.words.length} woorden)
+                    {subcategory.name} ({subcategory.words.length} words)
                   </h3>
                   
                   <div style={{ 
@@ -401,7 +401,7 @@ export default function EditTriggerWordsPage() {
                                   fontSize: '0.8rem',
                                   minWidth: '24px'
                                 }}
-                                title="Verwijder woord"
+                                title="Delete word"
                               >
                                 {deleting === word.id ? '...' : '🗑️'}
                               </button>
@@ -447,12 +447,12 @@ export default function EditTriggerWordsPage() {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ marginBottom: '1rem', color: '#dc3545' }}>Woord verwijderen</h3>
+            <h3 style={{ marginBottom: '1rem', color: '#dc3545' }}>Delete Word</h3>
             <p style={{ marginBottom: '1.5rem' }}>
-              Weet je zeker dat je het woord <strong>&quot;{wordToDelete?.word}&quot;</strong> wilt verwijderen?
+              Are you sure you want to delete the word <strong>&quot;{wordToDelete?.word}&quot;</strong>?
             </p>
             <p style={{ marginBottom: '1.5rem', fontSize: '0.9rem', color: '#666' }}>
-              Dit woord wordt gedeactiveerd en zal niet meer beschikbaar zijn voor gebruikers.
+              This word will be deactivated and will no longer be available to users.
             </p>
             <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
               <button
@@ -467,7 +467,7 @@ export default function EditTriggerWordsPage() {
                   fontSize: '1rem'
                 }}
               >
-                Annuleren
+                Cancel
               </button>
               <button
                 onClick={deleteWord}
@@ -482,7 +482,7 @@ export default function EditTriggerWordsPage() {
                   fontSize: '1rem'
                 }}
               >
-                {deleting === wordToDelete?.id ? 'Verwijderen...' : 'Verwijderen'}
+                {deleting === wordToDelete?.id ? 'Deleting...' : 'Delete'}
               </button>
             </div>
           </div>
@@ -497,13 +497,13 @@ export default function EditTriggerWordsPage() {
         borderRadius: '8px',
         border: '1px solid #b0c4de'
       }}>
-        <h3 style={{ marginBottom: '0.5rem' }}>Instructies:</h3>
+        <h3 style={{ marginBottom: '0.5rem' }}>Instructions:</h3>
         <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
-          <li>Klik op een woord om het te bewerken</li>
-          <li>Druk Enter om op te slaan, Escape om te annuleren</li>
-          <li>Klik op het 🗑️ icoon om een woord te verwijderen</li>
-          <li>Wijzigingen worden direct opgeslagen in de database</li>
-          <li>Gebruik de taal selector om tussen talen te schakelen</li>
+          <li>Click on a word to edit it</li>
+          <li>Press Enter to save, Escape to cancel</li>
+          <li>Click the 🗑️ icon to delete a word</li>
+          <li>Changes are saved directly to the database</li>
+          <li>Use the language selector to switch between languages</li>
         </ul>
       </div>
     </div>

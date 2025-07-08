@@ -85,7 +85,7 @@ export default function AdminPage() {
             borderRadius: '6px',
             fontWeight: 'bold'
           }}>
-            ✏️ Bewerk per Taal
+            ✏️ Edit by Language
           </Link>
           <Link href="/admin/reorganize" style={{ color: '#007AFF', textDecoration: 'none' }}>
             📁 Categorieën reorganiseren →
