@@ -77,6 +77,16 @@ export default function AdminPage() {
           }}>
             📝 Woorden Beheer
           </Link>
+          <Link href="/admin/edit-trigger-words" style={{ 
+            color: 'white', 
+            textDecoration: 'none',
+            backgroundColor: '#ff9500',
+            padding: '0.5rem 1rem',
+            borderRadius: '6px',
+            fontWeight: 'bold'
+          }}>
+            ✏️ Bewerk per Taal
+          </Link>
           <Link href="/admin/reorganize" style={{ color: '#007AFF', textDecoration: 'none' }}>
             📁 Categorieën reorganiseren →
           </Link>
