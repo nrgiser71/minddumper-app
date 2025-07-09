@@ -30,12 +30,12 @@ export default function HomePage() {
             <p className="hero-description">Finally stop juggling endless tasks in your head. Our scientifically-backed trigger word method helps busy entrepreneurs extract every forgotten task, project, and idea - so you can focus on building what matters.</p>
             <div className="hero-stats">
               <div className="stat">
-                <span className="stat-number">15K+</span>
-                <span className="stat-label">entrepreneurs</span>
+                <span className="stat-number">5</span>
+                <span className="stat-label">languages supported</span>
               </div>
               <div className="stat">
-                <span className="stat-number">400K+</span>
-                <span className="stat-label">tasks extracted</span>
+                <span className="stat-number">250+</span>
+                <span className="stat-label">triggers per language</span>
               </div>
               <div className="stat">
                 <span className="stat-number">10 min</span>
@@ -47,7 +47,7 @@ export default function HomePage() {
                 <button className="btn-primary">Clear My Mind Now - €29</button>
               </Link>
             </div>
-            <p className="hero-guarantee">No signup required • Works in 5 languages • Used by 15,000+ entrepreneurs</p>
+            <p className="hero-guarantee">One-time payment • Works in 5 languages • Lifetime access</p>
           </div>
           <div className="hero-image">
             <Image src="https://via.placeholder.com/600x400/f0f0f0/666666?text=MindDumper+Interface" alt="MindDumper Brain Dump Interface" width={600} height={400} />
