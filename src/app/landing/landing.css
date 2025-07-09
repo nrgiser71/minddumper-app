@@ -378,13 +378,18 @@ body {
     gap: 2rem;
 }
 
-.pricing-single {
+.pricing-single,
+.features-single {
     display: flex;
     justify-content: center;
+    max-width: 600px;
+    margin: 0 auto;
 }
 
-.pricing-card.single {
-    max-width: 400px;
+.pricing-card.single,
+.tier-card.single {
+    max-width: 600px;
+    width: 100%;
     transform: none;
 }
 
