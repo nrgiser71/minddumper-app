@@ -27,7 +27,7 @@ export default function HomePage() {
         <div className="hero-container">
           <div className="hero-content">
             <h1 className="hero-title">Clear Your <span className="highlight">Overloaded Mind</span> in 10 Minutes</h1>
-            <p className="hero-description">Finally stop juggling endless tasks in your head. Our scientifically-backed trigger word method helps busy entrepreneurs extract every forgotten task, project, and idea - so you can focus on building what matters.</p>
+            <p className="hero-description">Finally stop juggling endless tasks in your head. Our scientifically-backed trigger words (available in 5 languages) help busy entrepreneurs extract every forgotten task, project, and idea - so you can focus on building what matters.</p>
             <div className="hero-stats">
               <div className="stat">
                 <span className="stat-number">5</span>
@@ -47,7 +47,7 @@ export default function HomePage() {
                 <button className="btn-primary">Clear My Mind Now - €29</button>
               </Link>
             </div>
-            <p className="hero-guarantee">One-time payment • Works in 5 languages • Lifetime access</p>
+            <p className="hero-guarantee">One-time payment • Trigger words in 5 languages • Lifetime access</p>
           </div>
           <div className="hero-image">
             <Image src="https://via.placeholder.com/600x400/f0f0f0/666666?text=MindDumper+Interface" alt="MindDumper Brain Dump Interface" width={600} height={400} />
@@ -93,7 +93,7 @@ export default function HomePage() {
       <section id="features" className="features">
         <div className="section-container">
           <h2 className="section-title">Professional Mental Clarity System</h2>
-          <p className="section-subtitle">Clear your mind in 10 minutes with advanced triggers. Work across 5 languages - perfect for international entrepreneurs.</p>
+          <p className="section-subtitle">Clear your mind in 10 minutes with advanced trigger words available in 5 languages - perfect for international entrepreneurs.</p>
           
           <div className="features-single">
             <div className="tier-card featured single">
@@ -104,8 +104,8 @@ export default function HomePage() {
               </div>
               <ul className="tier-features">
                 <li>Clear your mind in 10 minutes</li>
-                <li>Extract forgotten tasks with advanced triggers</li>
-                <li>Work in 5 languages - perfect for international business</li>
+                <li>Extract forgotten tasks with advanced trigger words</li>
+                <li>Trigger words in 5 languages (EN, NL, DE, FR, ES)</li>
                 <li>Export directly to Notion, Todoist, Asana</li>
                 <li>Add your own trigger words for your industry</li>
                 <li>Access from anywhere - phone, laptop, tablet</li>
@@ -166,12 +166,12 @@ export default function HomePage() {
           <div className="showcase-content">
             <div className="showcase-text">
               <h2>Built specifically for brain dumping</h2>
-              <p>Unlike complex productivity apps, MindDumper does one thing incredibly well: helps you extract every task from your mind using intelligent trigger words. No learning curve, no overwhelm.</p>
+              <p>Unlike complex productivity apps, MindDumper does one thing incredibly well: helps you extract every task from your mind using intelligent trigger words in your preferred language. No learning curve, no overwhelm.</p>
               <ul className="showcase-features">
                 <li>Trigger words that help your brain recall forgotten tasks</li>
                 <li>Simple interface designed for speed and clarity</li>
                 <li>Export to any productivity system you already use</li>
-                <li>Works in 5 languages for global teams</li>
+                <li>Trigger words in 5 languages for global teams</li>
                 <li>Built by a solo developer who uses it daily</li>
               </ul>
               <Link href="/app">
@@ -331,7 +331,7 @@ export default function HomePage() {
             
             <div className="faq-item">
               <h3>How long does it actually take?</h3>
-              <p>Most entrepreneurs complete a full brain dump in 8-12 minutes. MindDumper guides you through comprehensive work and personal extraction with advanced triggers across 5 languages.</p>
+              <p>Most entrepreneurs complete a full brain dump in 8-12 minutes. MindDumper guides you through comprehensive work and personal extraction with trigger words in your preferred language (choose from 5 languages).</p>
             </div>
             
             <div className="faq-item">
