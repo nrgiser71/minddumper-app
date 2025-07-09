@@ -516,12 +516,13 @@ body {
 .btn-primary.large {
     font-size: 1.25rem;
     padding: 1.25rem 2.5rem;
-    background: white;
-    color: #007AFF;
+    background: #007AFF;
+    color: white;
 }
 
 .btn-primary.large:hover {
-    background: #f5f5f7;
+    background: #0056CC;
+    transform: translateY(-2px);
 }
 
 .cta-note {

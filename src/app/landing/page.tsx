@@ -346,7 +346,7 @@ export default function HomePage() {
               <Link href="/app">
                 <button className="btn-primary large">Clear My Mind Now - €29</button>
               </Link>
-              <p className="cta-note">No signup required • Works immediately • Join 15,000+ entrepreneurs</p>
+              <p className="cta-note">One-time payment • Works immediately • Lifetime access</p>
               <p className="cta-urgent">Your mind is your most valuable asset. Stop using it as a storage device.</p>
             </div>
           </div>
