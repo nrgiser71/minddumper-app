@@ -92,13 +92,13 @@ export default function HomePage() {
       {/* Features Section */}
       <section id="features" className="features">
         <div className="section-container">
-          <h2 className="section-title">Professional Mental Clarity System</h2>
+          <h2 className="section-title">Mental Clarity System</h2>
           <p className="section-subtitle">Clear your mind in 10 minutes with advanced trigger words available in 5 languages - perfect for international entrepreneurs.</p>
           
           <div className="features-single">
             <div className="tier-card featured single">
               <div className="tier-header">
-                <h3>MindDumper Professional</h3>
+                <h3>MindDumper</h3>
                 <div className="tier-price">€29 <span className="tier-period">lifetime</span></div>
                 <p className="tier-description">Complete mental clarity for global entrepreneurs</p>
               </div>
@@ -260,7 +260,7 @@ export default function HomePage() {
             
             <div className="pricing-card pro-card featured">
               <div className="featured-badge">Most Popular</div>
-              <h3>Pro - Lifetime</h3>
+              <h3>MindDumper</h3>
               <div className="price">
                 <span className="old-price">€49</span>
                 <span className="currency">€</span>
@@ -371,7 +371,7 @@ export default function HomePage() {
           <div className="footer-content">
             <div className="footer-brand">
               <h3>MindDumper</h3>
-              <p>Clear your mind of all tasks and projects with our intelligent brain dump tool. Professional productivity for global teams.</p>
+              <p>Clear your mind of all tasks and projects with our intelligent brain dump tool.</p>
             </div>
             <div className="footer-links">
               <div className="footer-column">
