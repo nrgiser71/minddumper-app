@@ -238,31 +238,11 @@ export default function HomePage() {
           <h2 className="section-title">Simple, transparent pricing</h2>
           <p className="section-subtitle">One-time payment of €29 for lifetime access. No subscriptions, no hidden costs.</p>
           
-          <div className="pricing-comparison">
-            <div className="pricing-card free-card">
-              <h3>Free</h3>
-              <div className="price">
-                <span className="currency">€</span>
-                <span className="amount">0</span>
-                <span className="period">always free</span>
-              </div>
-              <ul className="pricing-features">
-                <li>Basic brain dump interface</li>
-                <li>Core trigger words (100+)</li>
-                <li>Simple text export</li>
-                <li>1 language (Dutch)</li>
-                <li>No learning curve</li>
-              </ul>
-              <Link href="/app">
-                <button className="btn-secondary">Start Free</button>
-              </Link>
-            </div>
-            
-            <div className="pricing-card pro-card featured">
-              <div className="featured-badge">Most Popular</div>
+          <div className="pricing-single">
+            <div className="pricing-card featured single">
+              <div className="featured-badge">LIFETIME DEAL</div>
               <h3>MindDumper</h3>
               <div className="price">
-                <span className="old-price">€49</span>
                 <span className="currency">€</span>
                 <span className="amount">29</span>
                 <span className="period">one-time, forever</span>
@@ -277,7 +257,7 @@ export default function HomePage() {
                 <li>Priority support</li>
               </ul>
               <Link href="/auth/signup">
-                <button className="btn-primary">Lock in €29 Lifetime</button>
+                <button className="btn-primary">Get Lifetime Access - €29</button>
               </Link>
               <p className="lifetime-note">💎 One-time payment • Never pay again • All updates included</p>
             </div>
