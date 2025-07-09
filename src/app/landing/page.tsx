@@ -72,6 +72,18 @@ export default function HomePage() {
               <h3>→ Projects stuck in your head</h3>
               <p>Half-finished tasks pile up because you can&apos;t remember what needs to happen next</p>
             </div>
+            <div className="scenario">
+              <h3>→ The email you meant to send</h3>
+              <p>Important messages sit in drafts while you lose deals because you forgot to hit send</p>
+            </div>
+            <div className="scenario">
+              <h3>→ Team commitments falling through</h3>
+              <p>You promised deliverables to your team but can&apos;t recall all the details you agreed on</p>
+            </div>
+            <div className="scenario">
+              <h3>→ Weekend work anxiety</h3>
+              <p>You can&apos;t relax because you&apos;re sure you&apos;re forgetting something important for Monday</p>
+            </div>
           </div>
           <p className="problem-conclusion">Your brain wasn&apos;t designed to be a filing cabinet. When you try to store everything mentally, you lose focus, miss opportunities, and burn out faster.</p>
         </div>
