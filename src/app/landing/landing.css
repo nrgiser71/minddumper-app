@@ -158,11 +158,27 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .btn-primary:hover {
     background: #0056CC;
     transform: translateY(-2px);
+    color: white;
+}
+
+/* Ensure buttons inside links maintain their styling */
+a .btn-primary,
+a:visited .btn-primary,
+a:hover .btn-primary {
+    color: white;
+    background: #007AFF;
+}
+
+a:hover .btn-primary:hover {
+    background: #0056CC;
+    color: white;
 }
 
 .btn-secondary {
@@ -175,12 +191,28 @@ body {
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-decoration: none;
+    display: inline-block;
 }
 
 .btn-secondary:hover {
     background: #007AFF;
     color: white;
     transform: translateY(-2px);
+}
+
+/* Ensure secondary buttons inside links maintain their styling */
+a .btn-secondary,
+a:visited .btn-secondary,
+a:hover .btn-secondary {
+    color: #007AFF;
+    background: transparent;
+    border: 2px solid #007AFF;
+}
+
+a:hover .btn-secondary:hover {
+    background: #007AFF;
+    color: white;
 }
 
 .hero-image img {
