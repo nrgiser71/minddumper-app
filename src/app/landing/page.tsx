@@ -16,7 +16,7 @@ export default function HomePage() {
             <a href="#pricing" className="nav-link">Pricing</a>
             <a href="#testimonials" className="nav-link">Reviews</a>
             <Link href="/app">
-              <button className="nav-cta">Try Free</button>
+              <button className="nav-cta">Get Started - €29</button>
             </Link>
           </div>
         </div>
@@ -44,7 +44,7 @@ export default function HomePage() {
             </div>
             <div className="hero-buttons">
               <Link href="/app">
-                <button className="btn-primary">Clear My Mind Now - Free</button>
+                <button className="btn-primary">Clear My Mind Now - €29</button>
               </Link>
             </div>
             <p className="hero-guarantee">No signup required • Works in 5 languages • Used by 15,000+ entrepreneurs</p>
@@ -80,37 +80,19 @@ export default function HomePage() {
       {/* Features Section */}
       <section id="features" className="features">
         <div className="section-container">
-          <h2 className="section-title">Choose Your Path to Mental Clarity</h2>
-          <p className="section-subtitle">Both options will clear your mind in 10 minutes. Pro users get deeper extraction and work across languages - perfect for international entrepreneurs.</p>
+          <h2 className="section-title">Professional Mental Clarity System</h2>
+          <p className="section-subtitle">Clear your mind in 10 minutes with advanced triggers. Work across 5 languages - perfect for international entrepreneurs.</p>
           
-          <div className="features-tiers">
-            <div className="tier-card free">
+          <div className="features-single">
+            <div className="tier-card featured single">
               <div className="tier-header">
-                <h3>Free Mental Clarity</h3>
-                <div className="tier-price">€0</div>
-                <p className="tier-description">Get instant relief from mental overload</p>
-              </div>
-              <ul className="tier-features">
-                <li>Clear your mind in 10 minutes</li>
-                <li>Extract forgotten tasks and ideas</li>
-                <li>Copy tasks to any app you use</li>
-                <li>Works in Dutch (perfect for local entrepreneurs)</li>
-                <li>Start immediately - no signup required</li>
-              </ul>
-              <Link href="/app">
-                <button className="btn-secondary">Start Free</button>
-              </Link>
-            </div>
-            
-            <div className="tier-card pro">
-              <div className="tier-header">
-                <div className="tier-badge">Most Popular</div>
-                <h3>Pro Mental Mastery</h3>
+                <h3>MindDumper Professional</h3>
                 <div className="tier-price">€29 <span className="tier-period">lifetime</span></div>
                 <p className="tier-description">Complete mental clarity for global entrepreneurs</p>
               </div>
               <ul className="tier-features">
-                <li>Extract 3x more tasks with advanced triggers</li>
+                <li>Clear your mind in 10 minutes</li>
+                <li>Extract forgotten tasks with advanced triggers</li>
                 <li>Work in 5 languages - perfect for international business</li>
                 <li>Export directly to Notion, Todoist, Asana</li>
                 <li>Add your own trigger words for your industry</li>
@@ -119,7 +101,7 @@ export default function HomePage() {
                 <li>Priority support when you need help</li>
               </ul>
               <Link href="#pricing">
-                <button className="btn-primary">Upgrade to Pro</button>
+                <button className="btn-primary">Get Lifetime Access - €29</button>
               </Link>
             </div>
           </div>
@@ -181,7 +163,7 @@ export default function HomePage() {
                 <li>Built by a solo developer who uses it daily</li>
               </ul>
               <Link href="/app">
-                <button className="btn-primary">Try It Now - Free</button>
+                <button className="btn-primary">Try It Now - €29</button>
               </Link>
             </div>
             <div className="showcase-image">
@@ -242,10 +224,7 @@ export default function HomePage() {
       <section id="pricing" className="pricing">
         <div className="section-container">
           <h2 className="section-title">Simple, transparent pricing</h2>
-          <p className="section-subtitle">Start free, upgrade when you need more. Lock in €29 lifetime pricing - will be €49 for new users.</p>
-          <div className="price-lock-banner">
-            <p>🔒 Price Lock Guarantee: Early users keep €29 forever - Future pricing: €49</p>
-          </div>
+          <p className="section-subtitle">One-time payment of €29 for lifetime access. No subscriptions, no hidden costs.</p>
           
           <div className="pricing-comparison">
             <div className="pricing-card free-card">
@@ -340,7 +319,7 @@ export default function HomePage() {
             
             <div className="faq-item">
               <h3>How long does it actually take?</h3>
-              <p>Most entrepreneurs complete a full brain dump in 8-12 minutes. The free version covers basic categories, while Pro guides you through comprehensive work and personal extraction with advanced triggers.</p>
+              <p>Most entrepreneurs complete a full brain dump in 8-12 minutes. MindDumper guides you through comprehensive work and personal extraction with advanced triggers across 5 languages.</p>
             </div>
             
             <div className="faq-item">
@@ -365,7 +344,7 @@ export default function HomePage() {
             <p>Take 10 minutes right now. Clear your mind. Get back to building what matters.</p>
             <div className="cta-buttons">
               <Link href="/app">
-                <button className="btn-primary large">Clear My Mind Now - Free</button>
+                <button className="btn-primary large">Clear My Mind Now - €29</button>
               </Link>
               <p className="cta-note">No signup required • Works immediately • Join 15,000+ entrepreneurs</p>
               <p className="cta-urgent">Your mind is your most valuable asset. Stop using it as a storage device.</p>
