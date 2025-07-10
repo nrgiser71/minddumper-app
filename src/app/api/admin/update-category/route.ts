@@ -1,9 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function PUT(request: NextRequest) {
   try {
     const { categoryId, newName, categoryType } = await request.json()
+
+    console.log(`[update-category] Updating ${categoryType} category ${categoryId} to "${newName}"`)
 
     if (!categoryId || !newName || !categoryType) {
       return NextResponse.json({ 
@@ -16,12 +23,14 @@ export async function PUT(request: NextRequest) {
     
     if (categoryType === 'main') {
       // Update main category
+      console.log(`[update-category] Updating main_categories table, id: ${categoryId}`)
       result = await supabase
         .from('main_categories')
         .update({ name: newName.trim() })
         .eq('id', categoryId)
     } else if (categoryType === 'sub') {
       // Update sub category
+      console.log(`[update-category] Updating sub_categories table, id: ${categoryId}`)
       result = await supabase
         .from('sub_categories')
         .update({ name: newName.trim() })
@@ -32,6 +41,8 @@ export async function PUT(request: NextRequest) {
         error: 'Invalid category type' 
       }, { status: 400 })
     }
+
+    console.log(`[update-category] Database result:`, result)
 
     if (result.error) {
       console.error('Database error:', result.error)
