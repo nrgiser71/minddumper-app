@@ -51,6 +51,9 @@ export default function EditTriggerWordsPage() {
     text: string;
     type: 'word' | 'main-category' | 'sub-category';
   } | null>(null)
+  const [editingCategoryId, setEditingCategoryId] = useState<string | null>(null)
+  const [editingCategoryValue, setEditingCategoryValue] = useState('')
+  const [editingCategoryType, setEditingCategoryType] = useState<'main' | 'sub' | null>(null)
 
   // Load data for selected language
   useEffect(() => {
@@ -82,6 +85,18 @@ export default function EditTriggerWordsPage() {
   const cancelEditing = () => {
     setEditingWordId(null)
     setEditingValue('')
+  }
+
+  const startEditingCategory = (categoryId: string, currentName: string, type: 'main' | 'sub') => {
+    setEditingCategoryId(categoryId)
+    setEditingCategoryValue(currentName)
+    setEditingCategoryType(type)
+  }
+
+  const cancelEditingCategory = () => {
+    setEditingCategoryId(null)
+    setEditingCategoryValue('')
+    setEditingCategoryType(null)
   }
 
   const saveEdit = async () => {
@@ -127,11 +142,75 @@ export default function EditTriggerWordsPage() {
     setSaving(false)
   }
 
+  const saveCategoryEdit = async () => {
+    if (!editingCategoryId || !editingCategoryValue.trim() || !editingCategoryType) return
+
+    setSaving(true)
+    try {
+      const response = await fetch('/api/admin/update-category', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          categoryId: editingCategoryId,
+          newName: editingCategoryValue.trim(),
+          categoryType: editingCategoryType
+        }),
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setMessage('✅ Category successfully updated')
+        
+        // Update local data
+        if (editingCategoryType === 'main') {
+          setData(prevData => 
+            prevData.map(mainCat => 
+              mainCat.id === editingCategoryId 
+                ? { ...mainCat, name: editingCategoryValue.trim() } 
+                : mainCat
+            )
+          )
+        } else if (editingCategoryType === 'sub') {
+          setData(prevData => 
+            prevData.map(mainCat => ({
+              ...mainCat,
+              subcategories: mainCat.subcategories.map(subCat => 
+                subCat.id === editingCategoryId 
+                  ? { ...subCat, name: editingCategoryValue.trim() } 
+                  : subCat
+              )
+            }))
+          )
+        }
+        
+        setEditingCategoryId(null)
+        setEditingCategoryValue('')
+        setEditingCategoryType(null)
+      } else {
+        setMessage(`❌ Error saving category: ${result.error}`)
+      }
+    } catch (error) {
+      setMessage(`❌ Error saving category: ${error}`)
+    }
+    setSaving(false)
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       saveEdit()
     } else if (e.key === 'Escape') {
       cancelEditing()
+    }
+  }
+
+  const handleCategoryKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      saveCategoryEdit()
+    } else if (e.key === 'Escape') {
+      cancelEditingCategory()
     }
   }
 
@@ -390,28 +469,89 @@ export default function EditTriggerWordsPage() {
                 paddingBottom: '0.5rem',
                 marginBottom: '1rem'
               }}>
-                <h2 style={{ 
-                  color: '#333',
-                  margin: 0
-                }}>
-                  {mainCategory.name}
-                </h2>
-                <button
-                  onClick={() => openSynonymModal(mainCategory.id, mainCategory.name, 'main-category')}
-                  style={{
-                    background: '#17a2b8',
-                    color: 'white',
-                    border: 'none',
-                    padding: '0.25rem 0.5rem',
-                    borderRadius: '4px',
-                    cursor: 'pointer',
-                    fontSize: '0.8rem',
-                    minWidth: '80px'
-                  }}
-                  title="Synoniemen voor hoofdcategorie"
-                >
-                  📝 Synoniemen
-                </button>
+                {editingCategoryId === mainCategory.id && editingCategoryType === 'main' ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
+                    <input
+                      type="text"
+                      value={editingCategoryValue}
+                      onChange={(e) => setEditingCategoryValue(e.target.value)}
+                      onKeyDown={handleCategoryKeyDown}
+                      style={{ 
+                        flex: 1,
+                        padding: '0.5rem',
+                        border: '2px solid #007AFF',
+                        borderRadius: '4px',
+                        fontSize: '1.2rem',
+                        fontWeight: 'bold'
+                      }}
+                      autoFocus
+                    />
+                    <button
+                      onClick={saveCategoryEdit}
+                      disabled={saving}
+                      style={{
+                        background: '#28a745',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '4px',
+                        cursor: saving ? 'not-allowed' : 'pointer',
+                        fontSize: '0.9rem'
+                      }}
+                    >
+                      {saving ? '...' : '✓'}
+                    </button>
+                    <button
+                      onClick={cancelEditingCategory}
+                      style={{
+                        background: '#dc3545',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.5rem 1rem',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '0.9rem'
+                      }}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <h2 
+                      onClick={() => startEditingCategory(mainCategory.id, mainCategory.name, 'main')}
+                      style={{ 
+                        color: '#333',
+                        margin: 0,
+                        cursor: 'pointer',
+                        padding: '0.25rem',
+                        borderRadius: '4px',
+                        transition: 'background-color 0.2s'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f8ff'}
+                      onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                      title="Klik om te bewerken"
+                    >
+                      {mainCategory.name}
+                    </h2>
+                    <button
+                      onClick={() => openSynonymModal(mainCategory.id, mainCategory.name, 'main-category')}
+                      style={{
+                        background: '#17a2b8',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '0.8rem',
+                        minWidth: '80px'
+                      }}
+                      title="Synoniemen voor hoofdcategorie"
+                    >
+                      📝 Synoniemen
+                    </button>
+                  </>
+                )}
               </div>
               
               {mainCategory.subcategories.map(subcategory => (
@@ -422,29 +562,89 @@ export default function EditTriggerWordsPage() {
                     justifyContent: 'space-between',
                     marginBottom: '0.5rem'
                   }}>
-                    <h3 style={{ 
-                      color: '#555',
-                      margin: 0,
-                      fontSize: '1.1rem'
-                    }}>
-                      {subcategory.name} ({subcategory.words.length} words)
-                    </h3>
-                    <button
-                      onClick={() => openSynonymModal(subcategory.id, subcategory.name, 'sub-category')}
-                      style={{
-                        background: '#6f42c1',
-                        color: 'white',
-                        border: 'none',
-                        padding: '0.2rem 0.4rem',
-                        borderRadius: '4px',
-                        cursor: 'pointer',
-                        fontSize: '0.7rem',
-                        minWidth: '70px'
-                      }}
-                      title="Synoniemen voor subcategorie"
-                    >
-                      📝 Syn
-                    </button>
+                    {editingCategoryId === subcategory.id && editingCategoryType === 'sub' ? (
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flex: 1 }}>
+                        <input
+                          type="text"
+                          value={editingCategoryValue}
+                          onChange={(e) => setEditingCategoryValue(e.target.value)}
+                          onKeyDown={handleCategoryKeyDown}
+                          style={{ 
+                            flex: 1,
+                            padding: '0.3rem',
+                            border: '1px solid #6f42c1',
+                            borderRadius: '4px',
+                            fontSize: '1rem'
+                          }}
+                          autoFocus
+                        />
+                        <button
+                          onClick={saveCategoryEdit}
+                          disabled={saving}
+                          style={{
+                            background: '#28a745',
+                            color: 'white',
+                            border: 'none',
+                            padding: '0.3rem 0.6rem',
+                            borderRadius: '4px',
+                            cursor: saving ? 'not-allowed' : 'pointer',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          {saving ? '...' : '✓'}
+                        </button>
+                        <button
+                          onClick={cancelEditingCategory}
+                          style={{
+                            background: '#dc3545',
+                            color: 'white',
+                            border: 'none',
+                            padding: '0.3rem 0.6rem',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.8rem'
+                          }}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ) : (
+                      <>
+                        <h3 
+                          onClick={() => startEditingCategory(subcategory.id, subcategory.name, 'sub')}
+                          style={{ 
+                            color: '#555',
+                            margin: 0,
+                            fontSize: '1.1rem',
+                            cursor: 'pointer',
+                            padding: '0.25rem',
+                            borderRadius: '4px',
+                            transition: 'background-color 0.2s'
+                          }}
+                          onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f8f9fa'}
+                          onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+                          title="Klik om te bewerken"
+                        >
+                          {subcategory.name} ({subcategory.words.length} words)
+                        </h3>
+                        <button
+                          onClick={() => openSynonymModal(subcategory.id, subcategory.name, 'sub-category')}
+                          style={{
+                            background: '#6f42c1',
+                            color: 'white',
+                            border: 'none',
+                            padding: '0.2rem 0.4rem',
+                            borderRadius: '4px',
+                            cursor: 'pointer',
+                            fontSize: '0.7rem',
+                            minWidth: '70px'
+                          }}
+                          title="Synoniemen voor subcategorie"
+                        >
+                          📝 Syn
+                        </button>
+                      </>
+                    )}
                   </div>
                   
                   <div style={{ 
@@ -667,12 +867,13 @@ export default function EditTriggerWordsPage() {
       }}>
         <h3 style={{ marginBottom: '0.5rem' }}>Instructions:</h3>
         <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
-          <li>Click on a word to edit it</li>
-          <li>Press Enter to save, Escape to cancel</li>
-          <li>Click the 📝 icon to see synonyms and replace</li>
-          <li>Click the 🗑️ icon to delete a word</li>
-          <li>Changes are saved directly to the database</li>
-          <li>Use the language selector to switch between languages</li>
+          <li><strong>Categories:</strong> Click on category names to edit them directly</li>
+          <li><strong>Words:</strong> Click on words to edit them</li>
+          <li><strong>Synonyms:</strong> Click the 📝 icon to see synonyms and replace</li>
+          <li><strong>Delete:</strong> Click the 🗑️ icon to delete a word</li>
+          <li><strong>Keyboard:</strong> Press Enter to save, Escape to cancel</li>
+          <li><strong>Languages:</strong> Use the language selector to switch between languages</li>
+          <li>All changes are saved directly to the database</li>
         </ul>
       </div>
     </div>
