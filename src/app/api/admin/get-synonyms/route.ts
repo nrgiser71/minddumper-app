@@ -11,8 +11,13 @@ export async function POST(request: NextRequest) {
       }, { status: 400 })
     }
 
-    // Simple synonym generation based on common patterns
-    const synonyms = generateSynonyms(text, type, language)
+    // Try AI-powered synonyms first
+    let synonyms = await getAISynonyms(text, type, language)
+    
+    // Fallback to hardcoded if AI fails
+    if (!synonyms || synonyms.length === 0) {
+      synonyms = generateSynonyms(text, type, language)
+    }
 
     return NextResponse.json({
       success: true,
@@ -26,6 +31,69 @@ export async function POST(request: NextRequest) {
       error: 'Failed to generate synonyms' 
     }, { status: 500 })
   }
+}
+
+async function getAISynonyms(text: string, type: string, language: string): Promise<string[]> {
+  try {
+    const languageNames = {
+      'nl': 'Dutch',
+      'en': 'English', 
+      'de': 'German',
+      'fr': 'French',
+      'es': 'Spanish'
+    }
+    
+    const prompt = `Generate 6-8 synonyms for the ${languageNames[language as keyof typeof languageNames]} word "${text}" in the context of productivity and task management (GTD method). 
+
+Context: This is a ${type === 'word' ? 'trigger word' : 'category name'} used for brain dumping tasks and ideas.
+
+Requirements:
+- Return only ${languageNames[language as keyof typeof languageNames]} synonyms
+- Keep the same meaning and context
+- Suitable for professional/business use
+- No explanations, just the synonyms
+- One synonym per line
+- Max 8 synonyms
+
+Example format:
+synoniem1
+synoniem2
+synoniem3`
+
+    // Using Anthropic Claude API (free tier available)
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY || '',
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model: 'claude-3-haiku-20240307',
+        max_tokens: 200,
+        messages: [{
+          role: 'user',
+          content: prompt
+        }]
+      })
+    })
+
+    if (response.ok) {
+      const data = await response.json()
+      const content = data.content?.[0]?.text || ''
+      const synonyms = content
+        .split('\n')
+        .map((s: string) => s.trim())
+        .filter((s: string) => s.length > 0 && s.toLowerCase() !== text.toLowerCase())
+      
+      console.log(`🤖 AI generated ${synonyms.length} synonyms for "${text}":`, synonyms)
+      return synonyms
+    }
+  } catch (error) {
+    console.log(`⚠️ AI synonym generation failed for "${text}":`, error)
+  }
+  
+  return []
 }
 
 function generateSynonyms(text: string, type: string, language: string): string[] {
