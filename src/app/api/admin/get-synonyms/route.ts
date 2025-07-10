@@ -60,7 +60,7 @@ synoniem1
 synoniem2
 synoniem3`
 
-    // Using Anthropic Claude API (free tier available)
+    // Using Anthropic Claude API
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
