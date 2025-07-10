@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import SynonymModal from '@/components/SynonymModal'
 
 interface TriggerWord {
   id: string
@@ -44,6 +45,12 @@ export default function EditTriggerWordsPage() {
   const [deleting, setDeleting] = useState<string | null>(null)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [wordToDelete, setWordToDelete] = useState<{ id: string; word: string } | null>(null)
+  const [showSynonymModal, setShowSynonymModal] = useState(false)
+  const [synonymContext, setSynonymContext] = useState<{
+    id: string;
+    text: string;
+    type: 'word' | 'main-category' | 'sub-category';
+  } | null>(null)
 
   // Load data for selected language
   useEffect(() => {
@@ -184,6 +191,93 @@ export default function EditTriggerWordsPage() {
     setDeleting(null)
   }
 
+  const openSynonymModal = (id: string, text: string, type: 'word' | 'main-category' | 'sub-category') => {
+    setSynonymContext({ id, text, type })
+    setShowSynonymModal(true)
+  }
+
+  const closeSynonymModal = () => {
+    setShowSynonymModal(false)
+    setSynonymContext(null)
+  }
+
+  const handleSynonymSelected = async (synonym: string) => {
+    if (!synonymContext) return
+
+    setSaving(true)
+    try {
+      let response
+      
+      if (synonymContext.type === 'word') {
+        // Update word
+        response = await fetch('/api/admin/update-word', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            wordId: synonymContext.id,
+            newWord: synonym
+          }),
+        })
+      } else {
+        // Update category
+        response = await fetch('/api/admin/update-category', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            categoryId: synonymContext.id,
+            newName: synonym,
+            categoryType: synonymContext.type === 'main-category' ? 'main' : 'sub'
+          }),
+        })
+      }
+
+      const result = await response.json()
+
+      if (result.success) {
+        setMessage(`✅ Successfully updated with synonym: "${synonym}"`)
+        
+        // Update local data
+        if (synonymContext.type === 'word') {
+          setData(prevData => 
+            prevData.map(mainCat => ({
+              ...mainCat,
+              subcategories: mainCat.subcategories.map(subCat => ({
+                ...subCat,
+                words: subCat.words.map(word => 
+                  word.id === synonymContext.id ? { ...word, word: synonym } : word
+                )
+              }))
+            }))
+          )
+        } else if (synonymContext.type === 'main-category') {
+          setData(prevData => 
+            prevData.map(mainCat => 
+              mainCat.id === synonymContext.id ? { ...mainCat, name: synonym } : mainCat
+            )
+          )
+        } else if (synonymContext.type === 'sub-category') {
+          setData(prevData => 
+            prevData.map(mainCat => ({
+              ...mainCat,
+              subcategories: mainCat.subcategories.map(subCat => 
+                subCat.id === synonymContext.id ? { ...subCat, name: synonym } : subCat
+              )
+            }))
+          )
+        }
+      } else {
+        setMessage(`❌ Error updating: ${result.error}`)
+      }
+    } catch (error) {
+      setMessage(`❌ Error updating: ${error}`)
+    }
+    setSaving(false)
+  }
+
   const totalWords = data.reduce((total, mainCat) => 
     total + mainCat.subcategories.reduce((subTotal, subCat) => 
       subTotal + subCat.words.length, 0
@@ -288,24 +382,70 @@ export default function EditTriggerWordsPage() {
         <div>
           {data.map(mainCategory => (
             <div key={mainCategory.id} style={{ marginBottom: '2rem' }}>
-              <h2 style={{ 
-                color: '#333',
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'space-between',
                 borderBottom: '2px solid #007AFF',
                 paddingBottom: '0.5rem',
                 marginBottom: '1rem'
               }}>
-                {mainCategory.name}
-              </h2>
+                <h2 style={{ 
+                  color: '#333',
+                  margin: 0
+                }}>
+                  {mainCategory.name}
+                </h2>
+                <button
+                  onClick={() => openSynonymModal(mainCategory.id, mainCategory.name, 'main-category')}
+                  style={{
+                    background: '#17a2b8',
+                    color: 'white',
+                    border: 'none',
+                    padding: '0.25rem 0.5rem',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '0.8rem',
+                    minWidth: '80px'
+                  }}
+                  title="Synoniemen voor hoofdcategorie"
+                >
+                  📝 Synoniemen
+                </button>
+              </div>
               
               {mainCategory.subcategories.map(subcategory => (
                 <div key={subcategory.id} style={{ marginBottom: '1.5rem' }}>
-                  <h3 style={{ 
-                    color: '#555',
-                    marginBottom: '0.5rem',
-                    fontSize: '1.1rem'
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between',
+                    marginBottom: '0.5rem'
                   }}>
-                    {subcategory.name} ({subcategory.words.length} words)
-                  </h3>
+                    <h3 style={{ 
+                      color: '#555',
+                      margin: 0,
+                      fontSize: '1.1rem'
+                    }}>
+                      {subcategory.name} ({subcategory.words.length} words)
+                    </h3>
+                    <button
+                      onClick={() => openSynonymModal(subcategory.id, subcategory.name, 'sub-category')}
+                      style={{
+                        background: '#6f42c1',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.2rem 0.4rem',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '0.7rem',
+                        minWidth: '70px'
+                      }}
+                      title="Synoniemen voor subcategorie"
+                    >
+                      📝 Syn
+                    </button>
+                  </div>
                   
                   <div style={{ 
                     background: '#f8f9fa',
@@ -388,6 +528,22 @@ export default function EditTriggerWordsPage() {
                               >
                                 {word.word}
                               </div>
+                              <button
+                                onClick={() => openSynonymModal(word.id, word.word, 'word')}
+                                style={{
+                                  background: '#28a745',
+                                  color: 'white',
+                                  border: 'none',
+                                  padding: '0.25rem 0.5rem',
+                                  borderRadius: '4px',
+                                  cursor: 'pointer',
+                                  fontSize: '0.8rem',
+                                  marginRight: '0.25rem'
+                                }}
+                                title="Synoniemen voor woord"
+                              >
+                                📝
+                              </button>
                               <button
                                 onClick={() => confirmDelete(word.id, word.word)}
                                 disabled={deleting === word.id}
@@ -489,6 +645,18 @@ export default function EditTriggerWordsPage() {
         </div>
       )}
 
+      {/* Synonym Modal */}
+      {synonymContext && (
+        <SynonymModal
+          isOpen={showSynonymModal}
+          onClose={closeSynonymModal}
+          onSelectSynonym={handleSynonymSelected}
+          originalText={synonymContext.text}
+          type={synonymContext.type === 'word' ? 'word' : 'category'}
+          language={language}
+        />
+      )}
+
       {/* Instructions */}
       <div style={{ 
         marginTop: '3rem', 
@@ -501,6 +669,7 @@ export default function EditTriggerWordsPage() {
         <ul style={{ margin: 0, paddingLeft: '1.5rem' }}>
           <li>Click on a word to edit it</li>
           <li>Press Enter to save, Escape to cancel</li>
+          <li>Click the 📝 icon to see synonyms and replace</li>
           <li>Click the 🗑️ icon to delete a word</li>
           <li>Changes are saved directly to the database</li>
           <li>Use the language selector to switch between languages</li>
