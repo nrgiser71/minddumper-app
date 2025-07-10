@@ -28,7 +28,7 @@ export default function SynonymModal({
     if (isOpen && originalText) {
       fetchSynonyms()
     }
-  }, [isOpen, originalText, type, language])
+  }, [isOpen, originalText, type, language]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchSynonyms = async () => {
     setLoading(true)
@@ -56,7 +56,7 @@ export default function SynonymModal({
       } else {
         setError(result.error || 'Failed to fetch synonyms')
       }
-    } catch (err) {
+    } catch {
       setError('Error fetching synonyms')
     }
     setLoading(false)
