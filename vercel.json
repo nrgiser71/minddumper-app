@@ -1,0 +1,15 @@
+{
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1",
+      "permanent": false,
+      "statusCode": 200
+    }
+  ]
+}
