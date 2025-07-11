@@ -164,6 +164,64 @@ export async function POST(req: NextRequest) {
         console.error('Failed to send password reset email:', emailError)
       }
 
+      // Create an official Invoice in Stripe for proper accounting
+      try {
+        console.log('Creating Stripe Invoice for customer:', session.customer)
+        
+        const invoice = await stripe.invoices.create({
+          customer: session.customer as string,
+          currency: session.currency || 'eur',
+          description: `MindDumper Lifetime Access - Payment #${session.payment_intent}`,
+          metadata: {
+            session_id: session.id,
+            payment_intent: session.payment_intent as string,
+            customer_type: session.metadata?.customerType || 'private',
+            vat_number: session.metadata?.vatNumber || '',
+          },
+          auto_advance: true, // Auto-finalize the invoice
+          collection_method: 'charge_automatically',
+        })
+
+        // Add the product line item to the invoice
+        await stripe.invoiceItems.create({
+          customer: session.customer as string,
+          invoice: invoice.id,
+          amount: session.amount_total || 0,
+          currency: session.currency || 'eur',
+          description: session.metadata?.companyName ? 
+            `MindDumper Lifetime Access - ${session.metadata.companyName}` : 
+            `MindDumper Lifetime Access - ${session.metadata?.firstName} ${session.metadata?.lastName}`,
+          metadata: {
+            product_name: 'MindDumper Lifetime Access',
+            session_id: session.id,
+          }
+        })
+
+        // Finalize and send the invoice
+        if (invoice.id) {
+          const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id)
+
+          // Send the invoice via email
+          if (finalizedInvoice.id) {
+            await stripe.invoices.sendInvoice(finalizedInvoice.id)
+            console.log(`Invoice created and sent: ${finalizedInvoice.number}`)
+            
+            // Update user profile with invoice reference
+            await supabase
+              .from('profiles')
+              .update({ 
+                stripe_invoice_id: finalizedInvoice.id,
+                invoice_number: finalizedInvoice.number 
+              })
+              .eq('id', userId)
+          }
+        }
+
+      } catch (invoiceError) {
+        console.error('Failed to create invoice:', invoiceError)
+        // Don't fail the whole webhook if invoice creation fails
+      }
+
       console.log(`Successfully processed payment for ${email}`)
       return NextResponse.json({ received: true, status: 'success' })
     } catch (error) {
