@@ -4,7 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ToastProvider, useToast } from '@/components/toast-context'
 import { ToastContainer } from '@/components/toast-container'
-import './checkout.css'
+import '../checkout/checkout.css'
 
 function TestCheckoutContent() {
   const { showToast } = useToast()
