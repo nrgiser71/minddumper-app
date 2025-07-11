@@ -82,3 +82,4 @@ src/
 
 Proprietary - Alle rechten voorbehouden
 # Force redeploy for env vars
+# Force redeploy for vercel.json webhook fix
