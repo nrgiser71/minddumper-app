@@ -197,14 +197,39 @@ export async function POST(req: NextRequest) {
           }
         })
 
-        // Finalize and send the invoice
+        // Finalize the invoice
         if (invoice.id) {
           const finalizedInvoice = await stripe.invoices.finalizeInvoice(invoice.id)
 
-          // Send the invoice via email
+          // Mark invoice as PAID by applying the existing payment
+          if (finalizedInvoice.id && session.payment_intent) {
+            try {
+              await stripe.invoices.pay(finalizedInvoice.id, {
+                payment_method: session.payment_intent as string,
+                paid_out_of_band: true, // Mark as paid outside normal flow
+              })
+              console.log(`Invoice marked as PAID: ${finalizedInvoice.number}`)
+            } catch (payError) {
+              console.error('Failed to mark invoice as paid:', payError)
+              // Try alternative method: attach payment intent
+              try {
+                await stripe.invoices.update(finalizedInvoice.id, {
+                  metadata: {
+                    ...finalizedInvoice.metadata,
+                    payment_intent_id: session.payment_intent as string,
+                    manually_marked_paid: 'true'
+                  }
+                })
+              } catch (updateError) {
+                console.error('Failed to update invoice metadata:', updateError)
+              }
+            }
+          }
+
+          // Send the invoice via email (now shows as PAID)
           if (finalizedInvoice.id) {
             await stripe.invoices.sendInvoice(finalizedInvoice.id)
-            console.log(`Invoice created and sent: ${finalizedInvoice.number}`)
+            console.log(`Paid invoice sent: ${finalizedInvoice.number}`)
             
             // Update user profile with invoice reference
             await supabase
