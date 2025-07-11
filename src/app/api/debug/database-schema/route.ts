@@ -8,32 +8,31 @@ const supabase = createClient(
 
 export async function GET() {
   try {
-    // Get profiles table schema
-    const { data: schemaData, error: schemaError } = await supabase
-      .from('information_schema.columns')
-      .select('column_name, data_type, is_nullable, column_default')
-      .eq('table_name', 'profiles')
-      .eq('table_schema', 'public')
-
-    if (schemaError) {
-      console.error('Schema error:', schemaError)
-      return NextResponse.json({ error: 'Failed to get schema' }, { status: 500 })
-    }
-
-    // Check if we can access profiles table
-    const { data: sampleData, error: sampleError } = await supabase
+    // Simple check: try to select payment fields from profiles
+    const { data: testData, error: testError } = await supabase
       .from('profiles')
-      .select('id, email, payment_status, stripe_customer_id')
+      .select('id, email, payment_status, stripe_customer_id, amount_paid_cents, billing_country')
       .limit(1)
 
+    if (testError) {
+      return NextResponse.json({ 
+        success: false, 
+        error: testError.message,
+        fields_checked: ['payment_status', 'stripe_customer_id', 'amount_paid_cents', 'billing_country']
+      })
+    }
+
+    // If we get here, the fields exist
     return NextResponse.json({
       success: true,
-      schema: schemaData,
-      sample_access: sampleError ? { error: sampleError.message } : { success: true, count: sampleData?.length || 0 },
-      payment_fields_present: schemaData?.some(col => col.column_name === 'payment_status') || false
+      message: 'Payment fields are present in profiles table',
+      test_query_worked: true,
+      sample_count: testData?.length || 0
     })
   } catch (error) {
-    console.error('Database schema check error:', error)
-    return NextResponse.json({ error: 'Failed to check database schema' }, { status: 500 })
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unexpected error: ' + (error as Error).message 
+    })
   }
 }
