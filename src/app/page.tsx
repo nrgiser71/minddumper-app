@@ -15,8 +15,8 @@ export default function HomePage() {
             <a href="#features" className="nav-link">Features</a>
             <a href="#pricing" className="nav-link">Pricing</a>
             <a href="#testimonials" className="nav-link">Reviews</a>
-            <Link href="/app">
-              <button className="nav-cta">Try Free</button>
+            <Link href="/checkout">
+              <button className="nav-cta">Get Started - €49</button>
             </Link>
           </div>
         </div>
@@ -43,14 +43,14 @@ export default function HomePage() {
               </div>
             </div>
             <div className="hero-buttons">
-              <Link href="/app">
-                <button className="btn-primary">Start Free Brain Dump</button>
+              <Link href="/checkout">
+                <button className="btn-primary">Get MindDumper Now - €49</button>
               </Link>
-              <Link href="#pricing">
-                <button className="btn-secondary">Try Pro - €29 lifetime</button>
+              <Link href="/landing">
+                <button className="btn-secondary">Learn More</button>
               </Link>
             </div>
-            <p className="hero-guarantee">Free version available • Pro: €29 one-time • Price lock guarantee</p>
+            <p className="hero-guarantee">Professional brain dump tool • €49 one-time • Lifetime access</p>
           </div>
           <div className="hero-image">
             <Image src="https://via.placeholder.com/600x400/f0f0f0/666666?text=MindDumper+Interface" alt="MindDumper Brain Dump Interface" width={600} height={400} />
@@ -95,7 +95,7 @@ export default function HomePage() {
               <div className="tier-header">
                 <div className="tier-badge">Most Popular</div>
                 <h3>Pro Brain Dump</h3>
-                <div className="tier-price">€29 <span className="tier-period">lifetime</span></div>
+                <div className="tier-price">€49 <span className="tier-period">lifetime</span></div>
                 <p className="tier-description">Professional mental clarity</p>
               </div>
               <ul className="tier-features">
@@ -173,7 +173,7 @@ export default function HomePage() {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>&quot;Best €29 I&apos;ve ever spent! The lifetime deal is incredible value and I&apos;ve been using it for over a year with no additional costs. Export to Notion works perfectly.&quot;</p>
+                <p>&quot;Best €49 I&apos;ve ever spent! The lifetime deal is incredible value and I&apos;ve been using it for over a year with no additional costs. Export to Notion works perfectly.&quot;</p>
               </div>
               <div className="testimonial-author">
                 <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Pedro Jiménez" width={50} height={50} />
@@ -191,9 +191,9 @@ export default function HomePage() {
       <section id="pricing" className="pricing">
         <div className="section-container">
           <h2 className="section-title">Simple, transparent pricing</h2>
-          <p className="section-subtitle">Start free, upgrade when you need more. Lock in €29 lifetime pricing - will be €49 for new users.</p>
+          <p className="section-subtitle">Start free, upgrade when you need more. Lock in €49 lifetime pricing - will be €49 for new users.</p>
           <div className="price-lock-banner">
-            <p>🔒 Price Lock Guarantee: Early users keep €29 forever - Future pricing: €49</p>
+            <p>🔒 Price Lock Guarantee: Early users keep €49 forever - Future pricing: €49</p>
           </div>
           
           <div className="pricing-comparison">
@@ -235,7 +235,7 @@ export default function HomePage() {
                 <li>Priority support</li>
               </ul>
               <Link href="/auth/signup">
-                <button className="btn-primary">Lock in €29 Lifetime</button>
+                <button className="btn-primary">Lock in €49 Lifetime</button>
               </Link>
               <p className="lifetime-note">💎 One-time payment • Never pay again • All updates included</p>
             </div>
@@ -272,12 +272,12 @@ export default function HomePage() {
         <div className="section-container">
           <div className="cta-content">
             <h2>Ready to clear your mind?</h2>
-            <p>Start with our free brain dump tool. Upgrade to Pro when you need advanced features. Lock in €29 lifetime pricing today.</p>
+            <p>Start with our free brain dump tool. Upgrade to Pro when you need advanced features. Lock in €49 lifetime pricing today.</p>
             <div className="cta-buttons">
               <Link href="/app">
                 <button className="btn-primary large">Start Free Brain Dump</button>
               </Link>
-              <p className="cta-note">Free to start • Pro: €29 lifetime • Price lock guarantee</p>
+              <p className="cta-note">Free to start • Pro: €49 lifetime • Price lock guarantee</p>
               <p className="cta-urgent">Built specifically for brain dumping - no learning curve!</p>
             </div>
           </div>

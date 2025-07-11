@@ -1,0 +1,140 @@
+.success-container {
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success-wrapper {
+  max-width: 600px;
+  width: 100%;
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 3rem;
+  text-align: center;
+}
+
+.loading {
+  color: #666;
+  font-size: 1.1rem;
+}
+
+.success-icon {
+  width: 80px;
+  height: 80px;
+  background-color: #28a745;
+  color: white;
+  font-size: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  margin: 0 auto 2rem;
+}
+
+.success-wrapper h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  color: #666;
+  font-size: 1.1rem;
+  margin-bottom: 2rem;
+  line-height: 1.6;
+}
+
+.next-steps {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 2rem;
+  margin: 2rem 0;
+  text-align: left;
+}
+
+.next-steps h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.next-steps ol {
+  margin: 0;
+  padding-left: 1.5rem;
+  color: #555;
+}
+
+.next-steps li {
+  margin-bottom: 0.75rem;
+  line-height: 1.5;
+}
+
+.success-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 2rem 0;
+}
+
+.primary-button,
+.secondary-button {
+  padding: 0.75rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.primary-button {
+  background-color: #007AFF;
+  color: white;
+  border: 1px solid #007AFF;
+}
+
+.primary-button:hover {
+  background-color: #0056b3;
+  border-color: #0056b3;
+}
+
+.secondary-button {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ddd;
+}
+
+.secondary-button:hover {
+  background-color: #f8f9fa;
+}
+
+.support-note {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 2rem;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .success-container {
+    padding: 1rem;
+  }
+
+  .success-wrapper {
+    padding: 2rem;
+  }
+
+  .success-actions {
+    flex-direction: column;
+  }
+
+  .primary-button,
+  .secondary-button {
+    width: 100%;
+    text-align: center;
+  }
+}

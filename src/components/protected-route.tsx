@@ -2,7 +2,8 @@
 
 import { useAuth } from '@/lib/auth-context'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 interface ProtectedRouteProps {
   children: React.ReactNode
@@ -12,6 +13,8 @@ interface ProtectedRouteProps {
 export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
+  const [checkingPayment, setCheckingPayment] = useState(true)
 
   useEffect(() => {
     if (!loading && !user) {
@@ -19,7 +22,43 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
     }
   }, [user, loading, router])
 
-  if (loading) {
+  // Check payment status when user is loaded
+  useEffect(() => {
+    if (user && !loading) {
+      const checkPaymentStatus = async () => {
+        try {
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('payment_status')
+            .eq('id', user.id)
+            .single()
+
+          if (error) {
+            console.error('Error checking payment status:', error)
+            setPaymentStatus('error')
+          } else {
+            setPaymentStatus(data?.payment_status || 'pending')
+          }
+        } catch (error) {
+          console.error('Error checking payment status:', error)
+          setPaymentStatus('error')
+        } finally {
+          setCheckingPayment(false)
+        }
+      }
+
+      checkPaymentStatus()
+    }
+  }, [user, loading])
+
+  // Redirect to checkout if payment is not completed
+  useEffect(() => {
+    if (!checkingPayment && paymentStatus && paymentStatus !== 'completed') {
+      router.push('/checkout')
+    }
+  }, [checkingPayment, paymentStatus, router])
+
+  if (loading || checkingPayment) {
     return (
       <div style={{
         minHeight: '100vh',
