@@ -23,7 +23,6 @@ function CheckoutContent() {
   // Business Information
   const [companyName, setCompanyName] = useState('')
   const [vatNumber, setVatNumber] = useState('')
-  const [vatValid, setVatValid] = useState<boolean | null>(null)
   
   // Billing Address
   const [addressLine1, setAddressLine1] = useState('')
@@ -36,25 +35,6 @@ function CheckoutContent() {
   // Preferences
   const [newsletter, setNewsletter] = useState(false)
 
-  const validateVatNumber = async (vat: string) => {
-    if (!vat) {
-      setVatValid(null)
-      return
-    }
-
-    try {
-      const response = await fetch('/api/validate-vat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ vatNumber: vat })
-      })
-      const data = await response.json()
-      setVatValid(data.valid)
-    } catch (error) {
-      console.error('VAT validation error:', error)
-      setVatValid(null)
-    }
-  }
 
   const handleCheckout = async () => {
     // Validation
@@ -78,10 +58,6 @@ function CheckoutContent() {
       return
     }
 
-    if (customerType === 'business' && vatNumber && vatValid === false) {
-      showToast('Please enter a valid VAT number or leave it empty', 'error')
-      return
-    }
 
     setIsLoading(true)
 
@@ -254,20 +230,13 @@ function CheckoutContent() {
 
                 <div className="form-group">
                   <label htmlFor="vatNumber">VAT Number (optional)</label>
-                  <div className="vat-input-group">
-                    <input
-                      type="text"
-                      id="vatNumber"
-                      value={vatNumber}
-                      onChange={(e) => {
-                        setVatNumber(e.target.value)
-                        validateVatNumber(e.target.value)
-                      }}
-                      placeholder="NL123456789B01"
-                    />
-                    {vatValid === true && <span className="vat-status valid">✓ Valid</span>}
-                    {vatValid === false && <span className="vat-status invalid">✗ Invalid</span>}
-                  </div>
+                  <input
+                    type="text"
+                    id="vatNumber"
+                    value={vatNumber}
+                    onChange={(e) => setVatNumber(e.target.value)}
+                    placeholder="NL123456789B01"
+                  />
                   <p className="field-note">EU businesses: Enter your VAT number for tax exemption</p>
                 </div>
               </>

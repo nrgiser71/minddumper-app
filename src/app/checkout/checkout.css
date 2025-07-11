@@ -140,27 +140,6 @@
   gap: 1rem;
 }
 
-/* VAT number validation styling */
-.vat-input-group {
-  position: relative;
-}
-
-.vat-status {
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 0.85rem;
-  font-weight: 600;
-}
-
-.vat-status.valid {
-  color: #28a745;
-}
-
-.vat-status.invalid {
-  color: #dc3545;
-}
 
 /* Additional form section spacing */
 .form-section {
