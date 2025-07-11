@@ -14,18 +14,72 @@ function CheckoutContent() {
   const [isLoading, setIsLoading] = useState(false)
   const [email, setEmail] = useState('')
   const [customerType, setCustomerType] = useState<'private' | 'business'>('private')
+  
+  // Personal Information
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [phone, setPhone] = useState('')
+  
+  // Business Information
   const [companyName, setCompanyName] = useState('')
   const [vatNumber, setVatNumber] = useState('')
+  const [vatValid, setVatValid] = useState<boolean | null>(null)
+  
+  // Billing Address
+  const [addressLine1, setAddressLine1] = useState('')
+  const [addressLine2, setAddressLine2] = useState('')
+  const [city, setCity] = useState('')
+  const [postalCode, setPostalCode] = useState('')
+  const [country, setCountry] = useState('NL')
+  const [state, setState] = useState('')
+  
+  // Preferences
   const [newsletter, setNewsletter] = useState(false)
 
+  const validateVatNumber = async (vat: string) => {
+    if (!vat) {
+      setVatValid(null)
+      return
+    }
+
+    try {
+      const response = await fetch('/api/validate-vat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ vatNumber: vat })
+      })
+      const data = await response.json()
+      setVatValid(data.valid)
+    } catch (error) {
+      console.error('VAT validation error:', error)
+      setVatValid(null)
+    }
+  }
+
   const handleCheckout = async () => {
+    // Validation
     if (!email) {
       showToast('Please enter your email address', 'error')
       return
     }
 
+    if (!firstName || !lastName) {
+      showToast('Please enter your full name', 'error')
+      return
+    }
+
+    if (!addressLine1 || !city || !postalCode || !country) {
+      showToast('Please fill in your complete address', 'error')
+      return
+    }
+
     if (customerType === 'business' && !companyName) {
       showToast('Please enter your company name', 'error')
+      return
+    }
+
+    if (customerType === 'business' && vatNumber && vatValid === false) {
+      showToast('Please enter a valid VAT number or leave it empty', 'error')
       return
     }
 
@@ -40,8 +94,23 @@ function CheckoutContent() {
         body: JSON.stringify({
           email,
           customerType,
+          // Personal Information
+          firstName,
+          lastName,
+          phone,
+          // Business Information
           companyName: customerType === 'business' ? companyName : undefined,
           vatNumber: customerType === 'business' ? vatNumber : undefined,
+          // Billing Address
+          address: {
+            line1: addressLine1,
+            line2: addressLine2,
+            city,
+            postal_code: postalCode,
+            country,
+            state: state || undefined
+          },
+          // Preferences
           newsletter,
         }),
       })
@@ -107,6 +176,42 @@ function CheckoutContent() {
               <p className="field-note">You&apos;ll use this to log in to MindDumper</p>
             </div>
 
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="firstName">First Name *</label>
+                <input
+                  type="text"
+                  id="firstName"
+                  value={firstName}
+                  onChange={(e) => setFirstName(e.target.value)}
+                  placeholder="John"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="lastName">Last Name *</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  value={lastName}
+                  onChange={(e) => setLastName(e.target.value)}
+                  placeholder="Doe"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="phone">Phone Number (optional)</label>
+              <input
+                type="tel"
+                id="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="+31 6 12345678"
+              />
+            </div>
+
             <div className="form-group">
               <label>Customer Type</label>
               <div className="radio-group">
@@ -149,17 +254,122 @@ function CheckoutContent() {
 
                 <div className="form-group">
                   <label htmlFor="vatNumber">VAT Number (optional)</label>
-                  <input
-                    type="text"
-                    id="vatNumber"
-                    value={vatNumber}
-                    onChange={(e) => setVatNumber(e.target.value)}
-                    placeholder="NL123456789B01"
-                  />
+                  <div className="vat-input-group">
+                    <input
+                      type="text"
+                      id="vatNumber"
+                      value={vatNumber}
+                      onChange={(e) => {
+                        setVatNumber(e.target.value)
+                        validateVatNumber(e.target.value)
+                      }}
+                      placeholder="NL123456789B01"
+                    />
+                    {vatValid === true && <span className="vat-status valid">✓ Valid</span>}
+                    {vatValid === false && <span className="vat-status invalid">✗ Invalid</span>}
+                  </div>
                   <p className="field-note">EU businesses: Enter your VAT number for tax exemption</p>
                 </div>
               </>
             )}
+
+            <div className="form-section">
+              <h3>Billing Address</h3>
+              
+              <div className="form-group">
+                <label htmlFor="addressLine1">Street Address *</label>
+                <input
+                  type="text"
+                  id="addressLine1"
+                  value={addressLine1}
+                  onChange={(e) => setAddressLine1(e.target.value)}
+                  placeholder="123 Main Street"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="addressLine2">Apartment, suite, etc. (optional)</label>
+                <input
+                  type="text"
+                  id="addressLine2"
+                  value={addressLine2}
+                  onChange={(e) => setAddressLine2(e.target.value)}
+                  placeholder="Apt 4B"
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="city">City *</label>
+                  <input
+                    type="text"
+                    id="city"
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    placeholder="Amsterdam"
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="postalCode">Postal Code *</label>
+                  <input
+                    type="text"
+                    id="postalCode"
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    placeholder="1012 AB"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="country">Country *</label>
+                  <select
+                    id="country"
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    required
+                  >
+                    <option value="NL">Netherlands</option>
+                    <option value="BE">Belgium</option>
+                    <option value="DE">Germany</option>
+                    <option value="FR">France</option>
+                    <option value="ES">Spain</option>
+                    <option value="IT">Italy</option>
+                    <option value="AT">Austria</option>
+                    <option value="CH">Switzerland</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="US">United States</option>
+                    <option value="CA">Canada</option>
+                    <option value="AU">Australia</option>
+                    <option value="SE">Sweden</option>
+                    <option value="NO">Norway</option>
+                    <option value="DK">Denmark</option>
+                    <option value="FI">Finland</option>
+                    <option value="PL">Poland</option>
+                    <option value="PT">Portugal</option>
+                    <option value="IE">Ireland</option>
+                    <option value="LU">Luxembourg</option>
+                  </select>
+                </div>
+                {(country === 'US' || country === 'CA' || country === 'AU') && (
+                  <div className="form-group">
+                    <label htmlFor="state">State/Province *</label>
+                    <input
+                      type="text"
+                      id="state"
+                      value={state}
+                      onChange={(e) => setState(e.target.value)}
+                      placeholder="California"
+                      required
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
 
             <div className="form-group checkbox-group">
               <label className="checkbox-label">

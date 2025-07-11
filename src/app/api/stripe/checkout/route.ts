@@ -3,11 +3,21 @@ import { stripe, getStripePriceId } from '@/lib/stripe'
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, customerType, companyName, vatNumber, newsletter } = await req.json()
+    const { 
+      email, 
+      customerType, 
+      firstName,
+      lastName,
+      phone,
+      companyName, 
+      vatNumber, 
+      address,
+      newsletter 
+    } = await req.json()
 
-    if (!email) {
+    if (!email || !firstName || !lastName || !address) {
       return NextResponse.json(
-        { error: 'Email is required' },
+        { error: 'Email, name, and address are required' },
         { status: 400 }
       )
     }
@@ -24,9 +34,20 @@ export async function POST(req: NextRequest) {
     } else {
       customer = await stripe.customers.create({
         email,
-        name: companyName || undefined,
+        name: customerType === 'business' && companyName ? companyName : `${firstName} ${lastName}`,
+        phone: phone || undefined,
+        address: {
+          line1: address.line1,
+          line2: address.line2 || undefined,
+          city: address.city,
+          postal_code: address.postal_code,
+          country: address.country,
+          state: address.state || undefined,
+        },
         metadata: {
           customerType,
+          firstName,
+          lastName,
           companyName: companyName || '',
           vatNumber: vatNumber || '',
           newsletter: newsletter ? 'yes' : 'no',
@@ -50,11 +71,20 @@ export async function POST(req: NextRequest) {
       metadata: {
         email,
         customerType,
+        firstName,
+        lastName,
+        phone: phone || '',
         companyName: companyName || '',
         vatNumber: vatNumber || '',
         newsletter: newsletter ? 'yes' : 'no',
+        addressLine1: address.line1,
+        addressLine2: address.line2 || '',
+        city: address.city,
+        postalCode: address.postal_code,
+        country: address.country,
+        state: address.state || '',
       },
-      billing_address_collection: 'required',
+      billing_address_collection: 'auto', // We already have address
       locale: 'auto',
       allow_promotion_codes: true,
       tax_id_collection: {

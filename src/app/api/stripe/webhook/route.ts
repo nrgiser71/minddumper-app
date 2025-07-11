@@ -130,14 +130,21 @@ export async function POST(req: NextRequest) {
           amount_paid_cents: session.amount_total,
           currency: session.currency,
           customer_type: session.metadata?.customerType || 'private',
+          // Personal information
+          first_name: session.metadata?.firstName || null,
+          last_name: session.metadata?.lastName || null,
+          phone: session.metadata?.phone || null,
+          // Business information
           company_name: session.metadata?.companyName || null,
-          billing_address_line1: session.customer_details?.address?.line1 || null,
-          billing_address_line2: session.customer_details?.address?.line2 || null,
-          billing_city: session.customer_details?.address?.city || null,
-          billing_postal_code: session.customer_details?.address?.postal_code || null,
-          billing_country: session.customer_details?.address?.country || null,
-          billing_state: session.customer_details?.address?.state || null,
           vat_number: session.metadata?.vatNumber || null,
+          // Billing address from our form (more complete than Stripe's)
+          billing_address_line1: session.metadata?.addressLine1 || session.customer_details?.address?.line1 || null,
+          billing_address_line2: session.metadata?.addressLine2 || session.customer_details?.address?.line2 || null,
+          billing_city: session.metadata?.city || session.customer_details?.address?.city || null,
+          billing_postal_code: session.metadata?.postalCode || session.customer_details?.address?.postal_code || null,
+          billing_country: session.metadata?.country || session.customer_details?.address?.country || null,
+          billing_state: session.metadata?.state || session.customer_details?.address?.state || null,
+          // Preferences
           newsletter_opted_in: session.metadata?.newsletter === 'yes',
         })
         .eq('id', userId)
