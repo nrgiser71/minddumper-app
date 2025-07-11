@@ -87,7 +87,9 @@ export async function POST(req: NextRequest) {
           }
 
           console.log(`Searching page ${page}, found ${existingUsers.users.length} users`)
-          foundUser = existingUsers.users.find(user => user.email === email)
+          console.log('Looking for email:', email)
+          console.log('Available emails:', existingUsers.users.map(u => u.email))
+          foundUser = existingUsers.users.find(user => user.email?.toLowerCase() === email.toLowerCase())
           
           if (foundUser) {
             userId = foundUser.id
