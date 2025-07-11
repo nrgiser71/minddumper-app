@@ -56,25 +56,47 @@ export async function POST(req: NextRequest) {
       // Generate a temporary password
       const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
 
-      // Create the user in Supabase Auth
+      // Create or get existing user in Supabase Auth
       console.log('Creating user with email:', email)
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
+      let authData
+      let userId
+
+      const { data: createData, error: authError } = await supabase.auth.admin.createUser({
         email,
         password: tempPassword,
         email_confirm: true,
       })
 
-      if (authError) {
+      if (authError && authError.code === 'email_exists') {
+        // User already exists, get the existing user
+        console.log('User already exists, fetching existing user')
+        const { data: existingUsers, error: listError } = await supabase.auth.admin.listUsers()
+        
+        if (listError) {
+          console.error('Failed to list users:', listError)
+          return NextResponse.json({ error: 'Failed to get existing user' }, { status: 500 })
+        }
+
+        const existingUser = existingUsers.users.find(user => user.email === email)
+        if (!existingUser) {
+          console.error('User exists but not found in list')
+          return NextResponse.json({ error: 'User exists but not accessible' }, { status: 500 })
+        }
+
+        userId = existingUser.id
+        console.log('Found existing user:', userId)
+      } else if (authError) {
         console.error('Failed to create user:', authError)
-        console.error('Auth error details:', JSON.stringify(authError, null, 2))
         return NextResponse.json({ 
           error: 'Failed to create user', 
           details: authError.message,
           email: email 
         }, { status: 500 })
+      } else {
+        // User created successfully
+        userId = createData.user!.id
+        console.log('User created successfully:', userId)
       }
-
-      console.log('User created successfully:', authData.user?.id)
 
       // Update the user's profile with payment information
       const { error: profileError } = await supabase
@@ -97,7 +119,7 @@ export async function POST(req: NextRequest) {
           vat_number: session.metadata?.vatNumber || null,
           newsletter_opted_in: session.metadata?.newsletter === 'yes',
         })
-        .eq('id', authData.user!.id)
+        .eq('id', userId)
 
       if (profileError) {
         console.error('Failed to update profile:', profileError)
