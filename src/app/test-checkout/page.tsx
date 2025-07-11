@@ -83,7 +83,7 @@ function TestCheckoutContent() {
             <li>✓ All systems verification</li>
           </ul>
           <div className="price-display">
-            <span className="price">€0.50</span>
+            <span className="price">€0.01</span>
             <span className="price-note">test payment</span>
           </div>
         </div>
@@ -178,10 +178,10 @@ function TestCheckoutContent() {
               disabled={isLoading}
               style={{backgroundColor: '#ffa500'}}
             >
-              {isLoading ? 'Processing...' : 'TEST Payment - €0.50'}
+              {isLoading ? 'Processing...' : 'TEST Payment - €0.01'}
             </button>
             <p className="security-note">
-              🧪 This is a test with €0.50 to verify the complete payment flow
+              🧪 This is a test with €0.01 to verify the complete payment flow
             </p>
             <p className="terms-note">
               Test card: 4242 4242 4242 4242 (CVC: 123, Date: 12/25)
