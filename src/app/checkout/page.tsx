@@ -4,7 +4,9 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { ToastProvider, useToast } from '@/components/toast-context'
 import { ToastContainer } from '@/components/toast-container'
-import { PRODUCT_PRICE, PRODUCT_NAME } from '@/lib/stripe'
+// Hardcoded for client-side (TODO: move to environment variables)
+const PRODUCT_PRICE = '49'
+const PRODUCT_NAME = 'MindDumper Lifetime Access'
 import './checkout.css'
 
 function CheckoutContent() {
