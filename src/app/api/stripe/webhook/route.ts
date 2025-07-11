@@ -67,23 +67,43 @@ export async function POST(req: NextRequest) {
       })
 
       if (authError && authError.code === 'email_exists') {
-        // User already exists, get the existing user
+        // User already exists, get the existing user with pagination
         console.log('User already exists, fetching existing user')
-        const { data: existingUsers, error: listError } = await supabase.auth.admin.listUsers()
         
-        if (listError) {
-          console.error('Failed to list users:', listError)
-          return NextResponse.json({ error: 'Failed to get existing user' }, { status: 500 })
-        }
+        // Use listUsers with pagination to find all users
+        let foundUser = null
+        let page = 1
+        const perPage = 1000
+        
+        while (!foundUser) {
+          const { data: existingUsers, error: listError } = await supabase.auth.admin.listUsers({
+            page,
+            perPage
+          })
+          
+          if (listError) {
+            console.error('Failed to list users:', listError)
+            return NextResponse.json({ error: 'Failed to get existing user' }, { status: 500 })
+          }
 
-        const existingUser = existingUsers.users.find(user => user.email === email)
-        if (!existingUser) {
-          console.error('User exists but not found in list')
-          return NextResponse.json({ error: 'User exists but not accessible' }, { status: 500 })
+          console.log(`Searching page ${page}, found ${existingUsers.users.length} users`)
+          foundUser = existingUsers.users.find(user => user.email === email)
+          
+          if (foundUser) {
+            userId = foundUser.id
+            console.log('Found existing user:', userId)
+            break
+          }
+          
+          // If we got less than perPage users, we've reached the end
+          if (existingUsers.users.length < perPage) {
+            console.error('User exists but not found in any page - email:', email)
+            console.error('Total pages searched:', page)
+            return NextResponse.json({ error: 'User exists but not accessible' }, { status: 500 })
+          }
+          
+          page++
         }
-
-        userId = existingUser.id
-        console.log('Found existing user:', userId)
       } else if (authError) {
         console.error('Failed to create user:', authError)
         return NextResponse.json({ 
