@@ -58,7 +58,6 @@ export async function POST(req: NextRequest) {
 
       // Create or get existing user in Supabase Auth
       console.log('Creating user with email:', email)
-      let authData
       let userId
 
       const { data: createData, error: authError } = await supabase.auth.admin.createUser({
