@@ -66,7 +66,12 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error('Stripe checkout error:', error)
     return NextResponse.json(
-      { error: 'Failed to create checkout session' },
+      { 
+        error: 'Failed to create checkout session',
+        details: error instanceof Error ? error.message : 'Unknown error',
+        hasStripeKey: !!process.env.STRIPE_SECRET_KEY,
+        hasPriceId: !!process.env.STRIPE_PRICE_ID
+      },
       { status: 500 }
     )
   }
