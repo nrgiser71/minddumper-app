@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
       const tempPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8)
 
       // Create the user in Supabase Auth
+      console.log('Creating user with email:', email)
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email,
         password: tempPassword,
@@ -65,8 +66,15 @@ export async function POST(req: NextRequest) {
 
       if (authError) {
         console.error('Failed to create user:', authError)
-        return NextResponse.json({ error: 'Failed to create user' }, { status: 500 })
+        console.error('Auth error details:', JSON.stringify(authError, null, 2))
+        return NextResponse.json({ 
+          error: 'Failed to create user', 
+          details: authError.message,
+          email: email 
+        }, { status: 500 })
       }
+
+      console.log('User created successfully:', authData.user?.id)
 
       // Update the user's profile with payment information
       const { error: profileError } = await supabase
