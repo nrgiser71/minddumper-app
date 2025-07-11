@@ -147,8 +147,10 @@ export async function POST(req: NextRequest) {
       }
 
       // Send welcome email with login instructions
+      // For new users, send password reset to set their password
+      // For existing users, send password reset to regain access after payment
       const { error: emailError } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://minddumper.com'}/auth/reset-password`,
+        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://minddumper.com'}/auth/reset-password?welcome=true`,
       })
 
       if (emailError) {
