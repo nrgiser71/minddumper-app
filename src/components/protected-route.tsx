@@ -53,8 +53,8 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
 
   // Redirect to checkout if payment is not completed
   useEffect(() => {
-    if (!checkingPayment && paymentStatus && paymentStatus !== 'completed') {
-      router.push('/checkout')
+    if (!checkingPayment && paymentStatus && paymentStatus !== 'paid') {
+      window.location.href = 'https://checkout.minddumper.com'
     }
   }, [checkingPayment, paymentStatus, router])
 
