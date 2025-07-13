@@ -23,14 +23,17 @@ export async function POST(request: NextRequest) {
   try {
     console.log('🔔 PlugAndPay webhook received')
     
+    // Verify API key from headers
+    const apiKey = request.headers.get('x-api-key') || request.headers.get('authorization')
+    const expectedApiKey = process.env.PLUGANDPAY_API_KEY || 'XEN9Q-8GHMY-TPRL2-4WSA6'
+    
+    if (apiKey !== expectedApiKey && apiKey !== `Bearer ${expectedApiKey}`) {
+      console.error('❌ Invalid API key received:', apiKey)
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+    
     const payload: PlugAndPayWebhookPayload = await request.json()
     console.log('📦 Webhook payload:', JSON.stringify(payload, null, 2))
-
-    // Verify webhook (add webhook secret verification if available)
-    // const webhookSecret = process.env.PLUGANDPAY_WEBHOOK_SECRET
-    // if (webhookSecret) {
-    //   // Add signature verification here when available
-    // }
 
     // Check if this is a payment success event
     if (payload.event === 'order.paid' || payload.status === 'paid') {
