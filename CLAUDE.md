@@ -1,8 +1,8 @@
 # MindDumper App - Claude Development Notes
 
-## Project Status: WAITLIST SYSTEEM LIVE ✅ - Production Ready 🚀
+## Project Status: PLUGANDPAY PAYMENT INTEGRATION 95% COMPLEET ✅ - Ready for Testing 🚀
 
-Het MindDumper project is succesvol uitgebreid met een volledig werkend waitlist systeem. **Complete waitlist infrastructuur geïmplementeerd met GoHighLevel integratie en email automation.** **Landingspagina toegankelijk + Admin dashboard operationeel.** **Systeem is production-ready voor early access registraties.**
+Het MindDumper project heeft een volledige overgang gemaakt van Stripe naar PlugAndPay. **Complete PlugAndPay integratie geïmplementeerd met automatische user creation en webhook systeem.** **Checkout domain operationeel, webhook getest, database klaar.** **Alleen final domain configuratie en end-to-end test nog uit te voeren.**
 
 ## ✅ OPGELOST: User Preferences Default Bug (Juli 2025)
 
@@ -33,6 +33,77 @@ const isEnabled = userPrefs.get(word.id) ?? false
 - Verwarrende "X woorden beschikbaar" counter verwijderd uit config scherm
 
 **Status**: ✅ VOLLEDIG OPGELOST - Beide systemen werken nu correct
+
+## 🚀 PLUGANDPAY PAYMENT INTEGRATION (Juli 2025) - Status: 95% Compleet
+
+### Wat is Voltooid ✅
+
+#### 1. **Complete Stripe Removal**
+- 16 Stripe-gerelateerde bestanden verwijderd (API routes, checkout pagina, bibliotheek)
+- Stripe dependencies uit package.json gehaald
+- Database migrations voor payment fields gecleaned
+- 1757 regels Stripe code verwijderd
+
+#### 2. **PlugAndPay Integration Geïmplementeerd**
+- **PlugAndPay Account**: Aangemaakt en geverifieerd
+- **Product Configuratie**: "MindDumper Lifetime Access" €49 ingesteld
+- **Custom Domain**: `checkout.minddumper.com` geconfigureerd (DNS actief)
+- **Payment Methods**: Apple Pay, PayPal, iDEAL, Visa/Mastercard, SEPA
+
+#### 3. **Webhook Systeem Operationeel**
+- **Webhook Endpoint**: `https://www.minddumper.com/api/plugandpay/webhook`
+- **API Key Verificatie**: XEN9Q-8GHMY-TPRL2-4WSA6
+- **Test Succesvol**: Automatische user creation getest en werkend
+- **Database Integration**: PlugAndPay payment fields toegevoegd
+
+#### 4. **Database Schema Updates**
+- **Added**: `payment_status`, `amount_paid_cents`, `plugandpay_order_id`, `paid_at`
+- **Removed**: Alle Stripe-gerelateerde velden (stripe_customer_id, etc.)
+- **Migration Scripts**: Beide operationeel uitgevoerd
+
+#### 5. **Frontend Integration**
+- **Checkout Buttons**: Alle buttons wijzen naar PlugAndPay checkout
+- **Protected Routes**: Payment status verification geïmplementeerd
+- **Success Page**: Klaar voor PlugAndPay redirects
+
+### Huidige Status - Bijna Klaar 🎯
+
+#### ✅ **Werkend:**
+- PlugAndPay checkout URL: `https://checkout.minddumper.com/checkout/minddumper`
+- Webhook endpoint getest en operationeel
+- Automatische user creation met email setup
+- Database ready voor payments
+
+#### 🔄 **Nog Te Doen (Morgen):**
+1. **Domain Optimalisatie**: `order.minddumper.com` in plaats van dubbele checkout
+2. **End-to-End Test**: Volledige payment flow testen
+3. **Mailgun Integration**: Custom SMTP voor bevestigingsmail (hoge prioriteit)
+
+### Technical Implementation Details
+
+#### Webhook Endpoint
+```typescript
+// Location: /api/plugandpay/webhook/route.ts
+- API key verification (XEN9Q-8GHMY-TPRL2-4WSA6)
+- Automatic user creation via Supabase
+- Payment status tracking
+- Password reset email generation
+```
+
+#### Database Schema
+```sql
+-- Added to profiles table:
+payment_status TEXT DEFAULT 'pending'
+amount_paid_cents INTEGER  
+plugandpay_order_id TEXT
+paid_at TIMESTAMP WITH TIME ZONE
+```
+
+#### Environment Variables
+```bash
+PLUGANDPAY_API_KEY=XEN9Q-8GHMY-TPRL2-4WSA6
+NEXT_PUBLIC_SITE_URL=https://minddumper.com
+```
 
 ## 🎯 Recent Bugfixes & Improvements (Juli 2025)
 
@@ -676,66 +747,83 @@ verifyAdminSessionFromRequest() → Cookie validation → API access
 
 ---
 
-# ✅ STRIPE PAYMENT INTEGRATION COMPLEET
+# 🎯 NEXT SESSION PRIORITIES (Juli 14, 2025)
 
-## Payment System Status: LIVE & OPERATIONAL 🚀
+## Morgen Te Voltooien (High Priority)
 
-**Stripe checkout en webhook systeem volledig werkend:**
-- ✅ €49 lifetime payment flow operationeel
-- ✅ €0.50 test checkout voor veilig testen
-- ✅ Automatic user creation na successful payment
-- ✅ Existing user handling (case-insensitive email matching)
-- ✅ Complete billing information opslag
-- ✅ Welcome email flow met password setup
-- ✅ Custom reset-password pagina met welkomst ervaring
+### 1. **Domain Optimalisatie** (30 min)
+**Probleem**: Dubbele checkout in URL (`checkout.minddumper.com/checkout/minddumper`)
+**Oplossing**: Nieuwe subdomain `order.minddumper.com`
 
-## 🔧 NEXT: Custom SMTP Setup (PRIORITY)
+**Stappen:**
+1. **Vimexx DNS**: Verwijder checkout.minddumper.com records
+2. **Nieuwe DNS**: 
+   - `order` → `plugandpay.com.`
+   - `_acme-challenge.order` → `order.minddumper.com.e4a12c3bcc6e3de6.dcv.cloudflare.com.`
+3. **PlugAndPay**: Domain wijzigen naar order.minddumper.com
+4. **Website**: Links updaten naar `https://order.minddumper.com/minddumper`
 
-**Huidige limitatie:** Supabase built-in SMTP = **2-3 emails per uur**
-**Probleem voor launch:** Bij marketing push verwacht >10 nieuwe klanten per uur
+### 2. **End-to-End Payment Test** (15 min)
+**Doel**: Volledige payment flow verifiëren
+**Test Scenario:**
+1. Klik checkout button → PlugAndPay checkout
+2. Test payment (creditcard 4111 1111 1111 1111)
+3. Webhook triggered → User creation
+4. Email ontvangen → Account setup
+5. Login werkend → App toegang
 
-### Mailgun Integration Plan
-**Provider:** Hergebruik bestaande Mailgun account (tickedify.com)
-**Setup:** Subdomain voor MindDumper emails
+### 3. **Mailgun Integration** (45 min) - **KRITIEK**
+**Huidige limitatie**: Supabase SMTP = 2-3 emails/uur
+**Vereist voor launch**: 100+ emails/uur capaciteit
 
-#### Stappen voor implementatie:
-1. **Mailgun subdomain toevoegen:**
-   - Domain: `auth.minddumper.com` of `noreply.minddumper.com`
-   - DNS records configureren (MX, TXT, CNAME)
-   - Domain verification in Mailgun dashboard
+**Implementation:**
+- Hergebruik bestaande Mailgun account
+- Subdomain: `auth.minddumper.com`
+- SMTP configuratie in Supabase
+- Rate limit naar 100+/uur
 
-2. **SMTP credentials ophalen:**
-   ```
-   Host: smtp.eu.mailgun.org
-   Port: 587
-   Username: postmaster@auth.minddumper.com
-   Password: [Mailgun SMTP password - ophalen uit dashboard]
-   ```
+## Status Overview
 
-3. **Supabase SMTP configuratie:**
-   - Dashboard → Authentication → Settings → SMTP Settings
-   - Vul Mailgun credentials in
-   - Test email verzending
-   - Rate limit verhogen naar 100+ per uur
+### ✅ **100% Compleet:**
+- Stripe removal (1757 regels code weg)
+- PlugAndPay integration (account, product, webhook)
+- Database schema (payment fields added/cleaned)
+- Webhook testing (user creation werkend)
+- Basic checkout flow (werkende URL)
 
-4. **Email templates customization:**
-   - Welcome email met MindDumper branding
-   - Password reset met duidelijke CTA
-   - Consistent design met app
+### 🔄 **95% Compleet:**
+- Domain configuratie (DNS werkend, URL optimalisatie nodig)
+- Frontend integration (buttons werken, clean URL gewenst)
 
-### Verwachte resultaten:
-- **100+ emails per uur** capaciteit
-- **Betere deliverability** dan built-in SMTP
-- **Custom email templates** met branding
-- **Geen rate limit problemen** tijdens marketing campaigns
+### ⏳ **Nog Te Doen:**
+- Domain URL optimalisatie (order.minddumper.com)
+- End-to-end payment test
+- Mailgun SMTP upgrade (kritiek voor launch)
 
-**Prioriteit:** HOOG - Vereist voor product launch
-**Tijd schatting:** 30-45 minuten setup
-**Afhankelijkheden:** Mailgun account toegang, DNS configuratie
+## Technische Details Voor Morgen
+
+### Nieuwe Checkout URL
+```
+Van: https://checkout.minddumper.com/checkout/minddumper
+Naar: https://order.minddumper.com/minddumper
+```
+
+### Environment Variables Te Controleren
+```bash
+PLUGANDPAY_API_KEY=XEN9Q-8GHMY-TPRL2-4WSA6
+NEXT_PUBLIC_SITE_URL=https://minddumper.com
+GHL_API_KEY=[bestaand]
+GHL_LOCATION_ID=[bestaand]
+```
+
+### Post-Payment Flow
+```
+Payment Success → Webhook → User Creation → Email → Account Setup → App Access
+```
 
 ---
 
-# 🚧 LEGACY: Stripe Implementation Details (COMPLEET)
+# 🚧 LEGACY: Stripe Implementation Details (COMPLEET - VERWIJDERD)
 
 ## 🎯 Key Requirements
 
