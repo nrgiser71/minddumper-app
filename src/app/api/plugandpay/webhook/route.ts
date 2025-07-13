@@ -50,19 +50,21 @@ export async function POST(request: NextRequest) {
       }
 
       // Check if user already exists
-      const { data: existingUser, error: userCheckError } = await supabase.auth.admin.getUserByEmail(email)
+      const { data: { users }, error: userCheckError } = await supabase.auth.admin.listUsers()
       
-      if (userCheckError && userCheckError.message !== 'User not found') {
-        console.error('❌ Error checking existing user:', userCheckError)
+      if (userCheckError) {
+        console.error('❌ Error checking existing users:', userCheckError)
         return NextResponse.json({ error: 'Database error' }, { status: 500 })
       }
+      
+      const existingUser = users.find(u => u.email?.toLowerCase() === email)
 
       let userId: string
 
-      if (existingUser?.user) {
+      if (existingUser) {
         // User exists, update their payment status
         console.log('👤 User already exists, updating payment status')
-        userId = existingUser.user.id
+        userId = existingUser.id
         
         // Update profile with payment information
         const { error: updateError } = await supabase
