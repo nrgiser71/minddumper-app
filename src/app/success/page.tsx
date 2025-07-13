@@ -12,32 +12,16 @@ function SuccessContent() {
   const [email, setEmail] = useState('')
 
   useEffect(() => {
-    const sessionId = searchParams.get('session_id')
-    if (!sessionId) {
+    const orderEmail = searchParams.get('email')
+    const orderId = searchParams.get('order_id')
+    
+    if (!orderEmail || !orderId) {
       router.push('/')
       return
     }
 
-    // Verify the session
-    const verifySession = async () => {
-      try {
-        const response = await fetch(`/api/stripe/verify-session?session_id=${sessionId}`)
-        const data = await response.json()
-        
-        if (data.success && data.email) {
-          setEmail(data.email)
-        } else {
-          router.push('/')
-        }
-      } catch (error) {
-        console.error('Failed to verify session:', error)
-        router.push('/')
-      } finally {
-        setIsVerifying(false)
-      }
-    }
-
-    verifySession()
+    setEmail(orderEmail)
+    setIsVerifying(false)
   }, [searchParams, router])
 
   if (isVerifying) {

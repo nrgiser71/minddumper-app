@@ -15,9 +15,7 @@ export default function HomePage() {
             <a href="#features" className="nav-link">Features</a>
             <a href="#pricing" className="nav-link">Pricing</a>
             <a href="#testimonials" className="nav-link">Reviews</a>
-            <Link href="/checkout">
-              <button className="nav-cta">Get Started - €49</button>
-            </Link>
+            <button className="nav-cta" onClick={() => alert('PlugAndPay checkout coming soon!')}>Get Started - €49</button>
           </div>
         </div>
       </nav>
@@ -43,9 +41,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="hero-buttons">
-              <Link href="/checkout">
-                <button className="btn-primary">Clear My Mind Now - €49</button>
-              </Link>
+              <button className="btn-primary" onClick={() => alert('PlugAndPay checkout coming soon!')}>Clear My Mind Now - €49</button>
             </div>
             <p className="hero-guarantee">One-time payment • Trigger words in 5 languages • Lifetime access</p>
           </div>
@@ -256,9 +252,7 @@ export default function HomePage() {
                 <li>All future updates included</li>
                 <li>Priority support</li>
               </ul>
-              <Link href="/checkout">
-                <button className="btn-primary">Get Lifetime Access - €49</button>
-              </Link>
+              <button className="btn-primary" onClick={() => alert('PlugAndPay checkout coming soon!')}>Get Lifetime Access - €49</button>
               <p className="lifetime-note">💎 One-time payment • Never pay again • All updates included</p>
             </div>
           </div>
