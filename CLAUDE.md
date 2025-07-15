@@ -747,40 +747,43 @@ verifyAdminSessionFromRequest() → Cookie validation → API access
 
 ---
 
-# 🎯 NEXT SESSION PRIORITIES (Juli 14, 2025)
+# 🎯 NEXT SESSION PRIORITIES (Juli 15, 2025) - BIJNA KLAAR!
 
-## Morgen Te Voltooien (High Priority)
+## STATUS: 95% COMPLEET! 🎉
 
-### 1. **Domain Optimalisatie** (30 min)
-**Probleem**: Dubbele checkout in URL (`checkout.minddumper.com/checkout/minddumper`)
-**Oplossing**: Nieuwe subdomain `order.minddumper.com`
+### **WAT AL WERKT:**
+- ✅ **Payment checkout**: `https://order.minddumper.com/checkout/minddumper` volledig operationeel
+- ✅ **Webhook processing**: Automatic user creation + paid status na betaling
+- ✅ **App access**: Protected route geeft toegang na betaling
+- ✅ **Success page**: Mooie onboarding pagina klaar op `/success`
+- ✅ **User database**: Alle betaalde users hebben correct toegang tot app
 
-**Stappen:**
-1. **Vimexx DNS**: Verwijder checkout.minddumper.com records
-2. **Nieuwe DNS**: 
-   - `order` → `plugandpay.com.`
-   - `_acme-challenge.order` → `order.minddumper.com.e4a12c3bcc6e3de6.dcv.cloudflare.com.`
-3. **PlugAndPay**: Domain wijzigen naar order.minddumper.com
-4. **Website**: Links updaten naar `https://order.minddumper.com/minddumper`
+### **MORGEN AF TE WERKEN (30 min total)**
 
-### 2. **End-to-End Payment Test** (15 min)
-**Doel**: Volledige payment flow verifiëren
-**Test Scenario:**
-1. Klik checkout button → PlugAndPay checkout
-2. Test payment (creditcard 4111 1111 1111 1111)
-3. Webhook triggered → User creation
-4. Email ontvangen → Account setup
-5. Login werkend → App toegang
+#### 1. **PlugAndPay Redirect Configuratie** (15 min)
+**Status**: Enige missing piece
+**Actie**: 
+- Configureer PlugAndPay bedankpagina redirect naar `https://minddumper.com/success`
+- Vraag support over email parameter: `https://minddumper.com/success?email={customer_email}`
+- Test redirect werkt correct na betaling
 
-### 3. **Mailgun Integration** (45 min) - **KRITIEK**
-**Huidige limitatie**: Supabase SMTP = 2-3 emails/uur
-**Vereist voor launch**: 100+ emails/uur capaciteit
+#### 2. **End-to-End Flow Validatie** (10 min)
+**Complete test scenario**:
+1. Klik "Get Started - €49" → PlugAndPay checkout ✅ **WERKT**
+2. Betaal met 4111 1111 1111 1111 → Payment succeeds ✅ **WERKT**
+3. Redirect naar success page → **CONFIGUREREN**
+4. Check email voor password reset → **VALIDEREN**
+5. Login en ga naar /app → **VALIDEREN**
 
-**Implementation:**
-- Hergebruik bestaande Mailgun account
-- Subdomain: `auth.minddumper.com`
-- SMTP configuratie in Supabase
-- Rate limit naar 100+/uur
+#### 3. **Email Delivery Check** (5 min)
+**Verify**: 
+- Password reset email wordt verstuurd via webhook
+- User kan wachtwoord instellen via email link
+- Login flow werkt correct naar app
+
+### **OPTIONEEL (Later)**
+- **Mailgun integration**: Voor betere email delivery (100+ emails/uur vs huidige 2-3)
+- **Branded email templates**: Custom emails in plaats van Supabase defaults
 
 ## Status Overview
 
