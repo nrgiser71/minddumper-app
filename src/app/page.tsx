@@ -15,7 +15,7 @@ export default function HomePage() {
             <a href="#features" className="nav-link">Features</a>
             <a href="#pricing" className="nav-link">Pricing</a>
             <a href="#testimonials" className="nav-link">Reviews</a>
-            <a href="https://order.minddumper.com" className="nav-cta">Get Started - €49</a>
+            <a href="https://order.minddumper.com/checkout" className="nav-cta">Get Started - €49</a>
           </div>
         </div>
       </nav>
@@ -41,7 +41,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="hero-buttons">
-              <a href="https://order.minddumper.com" className="btn-primary">Get MindDumper Now - €49</a>
+              <a href="https://order.minddumper.com/checkout" className="btn-primary">Get MindDumper Now - €49</a>
               <Link href="/landing">
                 <button className="btn-secondary">Learn More</button>
               </Link>
