@@ -28,7 +28,7 @@ export async function POST() {
     }
     
     // Get count of updated users
-    const { count, error: countError } = await supabase
+    const { count } = await supabase
       .from('profiles')
       .select('*', { count: 'exact', head: true })
       .eq('payment_status', 'paid')
