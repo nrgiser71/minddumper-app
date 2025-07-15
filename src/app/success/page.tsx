@@ -13,14 +13,11 @@ function SuccessContent() {
 
   useEffect(() => {
     const orderEmail = searchParams.get('email')
-    const orderId = searchParams.get('order_id')
+    // Order ID is optional - payment can work without it
     
-    if (!orderEmail || !orderId) {
-      router.push('/')
-      return
+    if (orderEmail) {
+      setEmail(orderEmail)
     }
-
-    setEmail(orderEmail)
     setIsVerifying(false)
   }, [searchParams, router])
 
@@ -39,31 +36,32 @@ function SuccessContent() {
       <div className="success-wrapper">
         <div className="success-icon">✓</div>
         
-        <h1>Welcome to MindDumper!</h1>
+        <h1>Bedankt voor je aankoop!</h1>
         <p className="success-message">
-          Your payment was successful. We&apos;ve sent login instructions to <strong>{email}</strong>
+          Je betaling is succesvol verwerkt. {email && <>Je account is aangemaakt met <strong>{email}</strong></>}
         </p>
 
         <div className="next-steps">
-          <h2>What happens next?</h2>
+          <h2>Volgende stappen:</h2>
           <ol>
-            <li>Check your email for your login credentials</li>
-            <li>Click the link in the email to set your password</li>
-            <li>Start your first brain dump session!</li>
+            <li>Check je email voor een wachtwoord reset link</li>
+            <li>Klik op de link om je wachtwoord in te stellen</li>
+            <li>Ga naar MindDumper en log in met je nieuwe wachtwoord</li>
+            <li>Start je eerste brain dump sessie!</li>
           </ol>
         </div>
 
         <div className="success-actions">
-          <Link href="/auth/login" className="primary-button">
-            Go to Login
+          <Link href="/app" className="primary-button">
+            🧠 Ga naar MindDumper App
           </Link>
-          <Link href="/" className="secondary-button">
-            Back to Home
+          <Link href="/auth/login" className="secondary-button">
+            🔑 Inloggen
           </Link>
         </div>
 
         <p className="support-note">
-          Need help? Contact us at support@minddumper.com
+          Hulp nodig? Neem contact op via support@minddumper.com
         </p>
       </div>
     </div>
