@@ -51,12 +51,12 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
     }
   }, [user, loading])
 
-  // Redirect to checkout if payment is not completed
-  useEffect(() => {
-    if (!checkingPayment && paymentStatus && paymentStatus !== 'paid') {
-      window.location.href = 'https://order.minddumper.com'
-    }
-  }, [checkingPayment, paymentStatus, router])
+  // Allow free access - no payment required for basic version
+  // useEffect(() => {
+  //   if (!checkingPayment && paymentStatus && paymentStatus !== 'paid') {
+  //     window.location.href = '/'
+  //   }
+  // }, [checkingPayment, paymentStatus, router])
 
   if (loading || checkingPayment) {
     return (
