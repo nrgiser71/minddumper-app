@@ -49,7 +49,7 @@ export default function SignupPage() {
       if (data.user) {
         if (data.user.email_confirmed_at) {
           // User is immediately confirmed, redirect to checkout to pay
-          window.location.href = 'https://checkout.minddumper.com/checkout/minddumper'
+          window.location.href = 'https://order.minddumper.com'
         } else {
           // User needs to confirm email
           setMessage('Check your email for a confirmation link before you can log in.')
