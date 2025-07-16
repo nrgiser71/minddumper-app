@@ -8,15 +8,17 @@ const supabase = createClient(
 )
 
 interface PlugAndPayWebhookPayload {
-  event: string
-  order_id: string
-  customer_email: string
+  event?: string
+  order_id?: string
+  customer_email?: string
   customer_name?: string
-  amount: number
-  currency: string
-  status: string
-  product_name: string
+  amount?: number
+  currency?: string
+  status?: string
+  product_name?: string
+  id?: string
   // Add more fields as needed based on PlugAndPay webhook payload
+  [key: string]: any
 }
 
 export async function POST(request: NextRequest) {
@@ -45,13 +47,13 @@ export async function POST(request: NextRequest) {
     console.log('⚠️ API KEY VERIFICATION DISABLED FOR DEBUGGING')
     
     // Try to parse as both JSON and form data
-    let payload: any = {}
+    let payload: PlugAndPayWebhookPayload = {}
     
     try {
       // First try JSON
       payload = await request.json()
       console.log('📦 Webhook payload (JSON):', JSON.stringify(payload, null, 2))
-    } catch (jsonError) {
+    } catch {
       console.log('⚠️ JSON parsing failed, trying form data...')
       
       // Try form data
