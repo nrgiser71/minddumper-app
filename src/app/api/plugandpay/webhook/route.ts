@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
           .from('profiles')
           .update({
             payment_status: 'paid',
-            amount_paid_cents: Math.round(payload.amount * 100), // Convert to cents
+            amount_paid_cents: payload.amount ? Math.round(payload.amount * 100) : 0, // Convert to cents
             plugandpay_order_id: orderId,
             paid_at: new Date().toISOString(),
             login_token: loginToken,
@@ -169,7 +169,7 @@ export async function POST(request: NextRequest) {
             email: email,
             full_name: fullName,
             payment_status: 'paid',
-            amount_paid_cents: Math.round(payload.amount * 100),
+            amount_paid_cents: payload.amount ? Math.round(payload.amount * 100) : 0,
             plugandpay_order_id: orderId,
             paid_at: new Date().toISOString(),
             login_token: loginToken,
