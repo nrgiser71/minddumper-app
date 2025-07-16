@@ -81,8 +81,8 @@ function ResetPasswordForm() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-lg">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-lg mx-auto">
         {/* Logo and branding */}
         <div className="flex justify-center mb-8">
           <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center">
@@ -121,7 +121,7 @@ function ResetPasswordForm() {
         )}
       </div>
 
-      <div className="sm:mx-auto sm:w-full sm:max-w-lg">
+      <div className="w-full max-w-lg mx-auto">
         <div className="bg-white py-8 px-8 shadow-xl rounded-2xl border border-gray-100">
           <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="space-y-4">
