@@ -92,7 +92,7 @@ function ResetPasswordForm() {
           </div>
         </div>
 
-        <div className="text-center mb-12">
+        <div className="text-center mb-24">
           <h1 className="text-4xl font-bold text-red-600 mb-4">
             {isWelcome ? 'TEST: Welkom bij MindDumper!' : 'Wachtwoord instellen'}
           </h1>
@@ -123,10 +123,10 @@ function ResetPasswordForm() {
 
       <div className="w-full max-w-lg mx-auto">
         <div className="bg-white py-10 px-8 shadow-xl rounded-2xl border border-gray-100">
-          <form className="space-y-8" onSubmit={handleSubmit}>
-            <div className="space-y-6">
+          <form className="space-y-16" onSubmit={handleSubmit}>
+            <div className="space-y-12">
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-3">
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-6">
                   Nieuw wachtwoord
                 </label>
                 <div className="relative">
@@ -144,7 +144,7 @@ function ResetPasswordForm() {
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-3">
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-6">
                   Bevestig wachtwoord
                 </label>
                 <div className="relative">
