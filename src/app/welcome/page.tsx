@@ -66,6 +66,21 @@ function WelcomeContent() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
       <div className="max-w-2xl w-full bg-white rounded-2xl shadow-xl p-8 md:p-12" style={{ padding: '48px' }}>
+        {/* Logo and branding */}
+        <div className="flex justify-center mb-8" style={{ marginBottom: '32px' }}>
+          <div className="flex items-center space-x-3">
+            <div className="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-full flex items-center justify-center shadow-lg">
+              <svg className="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+            <div className="text-left">
+              <h2 className="text-2xl font-bold text-gray-900">MindDumper</h2>
+              <p className="text-sm text-gray-500">Brain dump tool</p>
+            </div>
+          </div>
+        </div>
+
         <div className="text-center">
           
           {status === 'logging_in' && (
@@ -185,6 +200,28 @@ function WelcomeContent() {
               </div>
             </>
           )}
+        </div>
+        
+        {/* Footer */}
+        <div className="mt-12 text-center" style={{ marginTop: '48px' }}>
+          <div className="border-t border-gray-200 pt-8" style={{ paddingTop: '32px' }}>
+            <p className="text-sm text-gray-500 mb-2">
+              © 2025 MindDumper. Veilig en betrouwbaar.
+            </p>
+            <p className="text-xs text-gray-400 mb-4">
+              Hulp nodig? Neem contact op via{' '}
+              <a href="mailto:support@minddumper.com" className="text-blue-600 hover:underline">
+                support@minddumper.com
+              </a>
+            </p>
+            <div className="flex items-center justify-center space-x-4 text-xs text-gray-400">
+              <span>🧠 Clear your mind</span>
+              <span>•</span>
+              <span>⚡ Boost productivity</span>
+              <span>•</span>
+              <span>🔒 Secure & private</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
