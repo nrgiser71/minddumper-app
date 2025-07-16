@@ -21,11 +21,20 @@ interface PlugAndPayWebhookPayload {
 
 export async function POST(request: NextRequest) {
   try {
-    console.log('🔔 PlugAndPay webhook received')
+    console.log('🔔 PlugAndPay webhook received at:', new Date().toISOString())
+    
+    // Log ALL headers for debugging
+    const headers: Record<string, string> = {}
+    request.headers.forEach((value, key) => {
+      headers[key] = value
+    })
+    console.log('📋 All headers:', JSON.stringify(headers, null, 2))
     
     // Verify API key from headers
     const apiKey = request.headers.get('x-api-key') || request.headers.get('authorization')
     const expectedApiKey = process.env.PLUGANDPAY_API_KEY || 'XEN9Q-8GHMY-TPRL2-4WSA6'
+    
+    console.log('🔑 API Key check:', { received: apiKey, expected: expectedApiKey })
     
     if (apiKey !== expectedApiKey && apiKey !== `Bearer ${expectedApiKey}`) {
       console.error('❌ Invalid API key received:', apiKey)
@@ -34,6 +43,12 @@ export async function POST(request: NextRequest) {
     
     const payload: PlugAndPayWebhookPayload = await request.json()
     console.log('📦 Webhook payload:', JSON.stringify(payload, null, 2))
+    console.log('📊 Payload analysis:', {
+      event: payload.event,
+      status: payload.status,
+      customer_email: payload.customer_email,
+      hasEmail: !!payload.customer_email
+    })
 
     // Check if this is a payment success event
     if (payload.event === 'order.paid' || payload.status === 'paid') {
