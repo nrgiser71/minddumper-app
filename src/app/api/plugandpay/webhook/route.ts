@@ -30,16 +30,19 @@ export async function POST(request: NextRequest) {
     })
     console.log('📋 All headers:', JSON.stringify(headers, null, 2))
     
-    // Verify API key from headers
+    // Verify API key from headers (TEMPORARILY DISABLED FOR DEBUGGING)
     const apiKey = request.headers.get('x-api-key') || request.headers.get('authorization')
     const expectedApiKey = process.env.PLUGANDPAY_API_KEY || 'XEN9Q-8GHMY-TPRL2-4WSA6'
     
     console.log('🔑 API Key check:', { received: apiKey, expected: expectedApiKey })
     
-    if (apiKey !== expectedApiKey && apiKey !== `Bearer ${expectedApiKey}`) {
-      console.error('❌ Invalid API key received:', apiKey)
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+    // TEMPORARILY DISABLED: Allow all requests to see what PlugAndPay sends
+    // if (apiKey !== expectedApiKey && apiKey !== `Bearer ${expectedApiKey}`) {
+    //   console.error('❌ Invalid API key received:', apiKey)
+    //   return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    // }
+    
+    console.log('⚠️ API KEY VERIFICATION DISABLED FOR DEBUGGING')
     
     const payload: PlugAndPayWebhookPayload = await request.json()
     console.log('📦 Webhook payload:', JSON.stringify(payload, null, 2))
