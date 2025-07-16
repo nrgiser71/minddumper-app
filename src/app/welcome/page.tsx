@@ -51,7 +51,7 @@ function WelcomeContent() {
           
           // Redirect to password reset after 3 seconds
           setTimeout(() => {
-            router.push('/auth/reset-password')
+            router.push('/auth/reset-password?welcome=true')
           }, 3000)
         }
       } catch (error) {
@@ -131,9 +131,9 @@ function WelcomeContent() {
           {status === 'error' && (
             <>
               <div className="mb-8">
-                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                  <svg className="w-6 h-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto">
+                  <svg className="w-6 h-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.982 16.5c-.77.833.192 2.5 1.732 2.5z" />
                   </svg>
                 </div>
               </div>
@@ -146,26 +146,26 @@ function WelcomeContent() {
                 Thank you for purchasing MindDumper. Your account has been created successfully.
               </p>
 
-              <div className="bg-blue-50 rounded-lg p-6 mb-8">
-                <h2 className="text-lg font-semibold text-gray-900 mb-4">What&apos;s next?</h2>
+              <div className="bg-orange-50 rounded-lg p-6 mb-8">
+                <h2 className="text-lg font-semibold text-gray-900 mb-4">Manual Login Required</h2>
                 <div className="space-y-2 text-left">
                   <div className="flex items-start">
-                    <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg className="w-5 h-5 text-orange-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-gray-700">Check your email (your inbox) for your login credentials</span>
+                    <span className="text-gray-700">Auto-login didn&apos;t work, but no worries!</span>
                   </div>
                   <div className="flex items-start">
-                    <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg className="w-5 h-5 text-blue-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-gray-700">Your temporary password has been sent to your inbox</span>
+                    <span className="text-gray-700">Use email: <strong>{userEmail}</strong></span>
                   </div>
                   <div className="flex items-start">
-                    <svg className="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    <svg className="w-5 h-5 text-blue-500 mr-2 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    <span className="text-gray-700">You can change your password after logging in</span>
+                    <span className="text-gray-700">Password: <strong>minddumper123</strong></span>
                   </div>
                 </div>
               </div>
@@ -179,7 +179,7 @@ function WelcomeContent() {
                 </Link>
                 
                 <p className="text-sm text-gray-500">
-                  Didn&apos;t receive an email? Check your spam folder or <a href="mailto:support@minddumper.com" className="text-blue-600 hover:underline">contact support</a>
+                  You can change your password after logging in
                 </p>
               </div>
             </>
