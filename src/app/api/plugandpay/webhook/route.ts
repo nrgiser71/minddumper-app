@@ -94,8 +94,8 @@ export async function POST(request: NextRequest) {
         // Create new user
         console.log('👤 Creating new user account')
         
-        // Generate a temporary password (user will reset via email)
-        const tempPassword = Math.random().toString(36).slice(-12) + 'A1!'
+        // Set fixed password that will be shown on welcome page
+        const tempPassword = 'minddumper123'
         
         const { data: newUser, error: createError } = await supabase.auth.admin.createUser({
           email: email,
@@ -145,25 +145,7 @@ export async function POST(request: NextRequest) {
           console.log('✅ Profile created for user:', userId)
         }
 
-        // Send password reset email for account setup
-        try {
-          const { error: resetError } = await supabase.auth.admin.generateLink({
-            type: 'recovery',
-            email: email,
-            options: {
-              redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://minddumper.com'}/auth/callback?type=recovery`
-            }
-          })
-
-          if (resetError) {
-            console.error('❌ Error sending password reset email:', resetError)
-          } else {
-            console.log('📧 Password reset email sent to:', email)
-          }
-        } catch (emailError) {
-          console.error('❌ Email sending failed:', emailError)
-          // Don't fail the webhook for email issues
-        }
+        console.log('✅ User created with temporary password for auto-login')
       }
 
       console.log('🎉 Payment processing completed successfully')
