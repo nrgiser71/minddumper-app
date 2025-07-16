@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useEffect } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
+import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 
 function WelcomeContent() {
@@ -11,7 +11,10 @@ function WelcomeContent() {
   const [status, setStatus] = useState<'logging_in' | 'success' | 'error'>('logging_in')
   const [errorMessage, setErrorMessage] = useState('')
   const [userEmail, setUserEmail] = useState('')
-  const supabase = createClientComponentClient()
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  )
 
   useEffect(() => {
     const attemptAutoLogin = async () => {
