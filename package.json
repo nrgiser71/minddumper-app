@@ -6,7 +6,12 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "debug-auto-login": "npx tsx scripts/debug-auto-login.ts",
+    "test-webhook": "npx tsx scripts/test-webhook.ts",
+    "manual-webhook-test": "npx tsx scripts/manual-webhook-test.ts",
+    "test-api": "npx tsx scripts/test-api.ts",
+    "check-vercel-logs": "./scripts/check-vercel-logs.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.6.1",
