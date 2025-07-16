@@ -93,8 +93,8 @@ function ResetPasswordForm() {
         </div>
 
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {isWelcome ? 'Welkom bij MindDumper!' : 'Wachtwoord instellen'}
+          <h1 className="text-4xl font-bold text-red-600 mb-4">
+            {isWelcome ? 'TEST: Welkom bij MindDumper!' : 'Wachtwoord instellen'}
           </h1>
           <p className="text-lg text-gray-600">
             {isWelcome 
