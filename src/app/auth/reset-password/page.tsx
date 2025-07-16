@@ -92,8 +92,8 @@ function ResetPasswordForm() {
           </div>
         </div>
 
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
             {isWelcome ? 'Welkom bij MindDumper!' : 'Wachtwoord instellen'}
           </h1>
           <p className="text-lg text-gray-600">
@@ -105,7 +105,7 @@ function ResetPasswordForm() {
         </div>
 
         {isWelcome && (
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+          <div className="bg-green-50 border border-green-200 rounded-lg p-6 mb-8">
             <div className="flex items-center">
               <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
                 <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -114,7 +114,7 @@ function ResetPasswordForm() {
               </div>
               <div>
                 <p className="text-sm font-medium text-green-800">Account succesvol aangemaakt!</p>
-                <p className="text-sm text-green-700">Je bent automatisch ingelogd.</p>
+                <p className="text-sm text-green-700 mt-1">Je bent automatisch ingelogd.</p>
               </div>
             </div>
           </div>
@@ -122,11 +122,11 @@ function ResetPasswordForm() {
       </div>
 
       <div className="w-full max-w-lg mx-auto">
-        <div className="bg-white py-8 px-8 shadow-xl rounded-2xl border border-gray-100">
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            <div className="space-y-4">
+        <div className="bg-white py-10 px-8 shadow-xl rounded-2xl border border-gray-100">
+          <form className="space-y-8" onSubmit={handleSubmit}>
+            <div className="space-y-6">
               <div>
-                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-3">
                   Nieuw wachtwoord
                 </label>
                 <div className="relative">
@@ -137,14 +137,14 @@ function ResetPasswordForm() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-colors"
+                    className="appearance-none block w-full px-4 py-4 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-colors"
                     placeholder="Minimaal 6 karakters"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
+                <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-3">
                   Bevestig wachtwoord
                 </label>
                 <div className="relative">
@@ -155,7 +155,7 @@ function ResetPasswordForm() {
                     required
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="appearance-none block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-colors"
+                    className="appearance-none block w-full px-4 py-4 border border-gray-300 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-sm transition-colors"
                     placeholder="Herhaal je wachtwoord"
                   />
                 </div>
@@ -179,7 +179,7 @@ function ResetPasswordForm() {
               </div>
             )}
 
-            <div className="pt-4">
+            <div className="pt-6">
               <button
                 type="submit"
                 disabled={isLoading}
@@ -207,11 +207,11 @@ function ResetPasswordForm() {
         </div>
         
         {/* Footer */}
-        <div className="mt-8 text-center">
+        <div className="mt-12 text-center">
           <p className="text-sm text-gray-500">
             © 2025 MindDumper. Veilig en betrouwbaar.
           </p>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-gray-400 mt-2">
             Hulp nodig? Neem contact op via{' '}
             <a href="mailto:support@minddumper.com" className="text-blue-600 hover:underline">
               support@minddumper.com
