@@ -6,7 +6,12 @@ import Link from 'next/link'
 
 function WelcomeContent() {
   const [status, setStatus] = useState<'checking' | 'found' | 'timeout'>('checking')
-  const [userInfo, setUserInfo] = useState<any>(null)
+  const [userInfo, setUserInfo] = useState<{
+    id: string
+    email: string
+    full_name: string
+    login_token: string
+  } | null>(null)
   const [timeLeft, setTimeLeft] = useState(120) // 2 minutes
   const router = useRouter()
 
@@ -137,7 +142,7 @@ function WelcomeContent() {
               </h1>
               
               <p className="text-lg text-gray-600 mb-8">
-                Your account has been created successfully. You're being logged in automatically...
+                Your account has been created successfully. You&apos;re being logged in automatically...
               </p>
 
               <div className="bg-green-50 rounded-lg p-6 mb-8">
@@ -161,7 +166,7 @@ function WelcomeContent() {
               </h1>
               
               <p className="text-lg text-gray-600 mb-8">
-                We're still processing your payment. Please check your email for login instructions.
+                We&apos;re still processing your payment. Please check your email for login instructions.
               </p>
 
               <div className="bg-yellow-50 rounded-lg p-6 mb-8">
@@ -173,7 +178,7 @@ function WelcomeContent() {
                   </p>
                   <p className="flex items-start">
                     <span className="text-yellow-600 mr-2">📁</span>
-                    Don't forget to check your spam folder
+                    Don&apos;t forget to check your spam folder
                   </p>
                   <p className="flex items-start">
                     <span className="text-yellow-600 mr-2">🔄</span>
