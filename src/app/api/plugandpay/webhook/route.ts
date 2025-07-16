@@ -44,13 +44,34 @@ export async function POST(request: NextRequest) {
     
     console.log('⚠️ API KEY VERIFICATION DISABLED FOR DEBUGGING')
     
-    const payload: PlugAndPayWebhookPayload = await request.json()
-    console.log('📦 Webhook payload:', JSON.stringify(payload, null, 2))
+    // Try to parse as both JSON and form data
+    let payload: any = {}
+    
+    try {
+      // First try JSON
+      payload = await request.json()
+      console.log('📦 Webhook payload (JSON):', JSON.stringify(payload, null, 2))
+    } catch (jsonError) {
+      console.log('⚠️ JSON parsing failed, trying form data...')
+      
+      // Try form data
+      const formData = await request.formData()
+      payload = {}
+      
+      // Convert FormData to object
+      for (const [key, value] of formData.entries()) {
+        payload[key] = value
+      }
+      
+      console.log('📦 Webhook payload (Form Data):', JSON.stringify(payload, null, 2))
+    }
+    
     console.log('📊 Payload analysis:', {
       event: payload.event,
       status: payload.status,
       customer_email: payload.customer_email,
-      hasEmail: !!payload.customer_email
+      hasEmail: !!payload.customer_email,
+      allKeys: Object.keys(payload)
     })
 
     // Check if this is a payment success event
