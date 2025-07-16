@@ -18,7 +18,7 @@ interface PlugAndPayWebhookPayload {
   product_name?: string
   id?: string
   // Add more fields as needed based on PlugAndPay webhook payload
-  [key: string]: any
+  [key: string]: string | number | boolean | undefined
 }
 
 export async function POST(request: NextRequest) {
