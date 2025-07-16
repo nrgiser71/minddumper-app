@@ -1,24 +1,14 @@
 'use client'
 
+import { Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import Link from 'next/link'
 
-export default function WelcomePage() {
+function WelcomeContent() {
   const searchParams = useSearchParams()
-  const [userInfo, setUserInfo] = useState({
-    email: '',
-    firstname: '',
-    lastname: ''
-  })
-
-  useEffect(() => {
-    setUserInfo({
-      email: searchParams.get('email') || '',
-      firstname: searchParams.get('firstname') || '',
-      lastname: searchParams.get('lastname') || ''
-    })
-  }, [searchParams])
+  const email = searchParams.get('email') || ''
+  const firstname = searchParams.get('firstname') || ''
+  const lastname = searchParams.get('lastname') || ''
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
@@ -31,7 +21,7 @@ export default function WelcomePage() {
           </div>
           
           <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Welcome{userInfo.firstname ? `, ${userInfo.firstname}` : ''}!
+            Welcome{firstname ? `, ${firstname}` : ''}!
           </h1>
           
           <p className="text-lg text-gray-600 mb-8">
@@ -43,7 +33,7 @@ export default function WelcomePage() {
             <div className="text-left space-y-3 text-gray-700">
               <p className="flex items-start">
                 <span className="text-blue-600 mr-2">✓</span>
-                Check your email ({userInfo.email}) for your login credentials
+                Check your email ({email}) for your login credentials
               </p>
               <p className="flex items-start">
                 <span className="text-blue-600 mr-2">✓</span>
@@ -74,5 +64,17 @@ export default function WelcomePage() {
         </div>
       </div>
     </div>
+  )
+}
+
+export default function WelcomePage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    }>
+      <WelcomeContent />
+    </Suspense>
   )
 }
