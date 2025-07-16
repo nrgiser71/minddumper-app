@@ -80,17 +80,28 @@ export async function POST(request: NextRequest) {
       try {
         const text = await request.text()
         console.log('📝 Raw body:', text)
+        
+        // Try to parse as URL params anyway
+        if (text.includes('=')) {
+          const params = new URLSearchParams(text)
+          for (const [key, value] of params.entries()) {
+            payload[key] = value
+          }
+          console.log('📦 Parsed from raw text:', JSON.stringify(payload, null, 2))
+        }
       } catch (error) {
         console.error('❌ Could not read body:', error)
       }
     }
     
     console.log('📊 Payload analysis:', {
-      event: payload.event,
-      status: payload.status,
-      customer_email: payload.customer_email,
+      event: payload.event || 'NO EVENT',
+      status: payload.status || 'NO STATUS', 
+      customer_email: payload.customer_email || 'NO EMAIL',
       hasEmail: !!payload.customer_email,
-      allKeys: Object.keys(payload)
+      allKeys: Object.keys(payload),
+      keyCount: Object.keys(payload).length,
+      rawPayload: payload
     })
 
     // Check if this is a payment success event
