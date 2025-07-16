@@ -66,6 +66,11 @@ export async function POST(request: NextRequest) {
         console.log('👤 User already exists, updating payment status')
         userId = existingUser.id
         
+        // Generate login token for auto-login
+        const loginToken = Math.random().toString(36).substring(2, 15) + 
+                          Math.random().toString(36).substring(2, 15)
+        const tokenExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+        
         // Update profile with payment information
         const { error: updateError } = await supabase
           .from('profiles')
@@ -74,6 +79,9 @@ export async function POST(request: NextRequest) {
             amount_paid_cents: Math.round(payload.amount * 100), // Convert to cents
             plugandpay_order_id: orderId,
             paid_at: new Date().toISOString(),
+            login_token: loginToken,
+            login_token_used: false,
+            login_token_expires: tokenExpires.toISOString(),
             updated_at: new Date().toISOString()
           })
           .eq('id', userId)
@@ -107,6 +115,11 @@ export async function POST(request: NextRequest) {
         userId = newUser.user.id
         console.log('✅ New user created:', userId)
 
+        // Generate login token for auto-login
+        const loginToken = Math.random().toString(36).substring(2, 15) + 
+                          Math.random().toString(36).substring(2, 15)
+        const tokenExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
+        
         // Create profile record
         const { error: profileError } = await supabase
           .from('profiles')
@@ -118,6 +131,9 @@ export async function POST(request: NextRequest) {
             amount_paid_cents: Math.round(payload.amount * 100),
             plugandpay_order_id: orderId,
             paid_at: new Date().toISOString(),
+            login_token: loginToken,
+            login_token_used: false,
+            login_token_expires: tokenExpires.toISOString(),
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString()
           })
