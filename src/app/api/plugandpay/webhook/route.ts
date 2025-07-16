@@ -206,30 +206,66 @@ export async function POST(request: NextRequest) {
                           Math.random().toString(36).substring(2, 15)
         const tokenExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
         
-        // Create profile record
-        const { error: profileError } = await supabase
+        // Check if profile already exists
+        const { data: existingProfile, error: profileCheckError } = await supabase
           .from('profiles')
-          .insert({
-            id: userId,
-            email: email,
-            full_name: fullName,
-            payment_status: 'paid',
-            amount_paid_cents: payload.amount ? Math.round(Number(payload.amount) * 100) : 
-                              (payload.total ? Math.round(Number(payload.total) * 100) : 0),
-            plugandpay_order_id: orderId,
-            paid_at: new Date().toISOString(),
-            login_token: loginToken,
-            login_token_used: false,
-            login_token_expires: tokenExpires.toISOString(),
-            created_at: new Date().toISOString(),
-            updated_at: new Date().toISOString()
-          })
+          .select('id')
+          .eq('id', userId)
+          .single()
 
-        if (profileError) {
-          console.error('❌ Error creating profile:', profileError)
-          // Don't return error - user is created, profile creation can be retried
+        if (profileCheckError && profileCheckError.code !== 'PGRST116') { // PGRST116 = no rows returned
+          console.error('❌ Error checking existing profile:', profileCheckError)
+        }
+
+        if (existingProfile) {
+          console.log('👤 Profile already exists, updating payment status')
+          // Update existing profile
+          const { error: updateError } = await supabase
+            .from('profiles')
+            .update({
+              payment_status: 'paid',
+              amount_paid_cents: payload.amount ? Math.round(Number(payload.amount) * 100) : 
+                                (payload.total ? Math.round(Number(payload.total) * 100) : 0),
+              plugandpay_order_id: orderId,
+              paid_at: new Date().toISOString(),
+              login_token: loginToken,
+              login_token_used: false,
+              login_token_expires: tokenExpires.toISOString(),
+              updated_at: new Date().toISOString()
+            })
+            .eq('id', userId)
+
+          if (updateError) {
+            console.error('❌ Error updating existing profile:', updateError)
+          } else {
+            console.log('✅ Profile updated for user:', userId)
+          }
         } else {
-          console.log('✅ Profile created for user:', userId)
+          // Create new profile record
+          const { error: profileError } = await supabase
+            .from('profiles')
+            .insert({
+              id: userId,
+              email: email,
+              full_name: fullName,
+              payment_status: 'paid',
+              amount_paid_cents: payload.amount ? Math.round(Number(payload.amount) * 100) : 
+                                (payload.total ? Math.round(Number(payload.total) * 100) : 0),
+              plugandpay_order_id: orderId,
+              paid_at: new Date().toISOString(),
+              login_token: loginToken,
+              login_token_used: false,
+              login_token_expires: tokenExpires.toISOString(),
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+
+          if (profileError) {
+            console.error('❌ Error creating profile:', profileError)
+            // Don't return error - user is created, profile creation can be retried
+          } else {
+            console.log('✅ Profile created for user:', userId)
+          }
         }
 
         console.log('✅ User created with temporary password for auto-login')
