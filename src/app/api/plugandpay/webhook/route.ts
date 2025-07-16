@@ -62,7 +62,7 @@ export async function POST(request: NextRequest) {
       
       // Convert FormData to object
       for (const [key, value] of formData.entries()) {
-        payload[key] = value
+        payload[key] = typeof value === 'string' ? value : value.name
       }
       
       console.log('📦 Webhook payload (Form Data):', JSON.stringify(payload, null, 2))
