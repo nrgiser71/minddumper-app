@@ -9,27 +9,13 @@ const supabase = createClient(
 
 export async function GET() {
   try {
-    console.log('🔍 Looking for latest user...')
+    console.log('🔍 Looking for latest paid user...')
     
-    // Look for the most recent user created (within last 30 minutes)
-    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000)
-    console.log('⏰ Looking for users created after:', thirtyMinutesAgo.toISOString())
-    
-    // First, let's see all paid users
-    const { data: allUsers, error: allError } = await supabase
-      .from('profiles')
-      .select('email, full_name, created_at, payment_status')
-      .eq('payment_status', 'paid')
-      .order('created_at', { ascending: false })
-      .limit(5)
-    
-    console.log('📊 All recent paid users:', allUsers)
-    
+    // Just get the most recent paid user - no time restrictions for now
     const { data: latestUser, error } = await supabase
       .from('profiles')
       .select('email, full_name, created_at')
       .eq('payment_status', 'paid')
-      .gte('created_at', thirtyMinutesAgo.toISOString())
       .order('created_at', { ascending: false })
       .limit(1)
     
@@ -39,19 +25,15 @@ export async function GET() {
     }
     
     if (!latestUser || latestUser.length === 0) {
-      console.log('ℹ️ No recent user found in last 5 minutes')
+      console.log('ℹ️ No paid users found')
       return NextResponse.json({ 
         success: false, 
-        message: 'No recent user found',
-        debug: {
-          searchedAfter: thirtyMinutesAgo.toISOString(),
-          allRecentUsers: allUsers
-        }
+        message: 'No paid users found'
       }, { status: 404 })
     }
     
     const user = latestUser[0]
-    console.log('✅ Latest user found:', user.email)
+    console.log('✅ Latest paid user found:', user.email)
     
     return NextResponse.json({
       success: true,
