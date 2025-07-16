@@ -161,8 +161,8 @@ export async function POST(request: NextRequest) {
           .from('profiles')
           .update({
             payment_status: 'paid',
-            amount_paid_cents: payload.amount ? Math.round(payload.amount * 100) : 
-                              (payload.total ? Math.round(parseFloat(payload.total) * 100) : 0), // Convert to cents
+            amount_paid_cents: payload.amount ? Math.round(Number(payload.amount) * 100) : 
+                              (payload.total ? Math.round(Number(payload.total) * 100) : 0), // Convert to cents
             plugandpay_order_id: orderId,
             paid_at: new Date().toISOString(),
             login_token: loginToken,
@@ -214,8 +214,8 @@ export async function POST(request: NextRequest) {
             email: email,
             full_name: fullName,
             payment_status: 'paid',
-            amount_paid_cents: payload.amount ? Math.round(payload.amount * 100) : 
-                              (payload.total ? Math.round(parseFloat(payload.total) * 100) : 0),
+            amount_paid_cents: payload.amount ? Math.round(Number(payload.amount) * 100) : 
+                              (payload.total ? Math.round(Number(payload.total) * 100) : 0),
             plugandpay_order_id: orderId,
             paid_at: new Date().toISOString(),
             login_token: loginToken,
