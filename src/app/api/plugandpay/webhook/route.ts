@@ -123,9 +123,9 @@ export async function POST(request: NextRequest) {
       console.log('✅ Processing successful payment for:', payload.email || payload.customer_email)
       
       // Extract customer information - PlugAndPay uses 'email' not 'customer_email'
-      const email = (payload.email || payload.customer_email)?.toLowerCase().trim()
-      const fullName = payload.customer_name || 
-                       (payload.firstname && payload.lastname ? `${payload.firstname} ${payload.lastname}` : null) ||
+      const email = String(payload.email || payload.customer_email || '').toLowerCase().trim()
+      const fullName = String(payload.customer_name || '') || 
+                       (payload.firstname && payload.lastname ? `${String(payload.firstname)} ${String(payload.lastname)}` : '') ||
                        'MindDumper User'
       const orderId = payload.order_id || payload.id
       
