@@ -8,7 +8,6 @@ function WelcomeContent() {
   const searchParams = useSearchParams()
   const email = searchParams.get('email') || ''
   const firstname = searchParams.get('firstname') || ''
-  const lastname = searchParams.get('lastname') || ''
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
