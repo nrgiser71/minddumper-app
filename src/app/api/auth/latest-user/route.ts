@@ -13,6 +13,17 @@ export async function GET() {
     
     // Look for the most recent user created (within last 5 minutes)
     const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+    console.log('⏰ Looking for users created after:', fiveMinutesAgo.toISOString())
+    
+    // First, let's see all paid users
+    const { data: allUsers, error: allError } = await supabase
+      .from('profiles')
+      .select('email, full_name, created_at, payment_status')
+      .eq('payment_status', 'paid')
+      .order('created_at', { ascending: false })
+      .limit(5)
+    
+    console.log('📊 All recent paid users:', allUsers)
     
     const { data: latestUser, error } = await supabase
       .from('profiles')
@@ -28,10 +39,14 @@ export async function GET() {
     }
     
     if (!latestUser || latestUser.length === 0) {
-      console.log('ℹ️ No recent user found')
+      console.log('ℹ️ No recent user found in last 5 minutes')
       return NextResponse.json({ 
         success: false, 
-        message: 'No recent user found' 
+        message: 'No recent user found',
+        debug: {
+          searchedAfter: fiveMinutesAgo.toISOString(),
+          allRecentUsers: allUsers
+        }
       }, { status: 404 })
     }
     
