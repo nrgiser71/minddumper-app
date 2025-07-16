@@ -25,6 +25,10 @@ export async function POST(request: NextRequest) {
   try {
     console.log('🔔 PlugAndPay webhook received at:', new Date().toISOString())
     
+    // Log request method and URL
+    console.log('📍 Request URL:', request.url)
+    console.log('📍 Request method:', request.method)
+    
     // Log ALL headers for debugging
     const headers: Record<string, string> = {}
     request.headers.forEach((value, key) => {
@@ -104,14 +108,26 @@ export async function POST(request: NextRequest) {
       rawPayload: payload
     })
 
-    // Check if this is a payment success event
-    if (payload.event === 'order.paid' || payload.status === 'paid') {
-      console.log('✅ Processing successful payment for:', payload.customer_email)
+    // Log if we have any data at all
+    if (Object.keys(payload).length === 0) {
+      console.log('⚠️ WARNING: No data received in webhook payload!')
+      console.log('📝 Raw request info:', {
+        method: request.method,
+        url: request.url,
+        hasBody: request.bodyUsed
+      })
+    }
+    
+    // Check if this is a payment success event - PlugAndPay uses webhook_event
+    if (payload.webhook_event === 'order_payment_completed' || payload.event === 'order.paid' || payload.status === 'paid') {
+      console.log('✅ Processing successful payment for:', payload.email || payload.customer_email)
       
-      // Extract customer information
-      const email = payload.customer_email?.toLowerCase().trim()
-      const fullName = payload.customer_name || 'MindDumper User'
-      const orderId = payload.order_id
+      // Extract customer information - PlugAndPay uses 'email' not 'customer_email'
+      const email = (payload.email || payload.customer_email)?.toLowerCase().trim()
+      const fullName = payload.customer_name || 
+                       (payload.firstname && payload.lastname ? `${payload.firstname} ${payload.lastname}` : null) ||
+                       'MindDumper User'
+      const orderId = payload.order_id || payload.id
       
       if (!email) {
         console.error('❌ No customer email in webhook payload')
@@ -145,7 +161,8 @@ export async function POST(request: NextRequest) {
           .from('profiles')
           .update({
             payment_status: 'paid',
-            amount_paid_cents: payload.amount ? Math.round(payload.amount * 100) : 0, // Convert to cents
+            amount_paid_cents: payload.amount ? Math.round(payload.amount * 100) : 
+                              (payload.total ? Math.round(parseFloat(payload.total) * 100) : 0), // Convert to cents
             plugandpay_order_id: orderId,
             paid_at: new Date().toISOString(),
             login_token: loginToken,
@@ -197,7 +214,8 @@ export async function POST(request: NextRequest) {
             email: email,
             full_name: fullName,
             payment_status: 'paid',
-            amount_paid_cents: payload.amount ? Math.round(payload.amount * 100) : 0,
+            amount_paid_cents: payload.amount ? Math.round(payload.amount * 100) : 
+                              (payload.total ? Math.round(parseFloat(payload.total) * 100) : 0),
             plugandpay_order_id: orderId,
             paid_at: new Date().toISOString(),
             login_token: loginToken,
