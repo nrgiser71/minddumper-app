@@ -49,23 +49,40 @@ export async function POST(request: NextRequest) {
     // Try to parse as both JSON and form data
     let payload: PlugAndPayWebhookPayload = {}
     
-    try {
-      // First try JSON
-      payload = await request.json()
-      console.log('📦 Webhook payload (JSON):', JSON.stringify(payload, null, 2))
-    } catch {
-      console.log('⚠️ JSON parsing failed, trying form data...')
-      
-      // Try form data
-      const formData = await request.formData()
-      payload = {}
-      
-      // Convert FormData to object
-      for (const [key, value] of formData.entries()) {
-        payload[key] = typeof value === 'string' ? value : value.name
+    // Check content type
+    const contentType = request.headers.get('content-type') || ''
+    console.log('📋 Content-Type:', contentType)
+    
+    if (contentType.includes('application/json')) {
+      try {
+        payload = await request.json()
+        console.log('📦 Webhook payload (JSON):', JSON.stringify(payload, null, 2))
+      } catch (error) {
+        console.error('❌ JSON parsing error:', error)
       }
-      
-      console.log('📦 Webhook payload (Form Data):', JSON.stringify(payload, null, 2))
+    } else if (contentType.includes('application/x-www-form-urlencoded')) {
+      try {
+        const text = await request.text()
+        console.log('📝 Raw form data:', text)
+        
+        // Parse URL-encoded form data
+        const params = new URLSearchParams(text)
+        for (const [key, value] of params.entries()) {
+          payload[key] = value
+        }
+        
+        console.log('📦 Webhook payload (Form Data):', JSON.stringify(payload, null, 2))
+      } catch (error) {
+        console.error('❌ Form data parsing error:', error)
+      }
+    } else {
+      // Try to read as text for debugging
+      try {
+        const text = await request.text()
+        console.log('📝 Raw body:', text)
+      } catch (error) {
+        console.error('❌ Could not read body:', error)
+      }
     }
     
     console.log('📊 Payload analysis:', {
