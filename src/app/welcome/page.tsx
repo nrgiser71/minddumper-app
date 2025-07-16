@@ -39,7 +39,7 @@ export default function WelcomePage() {
           </p>
 
           <div className="bg-blue-50 rounded-lg p-6 mb-8">
-            <h2 className="text-xl font-semibold text-gray-800 mb-4">What's next?</h2>
+            <h2 className="text-xl font-semibold text-gray-800 mb-4">What&apos;s next?</h2>
             <div className="text-left space-y-3 text-gray-700">
               <p className="flex items-start">
                 <span className="text-blue-600 mr-2">✓</span>
@@ -65,7 +65,7 @@ export default function WelcomePage() {
             </Link>
             
             <p className="text-sm text-gray-500">
-              Didn't receive an email? Check your spam folder or{' '}
+              Didn&apos;t receive an email? Check your spam folder or{' '}
               <Link href="/contact" className="text-blue-600 hover:underline">
                 contact support
               </Link>
