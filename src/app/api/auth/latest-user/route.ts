@@ -11,9 +11,9 @@ export async function GET() {
   try {
     console.log('🔍 Looking for latest user...')
     
-    // Look for the most recent user created (within last 5 minutes)
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
-    console.log('⏰ Looking for users created after:', fiveMinutesAgo.toISOString())
+    // Look for the most recent user created (within last 30 minutes)
+    const thirtyMinutesAgo = new Date(Date.now() - 30 * 60 * 1000)
+    console.log('⏰ Looking for users created after:', thirtyMinutesAgo.toISOString())
     
     // First, let's see all paid users
     const { data: allUsers, error: allError } = await supabase
@@ -29,7 +29,7 @@ export async function GET() {
       .from('profiles')
       .select('email, full_name, created_at')
       .eq('payment_status', 'paid')
-      .gte('created_at', fiveMinutesAgo.toISOString())
+      .gte('created_at', thirtyMinutesAgo.toISOString())
       .order('created_at', { ascending: false })
       .limit(1)
     
@@ -44,7 +44,7 @@ export async function GET() {
         success: false, 
         message: 'No recent user found',
         debug: {
-          searchedAfter: fiveMinutesAgo.toISOString(),
+          searchedAfter: thirtyMinutesAgo.toISOString(),
           allRecentUsers: allUsers
         }
       }, { status: 404 })
