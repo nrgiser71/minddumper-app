@@ -9,7 +9,6 @@ function WelcomeContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const [status, setStatus] = useState<'logging_in' | 'success' | 'error'>('logging_in')
-  const [errorMessage, setErrorMessage] = useState('')
   const [userEmail, setUserEmail] = useState('')
   const supabase = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -28,7 +27,6 @@ function WelcomeContent() {
         
         if (!response.ok || !result.success) {
           console.error('❌ Failed to get latest user:', result.message)
-          setErrorMessage('Could not find recent purchase. Please login manually.')
           setStatus('error')
           return
         }
@@ -39,14 +37,13 @@ function WelcomeContent() {
         
         console.log('📧 Using email for auto-login:', latestUserEmail)
         
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { error } = await supabase.auth.signInWithPassword({
           email: latestUserEmail,
           password: tempPassword,
         })
 
         if (error) {
           console.error('❌ Auto-login failed:', error)
-          setErrorMessage(error.message)
           setStatus('error')
         } else {
           console.log('✅ Auto-login successful!')
@@ -59,7 +56,6 @@ function WelcomeContent() {
         }
       } catch (error) {
         console.error('💥 Auto-login error:', error)
-        setErrorMessage('Unexpected error occurred')
         setStatus('error')
       }
     }
