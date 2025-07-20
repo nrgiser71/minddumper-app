@@ -74,6 +74,8 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const { password, action, email } = body
     
+    console.log('Admin auth request:', { hasPassword: !!password, action, hasEmail: !!email })
+    
     // Handle different request formats (legacy compatibility)
     const loginAction = action || (email ? 'login' : null)
     const loginPassword = password
@@ -148,9 +150,14 @@ export async function POST(request: NextRequest) {
       { status: 400 }
     )
     
-  } catch {
+  } catch (error) {
+    console.error('Admin auth error:', error)
     return NextResponse.json(
-      { success: false, error: 'Server fout' },
+      { 
+        success: false, 
+        error: 'Server fout', 
+        details: error instanceof Error ? error.message : 'Unknown error'
+      },
       { status: 500 }
     )
   }

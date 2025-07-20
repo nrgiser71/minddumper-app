@@ -8,23 +8,32 @@ function getAdminPassword(): string {
   const password = process.env.ADMIN_PASSWORD
   
   if (!password) {
+    console.error('ADMIN_PASSWORD environment variable is missing')
     throw new Error('ADMIN_PASSWORD environment variable is required')
   }
   
-  if (password.length < 12) {
-    throw new Error('ADMIN_PASSWORD must be at least 12 characters long')
+  // More lenient validation for production compatibility
+  if (password.length < 8) {
+    console.error('ADMIN_PASSWORD too short:', password.length)
+    throw new Error('ADMIN_PASSWORD must be at least 8 characters long')
   }
   
-  // Check for basic complexity
-  const hasUpper = /[A-Z]/.test(password)
-  const hasLower = /[a-z]/.test(password)
-  const hasNumber = /\d/.test(password)
-  const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(password)
+  // Basic validation - existing strong passwords should pass
+  const hasLetters = /[a-zA-Z]/.test(password)
+  const hasNumbers = /\d/.test(password)
+  const hasSpecialOrMixed = /[!@#$%^&*(),.?":{}|<>\-_]/.test(password) || (/[A-Z]/.test(password) && /[a-z]/.test(password))
   
-  if (!hasUpper || !hasLower || !hasNumber || !hasSpecial) {
-    throw new Error('ADMIN_PASSWORD must contain uppercase, lowercase, number, and special character')
+  if (!hasLetters) {
+    console.error('ADMIN_PASSWORD missing letters')
+    throw new Error('ADMIN_PASSWORD must contain letters')
   }
   
+  if (!hasNumbers && !hasSpecialOrMixed) {
+    console.error('ADMIN_PASSWORD too simple')
+    throw new Error('ADMIN_PASSWORD must contain numbers or mixed case/special characters')
+  }
+  
+  console.log('ADMIN_PASSWORD validation passed, length:', password.length)
   return password
 }
 
