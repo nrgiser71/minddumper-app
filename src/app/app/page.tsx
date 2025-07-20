@@ -984,37 +984,49 @@ function AppContent() {
               <p className="app-subtitle">Clear your mind of all tasks</p>
             </div>
             
-            <div className="main-actions">
-              <button className="btn-primary large" onClick={() => showScreen('language')}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <path d="M12 2L19.5 12.5L12 23L4.5 12.5L12 2Z" fill="currentColor"/>
-                </svg>
-                Start Brain Dump
-              </button>
+            <div className="home-content">
+              <div className="primary-action-card">
+                <button className="btn-primary large hero-button" onClick={() => showScreen('language')}>
+                  <div className="button-icon">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+                      <path d="M12 2L19.5 12.5L12 23L4.5 12.5L12 2Z" fill="currentColor"/>
+                    </svg>
+                  </div>
+                  <span className="button-text">Start Brain Dump</span>
+                </button>
+              </div>
               
-              <button className="btn-secondary large" onClick={() => showScreen('config')}>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-                Configuration
-              </button>
+              <div className="action-cards">
+                <div className="action-card">
+                  <button className="btn-secondary large modern-config" onClick={() => showScreen('config')}>
+                    <div className="button-icon">
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="2"/>
+                      </svg>
+                    </div>
+                    <span className="button-text">Configuration</span>
+                  </button>
+                </div>
+              </div>
             </div>
             
             <div className="secondary-actions">
-              <button className="btn-text" onClick={() => showScreen('history')}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-                  <polyline points="12,6 12,12 16,14" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-                View History
-              </button>
-              <button className="btn-text" onClick={() => signOut()}>
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-                Log Out
-              </button>
+              <div className="secondary-action-group">
+                <button className="btn-text modern-text-btn" onClick={() => showScreen('history')}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                    <polyline points="12,6 12,12 16,14" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                  View History
+                </button>
+                <button className="btn-text modern-text-btn" onClick={() => signOut()}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                  Log Out
+                </button>
+              </div>
             </div>
           </div>
         </div>
