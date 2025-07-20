@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import Link from 'next/link'
 import { useAuth } from '@/lib/auth-context'
 import { ProtectedRoute } from '@/components/protected-route'
 import { saveBrainDump, getBrainDumpHistory, getTriggerWords, getTriggerWordsList } from '@/lib/database'
@@ -1016,12 +1015,6 @@ function AppContent() {
                 </svg>
                 Log Out
               </button>
-              <Link href="/" className="btn-text">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" stroke="currentColor" strokeWidth="2"/>
-                </svg>
-                Back to website
-              </Link>
             </div>
           </div>
         </div>
