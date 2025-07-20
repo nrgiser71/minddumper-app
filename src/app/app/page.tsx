@@ -989,7 +989,8 @@ function AppContent() {
                 <button className="btn-primary large hero-button" onClick={() => showScreen('language')}>
                   <div className="button-icon">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                      <path d="M12 2L19.5 12.5L12 23L4.5 12.5L12 2Z" fill="currentColor"/>
+                      <path d="M12 2C8.13 2 5 5.13 5 9C5 11.39 6.16 13.49 7.89 14.81L8 15V18C8 19.1 8.9 20 10 20H14C15.1 20 16 19.1 16 18V15L16.11 14.81C17.84 13.49 19 11.39 19 9C19 5.13 15.87 2 12 2ZM12 4C14.76 4 17 6.24 17 9C17 10.78 16.15 12.37 14.78 13.33L14 13.86V18H10V13.86L9.22 13.33C7.85 12.37 7 10.78 7 9C7 6.24 9.24 4 12 4Z" fill="currentColor"/>
+                      <rect x="10" y="20" width="4" height="2" rx="1" fill="currentColor"/>
                     </svg>
                   </div>
                   <span className="button-text">Start Brain Dump</span>
@@ -1001,8 +1002,10 @@ function AppContent() {
                   <button className="btn-secondary large modern-config" onClick={() => showScreen('config')}>
                     <div className="button-icon">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-                        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2"/>
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" stroke="currentColor" strokeWidth="2"/>
+                        <path d="M3 6H21V8H3V6ZM3 11H21V13H3V11ZM3 16H21V18H3V16Z" fill="currentColor"/>
+                        <circle cx="7" cy="7" r="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        <circle cx="17" cy="12" r="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        <circle cx="12" cy="17" r="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
                       </svg>
                     </div>
                     <span className="button-text">Configuration</span>
