@@ -1192,10 +1192,6 @@ function AppContent() {
                 <span className="stat-number">{currentWordIndex}</span>
                 <span className="stat-label">Trigger words used</span>
               </div>
-              <div className="stat">
-                <span className="stat-number">~{Math.ceil(currentWordIndex / 2)}</span>
-                <span className="stat-label">Minutes</span>
-              </div>
             </div>
             
             <div className="ideas-overview">
