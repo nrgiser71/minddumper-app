@@ -928,10 +928,10 @@ function AppContent() {
       return idea
     })
     
-    // Create proper CSV with semicolon delimiter (standard for Dutch Excel)
+    // Create proper CSV without delimiter (single column)
     const csvRows = [
-      'Idea;',  // Header with delimiter
-      ...cleanIdeas.map(idea => `"${idea.replace(/"/g, '""')}";`)  // Each idea with delimiter
+      'Idea',  // Header without delimiter
+      ...cleanIdeas.map(idea => `"${idea.replace(/"/g, '""')}"`)  // Each idea without delimiter
     ]
     const csvContent = csvRows.join('\n')
     
