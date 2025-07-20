@@ -71,14 +71,19 @@ function recordSuccessfulLogin(clientId: string) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { password, action } = await request.json()
+    const body = await request.json()
+    const { password, action, email } = body
     
-    if (action === 'logout') {
+    // Handle different request formats (legacy compatibility)
+    const loginAction = action || (email ? 'login' : null)
+    const loginPassword = password
+    
+    if (loginAction === 'logout') {
       await clearAdminSession()
       return NextResponse.json({ success: true })
     }
     
-    if (action === 'login') {
+    if (loginAction === 'login') {
       const clientId = getClientIdentifier(request)
       
       // Check rate limiting for login attempts only
@@ -95,7 +100,7 @@ export async function POST(request: NextRequest) {
         )
       }
       
-      if (!password) {
+      if (!loginPassword) {
         recordFailedAttempt(clientId)
         return NextResponse.json(
           { 
@@ -107,7 +112,7 @@ export async function POST(request: NextRequest) {
         )
       }
       
-      if (verifyAdminPassword(password)) {
+      if (verifyAdminPassword(loginPassword)) {
         recordSuccessfulLogin(clientId)
         await createAdminSession()
         return NextResponse.json({ success: true })
