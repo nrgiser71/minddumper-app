@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { verifyAdminSessionFromRequest } from '@/lib/admin-auth'
 
 // Use service role key for admin operations
 const supabase = createClient(
@@ -7,7 +8,14 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )
 
-export async function POST() {
+export async function POST(request: Request) {
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
+
   try {
     // Clearing all Dutch trigger words
 
@@ -40,7 +48,14 @@ export async function POST() {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
+
   return NextResponse.json({ 
     message: 'Use POST to clear all Dutch trigger words',
     usage: 'POST /api/admin/clear-words'

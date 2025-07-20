@@ -1,12 +1,20 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { verifyAdminSessionFromRequest } from '@/lib/admin-auth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Verify admin authentication
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
   try {
     // First check if we have any Dutch words at all
     const { data: allWords } = await supabase

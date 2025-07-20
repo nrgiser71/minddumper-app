@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { verifyAdminSessionFromRequest } from '@/lib/admin-auth'
 
 // Use service role key for admin operations
 const supabase = createClient(
@@ -8,6 +9,13 @@ const supabase = createClient(
 )
 
 export async function POST(request: Request) {
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
+
   try {
     const { mainCategory, subCategory, words } = await request.json()
 

@@ -1,10 +1,17 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { verifyAdminSessionFromRequest } from '@/lib/admin-auth'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
 
-export async function POST() {
+export async function POST(request: Request) {
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
   try {
     // Create admin client with service role key
     const supabase = createClient(supabaseUrl, supabaseServiceKey)

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { verifyAdminSessionFromRequest } from '@/lib/admin-auth'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -7,6 +8,13 @@ const supabase = createClient(
 )
 
 export async function PUT(request: Request) {
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
+
   try {
     const { wordId, newWord } = await request.json()
 

@@ -1,6 +1,21 @@
 import { NextResponse } from 'next/server'
+import { verifyAdminSessionFromRequest } from '@/lib/admin-auth'
+import { createClient } from '@supabase/supabase-js'
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+)
 
 export async function POST(request: Request) {
+  // Verify admin authentication
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
+
   try {
     const jsonData = await request.json()
     
@@ -12,146 +27,168 @@ export async function POST(request: Request) {
       })
     }
 
-    // Generate SQL to import the structured data
-    const sql = generateImportSQL(jsonData)
+    // Input validation and sanitization
+    const language = validateLanguage(jsonData.language || 'nl')
+    const structure = validateStructure(jsonData.structure)
+    
+    // Use safe database operations instead of generating SQL
+    const result = await performSafeImport(structure, language)
     
     return NextResponse.json({ 
       success: true,
-      sql,
-      instruction: 'Copy this SQL and run it in Supabase Dashboard > SQL Editor',
-      steps: [
-        `1. This will clear existing words for language: ${jsonData.language || 'nl'}`,
-        '2. Import words from your JSON backup into the normalized structure', 
-        '3. Maintain the exact category hierarchy from your backup',
-        '4. Categories will be shared across languages (safe for multilingual setup)',
-        '5. Other languages remain untouched'
-      ],
+      result,
+      message: 'Data imported successfully using secure database operations',
       stats: {
-        totalWords: jsonData.totalWords || 'unknown',
-        mainCategories: Object.keys(jsonData.structure).length,
-        language: jsonData.language || 'nl'
+        totalWords: result.totalWords,
+        mainCategories: Object.keys(structure).length,
+        language: language
       }
     })
 
   } catch (error) {
     return NextResponse.json({ 
       success: false, 
-      error: error instanceof Error ? error.message : 'Unknown error' 
-    })
+      error: error instanceof Error ? error.message : 'Import failed - invalid data' 
+    }, { status: 400 })
   }
 }
 
-interface JsonData {
-  structure: Record<string, Record<string, string[]>>
-  language?: string
-  totalWords?: number
+// Input validation functions
+function validateLanguage(language: string): string {
+  // Only allow specific language codes
+  const allowedLanguages = ['nl', 'en', 'de', 'fr', 'es']
+  if (!allowedLanguages.includes(language)) {
+    throw new Error('Invalid language code')
+  }
+  return language
 }
 
-function generateImportSQL(jsonData: JsonData): string {
-  const { structure } = jsonData
-  const language = jsonData.language || 'nl'
+function validateStructure(structure: unknown): Record<string, Record<string, string[]>> {
+  if (!structure || typeof structure !== 'object') {
+    throw new Error('Invalid structure format')
+  }
   
-  let sql = `-- Import MULTILINGUAL data from JSON backup
--- Language: ${language}
--- Only affects data for this specific language
-
--- Clear existing data for this language only
-DELETE FROM system_trigger_words WHERE language = '${language}';
-
--- Insert/Update main categories with language support
-INSERT INTO main_categories (name, display_order, language) VALUES
-${Object.keys(structure).map((mainCat, index) => `('${mainCat}', ${index + 1}, '${language}')`).join(',\n')}
-ON CONFLICT (name, language) DO UPDATE SET display_order = EXCLUDED.display_order;
-
--- Insert/Update subcategories
-`
+  const validated: Record<string, Record<string, string[]>> = {}
   
-  // Process each main category
-  for (const [mainCategoryName, subCategories] of Object.entries(structure)) {
-    const subCatNames = Object.keys(subCategories);
-    if (subCatNames.length > 0) {
-      sql += `
--- Subcategories for ${mainCategoryName}
-INSERT INTO sub_categories (main_category_id, name, display_order, language)
-SELECT mc.id, subcats.name, subcats.display_order, '${language}'
-FROM main_categories mc,
-(VALUES
-${subCatNames.map((subCat, index) => `  ('${subCat.replace(/'/g, "''")}', ${index + 1})`).join(',\n')}
-) AS subcats(name, display_order)
-WHERE mc.name = '${mainCategoryName}' AND mc.language = '${language}'
-ON CONFLICT (main_category_id, name, language) DO UPDATE SET display_order = EXCLUDED.display_order;
-`
+  for (const [mainCat, subCategories] of Object.entries(structure)) {
+    // Validate main category name
+    if (typeof mainCat !== 'string' || mainCat.length > 100 || !/^[a-zA-Z0-9\s\-_]+$/.test(mainCat)) {
+      throw new Error(`Invalid main category name: ${mainCat}`)
+    }
+    
+    if (!subCategories || typeof subCategories !== 'object') {
+      throw new Error(`Invalid subcategories for ${mainCat}`)
+    }
+    
+    validated[mainCat] = {}
+    
+    for (const [subCat, words] of Object.entries(subCategories as Record<string, unknown>)) {
+      // Validate subcategory name
+      if (typeof subCat !== 'string' || subCat.length > 100 || !/^[a-zA-Z0-9\s\-_]+$/.test(subCat)) {
+        throw new Error(`Invalid subcategory name: ${subCat}`)
+      }
+      
+      // Validate words array
+      if (!Array.isArray(words)) {
+        throw new Error(`Words must be an array for ${mainCat}/${subCat}`)
+      }
+      
+      const validatedWords = words.filter(word => 
+        typeof word === 'string' && 
+        word.length > 0 && 
+        word.length <= 200 &&
+        !/[<>;"'\\]/.test(word) // Basic XSS protection
+      )
+      
+      validated[mainCat][subCat] = validatedWords
     }
   }
+  
+  return validated
+}
 
-  sql += `
--- Import all trigger words
-`
-
-  // Process words
+// Safe database import using parameterized queries
+async function performSafeImport(structure: Record<string, Record<string, string[]>>, language: string) {
+  let totalWords = 0
+  
+  // 1. Clear existing data for this language
+  await supabase
+    .from('system_trigger_words')
+    .delete()
+    .eq('language', language)
+  
+  // 2. Process main categories
   for (const [mainCategoryName, subCategories] of Object.entries(structure)) {
-    for (const [subCategoryName, words] of Object.entries(subCategories as Record<string, string[]>)) {
-      if (Array.isArray(words) && words.length > 0) {
-        sql += `
--- Words for ${mainCategoryName} > ${subCategoryName} (${language})
-INSERT INTO system_trigger_words (sub_category_id, word, language, display_order, is_active)
-SELECT 
-  sc.id as sub_category_id,
-  words.word,
-  '${language}' as language,
-  words.display_order,
-  true as is_active
-FROM main_categories mc
-JOIN sub_categories sc ON sc.main_category_id = mc.id AND sc.name = '${subCategoryName.replace(/'/g, "''")}' AND sc.language = '${language}'
-CROSS JOIN (VALUES
-${words.map((word, index) => `  ('${word.replace(/'/g, "''")}', ${index + 1})`).join(',\n')}
-) AS words(word, display_order)
-WHERE mc.name = '${mainCategoryName}' AND mc.language = '${language}';
-`
+    const displayOrder = Object.keys(structure).indexOf(mainCategoryName) + 1
+    
+    // Insert/update main category
+    const { data: mainCat } = await supabase
+      .from('main_categories')
+      .upsert({
+        name: mainCategoryName,
+        display_order: displayOrder,
+        language: language
+      }, {
+        onConflict: 'name,language'
+      })
+      .select('id')
+      .single()
+    
+    if (!mainCat) continue
+    
+    // 3. Process subcategories
+    for (const [subCategoryName, words] of Object.entries(subCategories)) {
+      const subDisplayOrder = Object.keys(subCategories).indexOf(subCategoryName) + 1
+      
+      // Insert/update subcategory
+      const { data: subCat } = await supabase
+        .from('sub_categories')
+        .upsert({
+          main_category_id: mainCat.id,
+          name: subCategoryName,
+          display_order: subDisplayOrder,
+          language: language
+        }, {
+          onConflict: 'main_category_id,name,language'
+        })
+        .select('id')
+        .single()
+      
+      if (!subCat) continue
+      
+      // 4. Insert words
+      if (words.length > 0) {
+        const wordsToInsert = words.map((word, index) => ({
+          sub_category_id: subCat.id,
+          word: word,
+          language: language,
+          display_order: index + 1,
+          is_active: true
+        }))
+        
+        await supabase
+          .from('system_trigger_words')
+          .insert(wordsToInsert)
+        
+        totalWords += words.length
       }
     }
   }
-
-  sql += `
--- Update display orders for consistent sorting
-UPDATE sub_categories SET display_order = subq.new_order
-FROM (
-  SELECT 
-    sc.id,
-    ROW_NUMBER() OVER (PARTITION BY sc.main_category_id ORDER BY sc.name) as new_order
-  FROM sub_categories sc
-) subq
-WHERE sub_categories.id = subq.id;
-
--- Show import results
-SELECT 'Import completed successfully for language: ${language}' as result;
-SELECT 
-  mc.name as main_category,
-  sc.name as sub_category,
-  COUNT(stw.id) as word_count,
-  stw.language
-FROM main_categories mc
-JOIN sub_categories sc ON sc.main_category_id = mc.id
-LEFT JOIN system_trigger_words stw ON stw.sub_category_id = sc.id
-WHERE stw.language = '${language}' OR stw.language IS NULL
-GROUP BY mc.name, sc.name, mc.display_order, sc.display_order, stw.language
-ORDER BY mc.display_order, sc.display_order;
-
--- Show total words per language
-SELECT 
-  language,
-  COUNT(*) as total_words
-FROM system_trigger_words 
-GROUP BY language
-ORDER BY language;
-`
-
-  return sql
+  
+  return { totalWords, language }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Verify admin authentication
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
+
   return NextResponse.json({ 
-    message: 'POST your JSON backup to this endpoint to generate import SQL',
+    message: 'POST your JSON backup to this endpoint for secure import',
     expectedFormat: {
       version: "1.0",
       language: "nl", 
@@ -166,6 +203,7 @@ export async function GET() {
         }
       },
       rawData: "array of original word objects (optional)"
-    }
+    },
+    security: "This endpoint uses parameterized queries and input validation"
   })
 }

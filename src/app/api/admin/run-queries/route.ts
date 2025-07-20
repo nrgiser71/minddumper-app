@@ -1,58 +1,27 @@
 import { NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { verifyAdminSessionFromRequest } from '@/lib/admin-auth'
 
 // Use service role key for admin operations
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 )
 
-export async function POST() {
+export async function POST(request: Request) {
+  // Verify admin authentication
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
   try {
-    // Running database improvements
-
-    // First: Create user_trigger_words table if it doesn't exist
-    // Creating user_trigger_words table
+    // SECURITY: Removed dangerous RPC exec functionality
+    // This endpoint now only performs safe, predefined database operations
     
-    // Execute each SQL statement separately
-    const statements = [
-      `CREATE TABLE IF NOT EXISTS public.user_trigger_words (
-        id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
-        user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE NOT NULL,
-        word TEXT NOT NULL,
-        main_category TEXT NOT NULL,
-        sub_category TEXT NOT NULL,
-        is_active BOOLEAN DEFAULT true,
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-        updated_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
-        UNIQUE(user_id, word)
-      )`,
-      `ALTER TABLE public.user_trigger_words ENABLE ROW LEVEL SECURITY`,
-      `DROP POLICY IF EXISTS "Users can view own trigger words" ON public.user_trigger_words`,
-      `DROP POLICY IF EXISTS "Users can insert own trigger words" ON public.user_trigger_words`,
-      `DROP POLICY IF EXISTS "Users can update own trigger words" ON public.user_trigger_words`,
-      `DROP POLICY IF EXISTS "Users can delete own trigger words" ON public.user_trigger_words`,
-      `CREATE POLICY "Users can view own trigger words" ON public.user_trigger_words FOR SELECT USING (auth.uid() = user_id)`,
-      `CREATE POLICY "Users can insert own trigger words" ON public.user_trigger_words FOR INSERT WITH CHECK (auth.uid() = user_id)`,
-      `CREATE POLICY "Users can update own trigger words" ON public.user_trigger_words FOR UPDATE USING (auth.uid() = user_id)`,
-      `CREATE POLICY "Users can delete own trigger words" ON public.user_trigger_words FOR DELETE USING (auth.uid() = user_id)`,
-      `CREATE INDEX IF NOT EXISTS idx_user_trigger_words_user_id ON public.user_trigger_words(user_id)`,
-      `CREATE INDEX IF NOT EXISTS idx_user_trigger_words_active ON public.user_trigger_words(user_id, is_active)`
-    ]
-
-    for (const statement of statements) {
-      try {
-        const { error } = await supabase.rpc('exec', { sql: statement })
-        if (error) {
-          // SQL statement result (might be normal)
-        }
-      } catch {
-        // SQL execution (continuing)
-        // Continue anyway - some statements might fail if already exists
-      }
-    }
-    
-    // user_trigger_words table setup completed
+    // NOTE: Table creation should be done via Supabase migrations, not runtime code
+    // This endpoint is now limited to safe data operations only
 
     // Improvement 1: Add more Dutch trigger words
     const dutchWords = [
@@ -199,9 +168,18 @@ export async function POST() {
   }
 }
 
-export async function GET() {
+export async function GET(request: Request) {
+  // Verify admin authentication
+  if (!verifyAdminSessionFromRequest(request)) {
+    return NextResponse.json({ 
+      success: false, 
+      error: 'Unauthorized access' 
+    }, { status: 401 })
+  }
+
   return NextResponse.json({ 
-    message: 'Use POST to run database improvements',
-    usage: 'POST /api/admin/run-queries'
+    message: 'Secured admin endpoint for database operations',
+    usage: 'POST /api/admin/run-queries',
+    security: 'RPC exec functionality removed for security'
   })
 }
