@@ -16,7 +16,6 @@ export default function HomePage() {
           <div className="nav-menu">
             <a href="#features" className="nav-link">Features</a>
             <a href="#pricing" className="nav-link">Pricing</a>
-            <a href="#testimonials" className="nav-link">Reviews</a>
             <a href="https://order.minddumper.com/checkout/minddumper" className="nav-cta">Get Started - €49</a>
           </div>
         </div>
@@ -183,52 +182,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="testimonials" className="testimonials">
-        <div className="section-container">
-          <h2 className="section-title">How People Reclaimed Their Mental Freedom</h2>
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p>&quot;Before MindDumper, I&apos;d lie awake at 2 AM stressing about forgotten client calls. After one 10-minute session, I extracted 47 tasks I didn&apos;t even know were weighing on me. Now I sleep like a baby and my business runs smoother.&quot;</p>
-              </div>
-              <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=JS" alt="James Smith" width={50} height={50} />
-                <div>
-                  <h4>James Smith</h4>
-                  <span>Product Manager, London</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p>&quot;I&apos;ve tried every productivity app out there. Nothing worked because I kept forgetting to capture things. MindDumper&apos;s trigger words pulled out ideas from 6 months ago that became my biggest product features. This tool pays for itself.&quot;</p>
-              </div>
-              <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=MD" alt="Maria Delacroix" width={50} height={50} />
-                <div>
-                  <h4>Maria Delacroix</h4>
-                  <span>UX Designer, Paris</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p>&quot;Managing 3 projects at once, my mind was a mess. One MindDumper session revealed the marketing campaign I&apos;d forgotten about - it generated €50K in sales. This €49 tool literally made me money.&quot;</p>
-              </div>
-              <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Pedro Jiménez" width={50} height={50} />
-                <div>
-                  <h4>Pedro Jiménez</h4>
-                  <span>Project Manager, Barcelona</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Pricing */}
       <section id="pricing" className="pricing">

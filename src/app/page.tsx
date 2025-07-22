@@ -14,7 +14,6 @@ export default function HomePage() {
           <div className="nav-menu">
             <a href="#features" className="nav-link">Features</a>
             <a href="#pricing" className="nav-link">Pricing</a>
-            <a href="#testimonials" className="nav-link">Reviews</a>
             <a href="https://order.minddumper.com/checkout/minddumper" className="nav-cta">Get Started - €49</a>
           </div>
         </div>
@@ -136,52 +135,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section id="testimonials" className="testimonials">
-        <div className="section-container">
-          <h2 className="section-title">What users say about mental clarity</h2>
-          <div className="testimonials-grid">
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p>&quot;Finally I can sleep without my mind racing with tasks. MindDumper&apos;s trigger words helped me extract everything I&apos;d forgotten. The simplicity is what makes it work.&quot;</p>
-              </div>
-              <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=JS" alt="James Smith" width={50} height={50} />
-                <div>
-                  <h4>James Smith</h4>
-                  <span>Product Manager, London</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p>&quot;The trigger words are brilliant! I thought I had captured everything, but MindDumper helped me remember 20+ tasks I&apos;d completely forgotten about. No learning curve.&quot;</p>
-              </div>
-              <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=MD" alt="Maria Delacroix" width={50} height={50} />
-                <div>
-                  <h4>Maria Delacroix</h4>
-                  <span>UX Designer, Paris</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="testimonial-card">
-              <div className="testimonial-content">
-                <p>&quot;Best €49 I&apos;ve ever spent! The lifetime deal is incredible value and I&apos;ve been using it for over a year with no additional costs. Export to Notion works perfectly.&quot;</p>
-              </div>
-              <div className="testimonial-author">
-                <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Pedro Jiménez" width={50} height={50} />
-                <div>
-                  <h4>Pedro Jiménez</h4>
-                  <span>Startup Founder, Barcelona</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Pricing */}
       <section id="pricing" className="pricing">
