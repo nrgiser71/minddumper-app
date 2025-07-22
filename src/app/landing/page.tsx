@@ -81,6 +81,30 @@ export default function HomePage() {
               <h3>→ Weekend work anxiety</h3>
               <p>You can&apos;t relax because you&apos;re sure you&apos;re forgetting something important for Monday</p>
             </div>
+            <div className="scenario">
+              <h3>→ The important deadline you almost missed</h3>
+              <p>You realize with panic that the proposal/report/presentation is due tomorrow, not next week like you thought</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The family commitment you double-booked</h3>
+              <p>You promised to attend your kid&apos;s school event but scheduled an important client meeting at the same time</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The expense report from 3 months ago</h3>
+              <p>Business receipts pile up in your wallet while you keep forgetting to submit them, losing money every month</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The subscription you meant to cancel</h3>
+              <p>You&apos;re paying for 5 different tools/services you don&apos;t use because canceling them never makes it to your action list</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The strategic decision stuck in limbo</h3>
+              <p>Your business needs a direction change, but the analysis and decision-making keeps getting pushed aside by daily fires</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The health appointment you keep postponing</h3>
+              <p>That important check-up or dental cleaning stays mentally noted but never actually scheduled, affecting your wellbeing</p>
+            </div>
           </div>
           <p className="problem-conclusion">Your brain wasn&apos;t designed to be a filing cabinet. When you try to store everything mentally, you lose focus, miss opportunities, and burn out faster.</p>
         </div>
