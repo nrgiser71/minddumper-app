@@ -128,6 +128,8 @@ body {
 
 .stat {
     text-align: center;
+    flex: 1;
+    min-width: 0;
 }
 
 .stat-number {
