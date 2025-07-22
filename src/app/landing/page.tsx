@@ -27,7 +27,7 @@ export default function HomePage() {
         <div className="hero-container">
           <div className="hero-content">
             <h1 className="hero-title">The fastest way to <span className="highlight">clear your head</span></h1>
-            <p className="hero-description">Finally stop juggling endless tasks in your head. Our scientifically-backed trigger words (available in 5 languages) help busy entrepreneurs extract every forgotten task, project, and idea - so you can focus on building what matters.</p>
+            <p className="hero-description">Finally stop juggling endless tasks in your head. Our scientifically-backed trigger words (available in 5 languages) help busy people extract every forgotten task, project, and idea - so you can focus on what matters most.</p>
             <div className="hero-stats">
               <div className="stat">
                 <span className="stat-number">5</span>
@@ -91,14 +91,14 @@ export default function HomePage() {
       <section id="features" className="features">
         <div className="section-container">
           <h2 className="section-title">Mental Clarity System</h2>
-          <p className="section-subtitle">Clear your mind completely with advanced trigger words available in 5 languages - perfect for international entrepreneurs.</p>
+          <p className="section-subtitle">Clear your mind completely with advanced trigger words available in 5 languages - perfect for anyone juggling multiple tasks.</p>
           
           <div className="features-single">
             <div className="tier-card featured single">
               <div className="tier-header">
                 <h3>MindDumper</h3>
                 <div className="tier-price">€49 <span className="tier-period">lifetime</span></div>
-                <p className="tier-description">Complete mental clarity for global entrepreneurs</p>
+                <p className="tier-description">Complete mental clarity for busy professionals</p>
               </div>
               <ul className="tier-features">
                 <li>Clear your mind completely</li>
@@ -186,7 +186,7 @@ export default function HomePage() {
       {/* Testimonials */}
       <section id="testimonials" className="testimonials">
         <div className="section-container">
-          <h2 className="section-title">How Entrepreneurs Reclaimed Their Mental Freedom</h2>
+          <h2 className="section-title">How People Reclaimed Their Mental Freedom</h2>
           <div className="testimonials-grid">
             <div className="testimonial-card">
               <div className="testimonial-content">
@@ -216,13 +216,13 @@ export default function HomePage() {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>&quot;As a startup founder managing 3 projects, my mind was a mess. One MindDumper session revealed the marketing campaign I&apos;d forgotten about - it generated €50K in sales. This €49 tool literally made me money.&quot;</p>
+                <p>&quot;Managing 3 projects at once, my mind was a mess. One MindDumper session revealed the marketing campaign I&apos;d forgotten about - it generated €50K in sales. This €49 tool literally made me money.&quot;</p>
               </div>
               <div className="testimonial-author">
                 <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Pedro Jiménez" width={50} height={50} />
                 <div>
                   <h4>Pedro Jiménez</h4>
-                  <span>Startup Founder, Barcelona</span>
+                  <span>Project Manager, Barcelona</span>
                 </div>
               </div>
             </div>
