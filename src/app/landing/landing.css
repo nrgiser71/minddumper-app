@@ -162,6 +162,7 @@ body {
     transition: all 0.3s ease;
     text-decoration: none;
     display: inline-block;
+    text-align: center;
 }
 
 .btn-primary:hover {
