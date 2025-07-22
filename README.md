@@ -67,15 +67,25 @@ src/
 └── lib/                 # Utilities and configurations
 ```
 
+## Recent Updates (July 2025)
+
+- [x] **Landing Page Optimization**: Updated marketing copy for better clarity
+- [x] **FAQ Section**: Expanded from 6 to 11 FAQ items with better questions  
+- [x] **Problem Scenarios**: Added 6 additional mental overwhelm scenarios (12 total)
+- [x] **Content Cleanup**: Removed testimonials and solo developer sections
+- [x] **UI Improvements**: Fixed step count consistency (3 steps vs 4 steps)
+- [x] **Copy Improvements**: More accurate language ("regularly" vs "daily" usage)
+
 ## Roadmap
 
 - [x] Landing page met marketing content
 - [x] Complete brain dump app mockup
 - [x] Export functionaliteit
+- [x] Landing page optimization en content verbetering
 - [ ] Supabase database integratie
 - [ ] User authentication
 - [ ] Real triggerwoorden database
-- [ ] Payment integratie (Stripe)
+- [ ] Payment integratie (PlugAndPay)
 - [ ] Custom domain (minddumper.com)
 
 ## License

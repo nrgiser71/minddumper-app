@@ -36,3 +36,20 @@
    - Check browser console voor errors
    - Verifieer functionaliteit werkt correct
 
+## Recent Improvements (July 2025)
+
+### Landing Page Optimizations
+- **Marketing Copy**: Updated key messaging for better clarity and impact
+- **FAQ Expansion**: Grew from 6 to 11 comprehensive FAQ items
+- **Problem Scenarios**: Expanded from 6 to 12 relatable mental overwhelm examples  
+- **Content Cleanup**: Removed testimonials (no real reviews yet) and solo developer sections
+- **UI Consistency**: Fixed "4 steps" title vs 3 actual steps shown
+- **Accuracy**: Changed "daily" to "regularly" for realistic usage frequency
+
+### Development Notes
+- All changes focused on conversion optimization and user clarity
+- Maintained semantic HTML structure and accessibility
+- Used TodoWrite tool effectively for task management
+- Followed build → commit → push workflow successfully
+- Landing page size optimized (improved loading performance)
+
