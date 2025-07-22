@@ -26,7 +26,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-container">
           <div className="hero-content">
-            <h1 className="hero-title">Clear Your <span className="highlight">Overloaded Mind</span> in 10 Minutes</h1>
+            <h1 className="hero-title">Clear Your <span className="highlight">Overloaded Mind</span> Completely</h1>
             <p className="hero-description">Finally stop juggling endless tasks in your head. Our scientifically-backed trigger words (available in 5 languages) help busy entrepreneurs extract every forgotten task, project, and idea - so you can focus on building what matters.</p>
             <div className="hero-stats">
               <div className="stat">
@@ -38,8 +38,8 @@ export default function HomePage() {
                 <span className="stat-label">triggers per language</span>
               </div>
               <div className="stat">
-                <span className="stat-number">10 min</span>
-                <span className="stat-label">average time</span>
+                <span className="stat-number">100%</span>
+                <span className="stat-label">brain clarity</span>
               </div>
             </div>
             <div className="hero-buttons">
@@ -91,7 +91,7 @@ export default function HomePage() {
       <section id="features" className="features">
         <div className="section-container">
           <h2 className="section-title">Mental Clarity System</h2>
-          <p className="section-subtitle">Clear your mind in 10 minutes with advanced trigger words available in 5 languages - perfect for international entrepreneurs.</p>
+          <p className="section-subtitle">Clear your mind completely with advanced trigger words available in 5 languages - perfect for international entrepreneurs.</p>
           
           <div className="features-single">
             <div className="tier-card featured single">
@@ -101,7 +101,7 @@ export default function HomePage() {
                 <p className="tier-description">Complete mental clarity for global entrepreneurs</p>
               </div>
               <ul className="tier-features">
-                <li>Clear your mind in 10 minutes</li>
+                <li>Clear your mind completely</li>
                 <li>Extract forgotten tasks with advanced trigger words</li>
                 <li>Trigger words in 5 languages (EN, NL, DE, FR, ES)</li>
                 <li>Export directly to Notion, Todoist, Asana</li>
@@ -140,7 +140,7 @@ export default function HomePage() {
             <div className="step-card">
               <div className="step-number">3</div>
               <h3>Capture Everything</h3>
-              <p>In 10 minutes, extract every project, idea, and task that&apos;s been cluttering your mental space</p>
+              <p>Extract every project, idea, and task that&apos;s been cluttering your mental space</p>
             </div>
             
             <div className="step-card">
@@ -152,7 +152,7 @@ export default function HomePage() {
           
           <div className="how-it-works-cta">
             <Link href="/app">
-              <button className="btn-primary">Try It Now - Takes 10 Minutes</button>
+              <button className="btn-primary">Try It Now</button>
             </Link>
           </div>
         </div>
@@ -307,7 +307,7 @@ export default function HomePage() {
             
             <div className="faq-item">
               <h3>How long does it actually take?</h3>
-              <p>Most entrepreneurs complete a full brain dump in 8-12 minutes. MindDumper guides you through comprehensive work and personal extraction with trigger words in your preferred language (choose from 5 languages).</p>
+              <p>MindDumper guides you through comprehensive work and personal extraction with trigger words in your preferred language (choose from 5 languages).</p>
             </div>
             
             <div className="faq-item">
@@ -329,7 +329,7 @@ export default function HomePage() {
           <div className="cta-content">
             <h2>Stop Carrying The Weight of Unfinished Business</h2>
             <p>Every day you wait, more tasks pile up in your head. More brilliant ideas get forgotten. More opportunities slip by because you&apos;re too overwhelmed to focus.</p>
-            <p>Take 10 minutes right now. Clear your mind. Get back to building what matters.</p>
+            <p>Take action right now. Clear your mind. Get back to building what matters.</p>
             <div className="cta-buttons">
               <Link href="/app">
                 <button className="btn-primary large">Clear My Mind Now - €49</button>

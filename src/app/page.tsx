@@ -25,7 +25,7 @@ export default function HomePage() {
         <div className="hero-container">
           <div className="hero-content">
             <h1 className="hero-title">MindDumper - <span className="highlight">A better brain dump tool</span></h1>
-            <p className="hero-description">Built specifically for mental clarity with intelligent trigger words. Your brain isn&apos;t a storage device - clear your overloaded mind in 10 minutes using smart trigger words in 5 languages.</p>
+            <p className="hero-description">Built specifically for mental clarity with intelligent trigger words. Your brain isn&apos;t a storage device - clear your overloaded mind using smart trigger words in 5 languages.</p>
             <div className="hero-stats">
               <div className="stat">
                 <span className="stat-number">15K+</span>
