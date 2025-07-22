@@ -117,7 +117,7 @@ export default function HomePage() {
           <div className="showcase-content">
             <div className="showcase-text">
               <h2>Built specifically for brain dumping</h2>
-              <p>Unlike complex productivity apps, You&apos;ll finally get every task out of your head — without friction, learning curves or distractions.</p>
+              <p>Unlike complex productivity apps, MindDumper helps you get every task out of your head — without friction, learning curves or distractions.</p>
               <ul className="showcase-features">
                 <li>Trigger words that help your brain recall forgotten tasks</li>
                 <li>Simple interface designed for speed and clarity</li>
