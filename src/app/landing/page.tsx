@@ -150,24 +150,18 @@ export default function HomePage() {
           <div className="steps-grid">
             <div className="step-card">
               <div className="step-number">1</div>
-              <h3>Choose Your Focus</h3>
-              <p>Select what&apos;s weighing on your mind: Work projects, personal tasks, or creative ideas</p>
-            </div>
-            
-            <div className="step-card">
-              <div className="step-number">2</div>
               <h3>Follow Smart Triggers</h3>
               <p>Our scientifically-backed prompts help your brain recall tasks you didn&apos;t even know you forgot</p>
             </div>
             
             <div className="step-card">
-              <div className="step-number">3</div>
+              <div className="step-number">2</div>
               <h3>Capture Everything</h3>
               <p>Extract every project, idea, and task that&apos;s been cluttering your mental space</p>
             </div>
             
             <div className="step-card">
-              <div className="step-number">4</div>
+              <div className="step-number">3</div>
               <h3>Export & Focus</h3>
               <p>Send your complete list to any app you use. Now your mind is clear to focus on what matters most</p>
             </div>
