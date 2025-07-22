@@ -232,29 +232,6 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Solo Developer Section */}
-      <section className="developer">
-        <div className="section-container">
-          <div className="developer-content">
-            <h2>Built by someone who uses it regularly</h2>
-            <p>MindDumper was created to solve my own mental overwhelm. No external funding, no ads, no subscriptions. Just a simple tool that works, maintained by someone who understands the problem.</p>
-            <div className="developer-features">
-              <div className="developer-feature">
-                <h4>Sustainable Business</h4>
-                <p>No ads, no external investors. One-time purchase supports continuous development.</p>
-              </div>
-              <div className="developer-feature">
-                <h4>Personal Use</h4>
-                <p>I use MindDumper every day to manage my own projects and tasks. It&apos;s built for real use.</p>
-              </div>
-              <div className="developer-feature">
-                <h4>Continuous Improvement</h4>
-                <p>All future updates and features included. Your one-time purchase supports ongoing development.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* FAQ Section */}
       <section className="faq">
