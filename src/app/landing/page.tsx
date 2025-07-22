@@ -56,7 +56,7 @@ export default function HomePage() {
       {/* Problem Section */}
       <section className="problem">
         <div className="section-container">
-          <h2 className="section-title">Every night, your mind races with unfinished business</h2>
+          <h2 className="section-title">Every day, every hour, every minute - your mind races with unfinished business</h2>
           <div className="problem-scenarios">
             <div className="scenario">
               <h3>→ That client call you forgot to schedule</h3>
