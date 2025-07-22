@@ -27,7 +27,7 @@ export default function HomePage() {
         <div className="hero-container">
           <div className="hero-content">
             <h1 className="hero-title">The fastest way to <span className="highlight">clear your head</span></h1>
-            <p className="hero-description">Finally stop juggling endless tasks in your head. Our scientifically-backed trigger words (available in 5 languages) help busy people extract every forgotten task, project, and idea - so you can focus on what matters most.</p>
+            <p className="hero-description">Finally stop juggling endless tasks in your head. Built on proven memory science — not productivity hype. Help busy people extract every forgotten task, project, and idea - so you can focus on what matters most.</p>
             <div className="hero-stats">
               <div className="stat">
                 <span className="stat-number">5</span>
@@ -103,7 +103,7 @@ export default function HomePage() {
               <ul className="tier-features">
                 <li>Clear your mind completely</li>
                 <li>Extract forgotten tasks with advanced trigger words</li>
-                <li>Trigger words in 5 languages (EN, NL, DE, FR, ES)</li>
+                <li>Get unstuck in your own language — with trigger words in EN, NL, DE, FR & ES.</li>
                 <li>Export directly to Notion, Todoist, Asana</li>
                 <li>Add your own trigger words for your industry</li>
                 <li>Access from anywhere - phone, laptop, tablet</li>
@@ -164,7 +164,7 @@ export default function HomePage() {
           <div className="showcase-content">
             <div className="showcase-text">
               <h2>Built specifically for brain dumping</h2>
-              <p>Unlike complex productivity apps, MindDumper does one thing incredibly well: helps you extract every task from your mind using intelligent trigger words in your preferred language. No learning curve, no overwhelm.</p>
+              <p>Unlike complex productivity apps, You&apos;ll finally get every task out of your head — without friction, learning curves or distractions.</p>
               <ul className="showcase-features">
                 <li>Trigger words that help your brain recall forgotten tasks</li>
                 <li>Simple interface designed for speed and clarity</li>
