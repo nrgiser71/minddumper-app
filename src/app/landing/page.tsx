@@ -254,8 +254,8 @@ export default function HomePage() {
             </div>
             
             <div className="faq-item">
-              <h3>How long does it actually take?</h3>
-              <p>MindDumper guides you through comprehensive work and personal extraction with trigger words in your preferred language (choose from 5 languages).</p>
+              <h3>Do I need to be tech-savvy to use this?</h3>
+              <p>No technical skills required. MindDumper works in your browser - just open it and start. The interface is designed for simplicity, not complexity.</p>
             </div>
             
             <div className="faq-item">
@@ -266,6 +266,31 @@ export default function HomePage() {
             <div className="faq-item">
               <h3>What if I&apos;m already using other productivity tools?</h3>
               <p>Perfect! MindDumper works with your existing tools. Export your extracted tasks to Todoist, Notion, Asana, or any app you prefer. Think of us as the missing piece that feeds your productivity system.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>Will this work if I&apos;m not good at remembering things?</h3>
+              <p>That&apos;s exactly who this is for! If you were good at remembering, you wouldn&apos;t need trigger words. Our system is specifically designed to help people with busy minds recall forgotten tasks.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>What if I can&apos;t think of anything during the brain dump?</h3>
+              <p>This happens to everyone initially. That&apos;s why we use trigger words - they act as memory prompts. Most people are surprised by how much they remember once the triggers start working.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>Can I customize the trigger words for my industry/role?</h3>
+              <p>Absolutely. While we provide 1000+ proven trigger words across 5 languages, you can add your own industry-specific triggers to make the system even more effective.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>What happens if I get interrupted during a brain dump?</h3>
+              <p>No problem. Your progress is automatically saved. You can pause anytime and pick up exactly where you left off - even days later.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>Does this replace my current task management system?</h3>
+              <p>No, it feeds into it. MindDumper is designed to extract tasks from your head, then export them to whatever system you already use - Todoist, Notion, Apple Notes, etc.</p>
             </div>
           </div>
         </div>
