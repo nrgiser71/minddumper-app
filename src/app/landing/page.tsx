@@ -17,7 +17,7 @@ export default function HomePage() {
             <a href="#features" className="nav-link">Features</a>
             <a href="#pricing" className="nav-link">Pricing</a>
             <a href="#testimonials" className="nav-link">Reviews</a>
-            <a href="https://order.minddumper.com/checkout/minddumper" className="nav-cta">Get Started - $49</a>
+            <a href="https://order.minddumper.com/checkout/minddumper" className="nav-cta">Get Started - €49</a>
           </div>
         </div>
       </nav>
@@ -43,7 +43,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="hero-buttons">
-              <a href="https://order.minddumper.com/checkout/minddumper" className="btn-primary">Clear My Mind Now - $49</a>
+              <a href="https://order.minddumper.com/checkout/minddumper" className="btn-primary">Clear My Mind Now - €49</a>
             </div>
             <p className="hero-guarantee">One-time payment • Trigger words in 5 languages • Lifetime access</p>
           </div>
@@ -97,7 +97,7 @@ export default function HomePage() {
             <div className="tier-card featured single">
               <div className="tier-header">
                 <h3>MindDumper</h3>
-                <div className="tier-price">$49 <span className="tier-period">lifetime</span></div>
+                <div className="tier-price">€49 <span className="tier-period">lifetime</span></div>
                 <p className="tier-description">Complete mental clarity for global entrepreneurs</p>
               </div>
               <ul className="tier-features">
@@ -111,7 +111,7 @@ export default function HomePage() {
                 <li>Priority support when you need help</li>
               </ul>
               <Link href="#pricing">
-                <button className="btn-primary">Get Lifetime Access - $49</button>
+                <button className="btn-primary">Get Lifetime Access - €49</button>
               </Link>
             </div>
           </div>
@@ -173,7 +173,7 @@ export default function HomePage() {
                 <li>Built by a solo developer who uses it daily</li>
               </ul>
               <Link href="/app">
-                <button className="btn-primary">Try It Now - $49</button>
+                <button className="btn-primary">Try It Now - €49</button>
               </Link>
             </div>
             <div className="showcase-image">
@@ -216,7 +216,7 @@ export default function HomePage() {
             
             <div className="testimonial-card">
               <div className="testimonial-content">
-                <p>&quot;As a startup founder managing 3 projects, my mind was a mess. One MindDumper session revealed the marketing campaign I&apos;d forgotten about - it generated €50K in sales. This $49 tool literally made me money.&quot;</p>
+                <p>&quot;As a startup founder managing 3 projects, my mind was a mess. One MindDumper session revealed the marketing campaign I&apos;d forgotten about - it generated €50K in sales. This €49 tool literally made me money.&quot;</p>
               </div>
               <div className="testimonial-author">
                 <Image src="https://via.placeholder.com/50x50/e0e0e0/666666?text=PJ" alt="Pedro Jiménez" width={50} height={50} />
@@ -234,14 +234,14 @@ export default function HomePage() {
       <section id="pricing" className="pricing">
         <div className="section-container">
           <h2 className="section-title">Simple, transparent pricing</h2>
-          <p className="section-subtitle">One-time payment of $49 for lifetime access. No subscriptions, no hidden costs.</p>
+          <p className="section-subtitle">One-time payment of €49 for lifetime access. No subscriptions, no hidden costs.</p>
           
           <div className="pricing-single">
             <div className="pricing-card featured single">
               <div className="featured-badge">LIFETIME DEAL</div>
               <h3>MindDumper</h3>
               <div className="price">
-                <span className="currency">$</span>
+                <span className="currency">€</span>
                 <span className="amount">49</span>
                 <span className="period">one-time, forever</span>
               </div>
@@ -254,7 +254,7 @@ export default function HomePage() {
                 <li>All future updates included</li>
                 <li>Priority support</li>
               </ul>
-              <a href="https://order.minddumper.com/checkout/minddumper" className="btn-primary">Get Lifetime Access - $49</a>
+              <a href="https://order.minddumper.com/checkout/minddumper" className="btn-primary">Get Lifetime Access - €49</a>
               <p className="lifetime-note">💎 One-time payment • Never pay again • All updates included</p>
             </div>
           </div>
@@ -332,7 +332,7 @@ export default function HomePage() {
             <p>Take 10 minutes right now. Clear your mind. Get back to building what matters.</p>
             <div className="cta-buttons">
               <Link href="/app">
-                <button className="btn-primary large">Clear My Mind Now - $49</button>
+                <button className="btn-primary large">Clear My Mind Now - €49</button>
               </Link>
               <p className="cta-note">One-time payment • Works immediately • Lifetime access</p>
               <p className="cta-urgent">Your mind is your most valuable asset. Stop using it as a storage device.</p>
