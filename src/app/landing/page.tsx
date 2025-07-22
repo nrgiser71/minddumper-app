@@ -170,7 +170,7 @@ export default function HomePage() {
                 <li>Simple interface designed for speed and clarity</li>
                 <li>Export to any productivity system you already use</li>
                 <li>Trigger words in 5 languages for global teams</li>
-                <li>Built by a solo developer who uses it daily</li>
+                <li>Built by a solo developer who uses it regularly</li>
               </ul>
               <Link href="/app">
                 <button className="btn-primary">Try It Now - €49</button>
@@ -265,7 +265,7 @@ export default function HomePage() {
       <section className="developer">
         <div className="section-container">
           <div className="developer-content">
-            <h2>Built by someone who uses it daily</h2>
+            <h2>Built by someone who uses it regularly</h2>
             <p>MindDumper was created to solve my own mental overwhelm. No external funding, no ads, no subscriptions. Just a simple tool that works, maintained by someone who understands the problem.</p>
             <div className="developer-features">
               <div className="developer-feature">
