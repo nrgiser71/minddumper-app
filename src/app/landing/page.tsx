@@ -144,7 +144,7 @@ export default function HomePage() {
       {/* How It Works Section */}
       <section className="how-it-works">
         <div className="section-container">
-          <h2 className="section-title">From Mental Chaos to Crystal Clarity in 4 Steps</h2>
+          <h2 className="section-title">From Mental Chaos to Crystal Clarity in 3 Steps</h2>
           <p className="section-subtitle">Our proven method guides you through extracting every task, so nothing gets forgotten</p>
           
           <div className="steps-grid">
