@@ -26,7 +26,7 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero-container">
           <div className="hero-content">
-            <h1 className="hero-title">Clear Your <span className="highlight">Overloaded Mind</span> Completely</h1>
+            <h1 className="hero-title">The fastest way to <span className="highlight">clear your head</span></h1>
             <p className="hero-description">Finally stop juggling endless tasks in your head. Our scientifically-backed trigger words (available in 5 languages) help busy entrepreneurs extract every forgotten task, project, and idea - so you can focus on building what matters.</p>
             <div className="hero-stats">
               <div className="stat">
