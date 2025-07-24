@@ -104,7 +104,7 @@ body {
 }
 
 .hero-content {
-    margin-bottom: 6rem;
+    margin-bottom: 1rem;
     max-width: 800px;
 }
 
@@ -224,9 +224,11 @@ a:hover .btn-secondary:hover {
 }
 
 .hero-image {
-    width: 100%;
-    max-width: 1400px;
+    width: 110vw;
+    max-width: none;
     position: relative;
+    margin-left: -5vw;
+    overflow: hidden;
 }
 
 .hero-image::after {
@@ -236,9 +238,10 @@ a:hover .btn-secondary:hover {
     left: 0;
     right: 0;
     bottom: 0;
-    background: linear-gradient(180deg, transparent 0%, transparent 70%, rgba(26, 26, 26, 0.4) 85%, rgba(26, 26, 26, 0.9) 100%),
-                linear-gradient(90deg, transparent 0%, transparent 70%, rgba(26, 26, 26, 0.3) 85%, rgba(26, 26, 26, 0.8) 100%),
-                linear-gradient(-90deg, transparent 0%, transparent 70%, rgba(26, 26, 26, 0.3) 85%, rgba(26, 26, 26, 0.8) 100%);
+    background: linear-gradient(180deg, transparent 0%, transparent 40%, rgba(26, 26, 26, 0.3) 60%, rgba(26, 26, 26, 0.7) 80%, rgba(26, 26, 26, 0.95) 100%),
+                linear-gradient(90deg, transparent 0%, transparent 50%, rgba(26, 26, 26, 0.2) 70%, rgba(26, 26, 26, 0.6) 85%, rgba(26, 26, 26, 0.9) 100%),
+                linear-gradient(-90deg, transparent 0%, transparent 50%, rgba(26, 26, 26, 0.2) 70%, rgba(26, 26, 26, 0.6) 85%, rgba(26, 26, 26, 0.9) 100%),
+                radial-gradient(ellipse at bottom, transparent 0%, transparent 30%, rgba(26, 26, 26, 0.4) 70%, rgba(26, 26, 26, 0.8) 100%);
     pointer-events: none;
     border-radius: 20px;
     z-index: 1;
@@ -248,12 +251,15 @@ a:hover .btn-secondary:hover {
     width: 100%;
     height: auto;
     border-radius: 20px;
-    transform: perspective(2000px) rotateX(-2deg) rotateY(0deg) rotateZ(0deg);
+    transform: perspective(1000px) rotateX(30deg) rotateY(-8deg) rotateZ(1deg);
     box-shadow: 
-        0 20px 40px rgba(0, 0, 0, 0.15),
-        0 10px 20px rgba(0, 0, 0, 0.1),
-        0 5px 10px rgba(0, 0, 0, 0.08);
-    filter: brightness(1.02) contrast(1.01) saturate(1.02);
+        0 60px 120px rgba(0, 0, 0, 0.4),
+        0 30px 60px rgba(0, 0, 0, 0.3),
+        0 15px 30px rgba(0, 0, 0, 0.25),
+        0 8px 16px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.05) contrast(1.03) saturate(1.05);
+    transform-style: preserve-3d;
+    will-change: transform;
 }
 
 /* Section Styling */
@@ -524,12 +530,13 @@ a:hover .btn-secondary:hover {
     }
     
     .hero-image img, .screenshot-image img {
-        transform: perspective(1500px) rotateX(-1deg) rotateY(0deg) rotateZ(0deg);
+        transform: perspective(800px) rotateX(20deg) rotateY(-5deg) rotateZ(0.5deg);
         box-shadow: 
-            0 15px 30px rgba(0, 0, 0, 0.12),
-            0 8px 16px rgba(0, 0, 0, 0.08),
-            0 4px 8px rgba(0, 0, 0, 0.06);
-        filter: brightness(1.02) contrast(1.01);
+            0 40px 80px rgba(0, 0, 0, 0.3),
+            0 20px 40px rgba(0, 0, 0, 0.2),
+            0 10px 20px rgba(0, 0, 0, 0.15),
+            0 5px 10px rgba(0, 0, 0, 0.1);
+        filter: brightness(1.03) contrast(1.02);
     }
 }
 
@@ -543,17 +550,18 @@ a:hover .btn-secondary:hover {
     }
     
     .hero-image, .showcase-image {
-        width: 100%;
-        margin: 0;
+        width: 105vw;
+        margin-left: -2.5vw;
     }
     
     .hero-image img, .screenshot-image img {
-        transform: perspective(700px) rotateX(1deg) rotateY(-2deg) rotateZ(0.2deg);
+        transform: perspective(600px) rotateX(15deg) rotateY(-3deg) rotateZ(0.3deg);
         box-shadow: 
-            0 20px 40px rgba(0, 0, 0, 0.2),
-            0 10px 20px rgba(0, 0, 0, 0.15),
-            0 5px 10px rgba(0, 0, 0, 0.1);
-        filter: brightness(1.02) contrast(1.01);
+            0 30px 60px rgba(0, 0, 0, 0.25),
+            0 15px 30px rgba(0, 0, 0, 0.2),
+            0 8px 16px rgba(0, 0, 0, 0.15),
+            0 4px 8px rgba(0, 0, 0, 0.1);
+        filter: brightness(1.03) contrast(1.02);
     }
 }
 
