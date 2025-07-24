@@ -21,32 +21,92 @@ export default function HomePage() {
         </div>
       </nav>
 
-      {/* Hero Section - Linear Style */}
+      {/* Hero Section */}
       <section className="hero">
         <div className="hero-container">
           <div className="hero-content">
-            <h1 className="hero-title">Clear your head completely</h1>
-            <p className="hero-description">Extract every forgotten task, project, and idea with intelligent trigger words.</p>
-            <div className="hero-buttons">
-              <a href="https://order.minddumper.com/checkout/minddumper" className="btn-primary">Start clearing - €49</a>
+            <h1 className="hero-title">The fastest way to <span className="highlight">clear your head</span></h1>
+            <p className="hero-description">Finally stop juggling endless tasks in your head. Built on proven memory science — not productivity hype. Help busy people extract every forgotten task, project, and idea - so you can focus on what matters most.</p>
+            <div className="hero-stats">
+              <div className="stat">
+                <span className="stat-number">5</span>
+                <span className="stat-label">languages supported</span>
+              </div>
+              <div className="stat">
+                <span className="stat-number">250+</span>
+                <span className="stat-label">triggers per language</span>
+              </div>
+              <div className="stat">
+                <span className="stat-number">100%</span>
+                <span className="stat-label">brain clarity</span>
+              </div>
             </div>
+            <div className="hero-buttons">
+              <a href="https://order.minddumper.com/checkout/minddumper" className="btn-primary">Clear My Mind Now - €49</a>
+            </div>
+            <p className="hero-guarantee">One-time payment • Trigger words in 5 languages • Lifetime access</p>
           </div>
           <div className="hero-image">
-            <Image src="/screenshots/Hoofdpagina.svg" alt="MindDumper Interface" width={1200} height={800} />
+            <Image src="/screenshots/Hoofdpagina.svg" alt="MindDumper Brain Dump Interface" width={600} height={400} />
           </div>
         </div>
       </section>
 
-      {/* Customization */}
-      <section className="screenshot-section">
-        <div className="screenshot-container">
-          <div className="screenshot-content">
-            <h2 className="screenshot-title">Customize for your workflow</h2>
-            <p className="screenshot-description">Add your own trigger words. Available in 5 languages.</p>
+      {/* Problem Section */}
+      <section className="problem">
+        <div className="section-container">
+          <h2 className="section-title">Every day, every hour, every minute - your mind races with unfinished business</h2>
+          <div className="problem-scenarios">
+            <div className="scenario">
+              <h3>→ That client call you forgot to schedule</h3>
+              <p>It&apos;s 11 PM and you suddenly remember the follow-up meeting you promised last week</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The brilliant idea that vanished</h3>
+              <p>You had the perfect solution for your product, but now it&apos;s gone - lost in the mental chaos</p>
+            </div>
+            <div className="scenario">
+              <h3>→ Projects stuck in your head</h3>
+              <p>Half-finished tasks pile up because you can&apos;t remember what needs to happen next</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The email you meant to send</h3>
+              <p>Important messages sit in drafts while you lose deals because you forgot to hit send</p>
+            </div>
+            <div className="scenario">
+              <h3>→ Team commitments falling through</h3>
+              <p>You promised deliverables to your team but can&apos;t recall all the details you agreed on</p>
+            </div>
+            <div className="scenario">
+              <h3>→ Weekend work anxiety</h3>
+              <p>You can&apos;t relax because you&apos;re sure you&apos;re forgetting something important for Monday</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The important deadline you almost missed</h3>
+              <p>You realize with panic that the proposal/report/presentation is due tomorrow, not next week like you thought</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The family commitment you double-booked</h3>
+              <p>You promised to attend your kid&apos;s school event but scheduled an important client meeting at the same time</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The expense report from 3 months ago</h3>
+              <p>Business receipts pile up in your wallet while you keep forgetting to submit them, losing money every month</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The subscription you meant to cancel</h3>
+              <p>You&apos;re paying for 5 different tools/services you don&apos;t use because canceling them never makes it to your action list</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The strategic decision stuck in limbo</h3>
+              <p>Your business needs a direction change, but the analysis and decision-making keeps getting pushed aside by daily fires</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The health appointment you keep postponing</h3>
+              <p>That important check-up or dental cleaning stays mentally noted but never actually scheduled, affecting your wellbeing</p>
+            </div>
           </div>
-          <div className="screenshot-image">
-            <Image src="/screenshots/Configuratie.svg" alt="Customize Your Experience" width={1200} height={800} />
-          </div>
+          <p className="problem-conclusion">Your brain wasn&apos;t designed to be a filing cabinet. When you try to store everything mentally, you lose focus, miss opportunities, and burn out faster.</p>
         </div>
       </section>
 
@@ -115,15 +175,27 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Brain Dump in Action */}
-      <section className="screenshot-section">
-        <div className="screenshot-container">
-          <div className="screenshot-content">
-            <h2 className="screenshot-title">Brain dump in seconds</h2>
-            <p className="screenshot-description">Intelligent trigger words help extract forgotten tasks from your mind.</p>
-          </div>
-          <div className="screenshot-image">
-            <Image src="/screenshots/MindDump.svg" alt="Brain Dump in Action" width={1200} height={800} />
+      {/* Product Showcase */}
+      <section className="showcase">
+        <div className="section-container">
+          <div className="showcase-content">
+            <div className="showcase-text">
+              <h2>Built specifically for brain dumping</h2>
+              <p>Unlike complex productivity apps, MindDumper helps you get every task out of your head — without friction, learning curves or distractions.</p>
+              <ul className="showcase-features">
+                <li>Trigger words that help your brain recall forgotten tasks</li>
+                <li>Simple interface designed for speed and clarity</li>
+                <li>Export to any productivity system you already use</li>
+                <li>Trigger words in 5 languages for global teams</li>
+                <li>Built by a solo developer who uses it regularly</li>
+              </ul>
+              <Link href="/app">
+                <button className="btn-primary">Try It Now - €49</button>
+              </Link>
+            </div>
+            <div className="showcase-image">
+              <Image src="/screenshots/MindDump.svg" alt="Simple Brain Dump Interface" width={500} height={350} />
+            </div>
           </div>
         </div>
       </section>
