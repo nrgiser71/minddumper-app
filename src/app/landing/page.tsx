@@ -47,7 +47,7 @@ export default function HomePage() {
             <p className="hero-guarantee">One-time payment • Trigger words in 5 languages • Lifetime access</p>
           </div>
           <div className="hero-image">
-            <Image src="https://via.placeholder.com/600x400/f0f0f0/666666?text=MindDumper+Interface" alt="MindDumper Brain Dump Interface" width={600} height={400} />
+            <Image src="/screenshots/Hoofdpagina.svg" alt="MindDumper Brain Dump Interface" width={600} height={400} />
           </div>
         </div>
       </section>
@@ -194,7 +194,7 @@ export default function HomePage() {
               </Link>
             </div>
             <div className="showcase-image">
-              <Image src="https://via.placeholder.com/500x350/f8f8f8/666666?text=Simple+Interface" alt="Simple Brain Dump Interface" width={500} height={350} />
+              <Image src="/screenshots/MindDump.svg" alt="Simple Brain Dump Interface" width={500} height={350} />
             </div>
           </div>
         </div>
