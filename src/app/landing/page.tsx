@@ -325,13 +325,13 @@ export default function HomePage() {
             <div className="footer-links">
               <div className="footer-column">
                 <h4>Legal</h4>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Refund Policy</a>
+                <Link href="/privacy">Privacy Policy</Link>
+                <Link href="/terms">Terms of Service</Link>
+                <Link href="/refund">Refund Policy</Link>
               </div>
               <div className="footer-column">
                 <h4>Support</h4>
-                <a href="#">Contact</a>
+                <Link href="/contact">Contact</Link>
               </div>
             </div>
           </div>
