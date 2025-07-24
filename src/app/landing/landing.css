@@ -229,29 +229,29 @@ a:hover .btn-secondary:hover {
     position: relative;
 }
 
-.hero-image::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(ellipse 100% 80% at center, transparent 50%, rgba(26, 26, 26, 0.3) 80%, rgba(26, 26, 26, 0.8) 100%);
-    pointer-events: none;
-    border-radius: 20px;
-    z-index: 1;
-}
-
 .hero-image img {
     width: 100%;
     height: auto;
     border-radius: 20px;
-    transform: perspective(1200px) rotateX(3deg) rotateY(-6deg) rotateZ(0.5deg);
+    transform: perspective(1600px) rotateX(15deg) rotateY(-20deg) rotateZ(2deg);
     box-shadow: 
-        0 40px 80px rgba(0, 0, 0, 0.3),
-        0 20px 40px rgba(0, 0, 0, 0.2),
-        0 10px 20px rgba(0, 0, 0, 0.15);
-    filter: brightness(1.05) contrast(1.02) saturate(1.05);
+        0 100px 200px rgba(0, 0, 0, 0.6),
+        0 50px 100px rgba(0, 0, 0, 0.5),
+        0 25px 50px rgba(0, 0, 0, 0.4),
+        0 12px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: brightness(1.2) contrast(1.1) saturate(1.15);
+    will-change: transform, box-shadow;
+    transform-style: preserve-3d;
+}
+
+.hero-image img:hover {
+    transform: perspective(1600px) rotateX(10deg) rotateY(-15deg) rotateZ(1deg) translateY(-20px) scale(1.02);
+    box-shadow: 
+        0 150px 300px rgba(0, 0, 0, 0.7),
+        0 75px 150px rgba(0, 0, 0, 0.6),
+        0 40px 80px rgba(0, 0, 0, 0.5),
+        0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 /* Section Styling */
@@ -322,29 +322,29 @@ a:hover .btn-secondary:hover {
     position: relative;
 }
 
-.screenshot-image::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(ellipse 100% 80% at center, transparent 50%, rgba(15, 15, 15, 0.3) 80%, rgba(15, 15, 15, 0.8) 100%);
-    pointer-events: none;
-    border-radius: 20px;
-    z-index: 1;
-}
-
 .screenshot-image img {
     width: 100%;
     height: auto;
     border-radius: 20px;
-    transform: perspective(1200px) rotateX(2deg) rotateY(4deg) rotateZ(-0.3deg);
+    transform: perspective(1600px) rotateX(12deg) rotateY(18deg) rotateZ(-1deg);
     box-shadow: 
-        0 40px 80px rgba(0, 0, 0, 0.3),
-        0 20px 40px rgba(0, 0, 0, 0.2),
-        0 10px 20px rgba(0, 0, 0, 0.15);
-    filter: brightness(1.05) contrast(1.02) saturate(1.05);
+        0 100px 200px rgba(0, 0, 0, 0.6),
+        0 50px 100px rgba(0, 0, 0, 0.5),
+        0 25px 50px rgba(0, 0, 0, 0.4),
+        0 12px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    filter: brightness(1.2) contrast(1.1) saturate(1.15);
+    will-change: transform, box-shadow;
+    transform-style: preserve-3d;
+}
+
+.screenshot-image img:hover {
+    transform: perspective(1600px) rotateX(8deg) rotateY(12deg) rotateZ(-0.5deg) translateY(-20px) scale(1.02);
+    box-shadow: 
+        0 150px 300px rgba(0, 0, 0, 0.7),
+        0 75px 150px rgba(0, 0, 0, 0.6),
+        0 40px 80px rgba(0, 0, 0, 0.5),
+        0 20px 40px rgba(0, 0, 0, 0.4);
 }
 
 .section-title {
@@ -483,6 +483,14 @@ a:hover .btn-secondary:hover {
     transform-style: preserve-3d;
 }
 
+.showcase-image img:hover {
+    transform: perspective(1400px) rotateX(6deg) rotateY(16deg) rotateZ(-1deg) translateY(-12px) scale(1.01);
+    box-shadow: 
+        0 100px 200px rgba(0, 0, 0, 0.5),
+        0 50px 100px rgba(0, 0, 0, 0.4),
+        0 25px 50px rgba(0, 0, 0, 0.3),
+        0 12px 24px rgba(0, 0, 0, 0.25);
+}
 
 /* Progressive Responsive Design */
 @media (max-width: 1200px) {
@@ -520,12 +528,20 @@ a:hover .btn-secondary:hover {
     }
     
     .hero-image img, .screenshot-image img {
-        transform: perspective(900px) rotateX(2deg) rotateY(-4deg) rotateZ(0.3deg);
+        transform: perspective(900px) rotateX(8deg) rotateY(-12deg) rotateZ(1deg);
         box-shadow: 
-            0 30px 60px rgba(0, 0, 0, 0.25),
-            0 15px 30px rgba(0, 0, 0, 0.18),
-            0 8px 16px rgba(0, 0, 0, 0.12);
-        filter: brightness(1.03) contrast(1.01);
+            0 50px 100px rgba(0, 0, 0, 0.4),
+            0 25px 50px rgba(0, 0, 0, 0.3),
+            0 12px 25px rgba(0, 0, 0, 0.25);
+        filter: brightness(1.15) contrast(1.08);
+    }
+    
+    .hero-image img:hover, .screenshot-image img:hover {
+        transform: perspective(900px) rotateX(5deg) rotateY(-8deg) rotateZ(0.5deg) translateY(-10px);
+        box-shadow: 
+            0 70px 140px rgba(0, 0, 0, 0.5),
+            0 35px 70px rgba(0, 0, 0, 0.4),
+            0 18px 36px rgba(0, 0, 0, 0.3);
     }
 }
 
@@ -543,13 +559,22 @@ a:hover .btn-secondary:hover {
         margin: 0;
     }
     
-    .hero-image img, .screenshot-image img {
-        transform: perspective(700px) rotateX(1deg) rotateY(-2deg) rotateZ(0.2deg);
+    .hero-image img, .showcase-image img {
+        transform: perspective(700px) rotateX(4deg) rotateY(-8deg) rotateZ(0.5deg);
         box-shadow: 
-            0 20px 40px rgba(0, 0, 0, 0.2),
-            0 10px 20px rgba(0, 0, 0, 0.15),
-            0 5px 10px rgba(0, 0, 0, 0.1);
-        filter: brightness(1.02) contrast(1.01);
+            0 30px 60px rgba(0, 0, 0, 0.25),
+            0 15px 30px rgba(0, 0, 0, 0.2),
+            0 8px 16px rgba(0, 0, 0, 0.15);
+        filter: brightness(1.05) contrast(1.02);
+        transition: all 0.3s ease;
+    }
+    
+    .hero-image img:hover, .showcase-image img:hover {
+        transform: perspective(700px) rotateX(2deg) rotateY(-4deg) rotateZ(0.25deg) translateY(-5px);
+        box-shadow: 
+            0 40px 80px rgba(0, 0, 0, 0.3),
+            0 20px 40px rgba(0, 0, 0, 0.25),
+            0 10px 20px rgba(0, 0, 0, 0.2);
     }
 }
 
