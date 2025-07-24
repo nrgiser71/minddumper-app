@@ -324,27 +324,20 @@ export default function HomePage() {
             </div>
             <div className="footer-links">
               <div className="footer-column">
-                <h4>Product</h4>
-                <a href="#">Features</a>
-                <a href="#">Pricing</a>
-                <a href="#">Updates</a>
+                <h4>Legal</h4>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Refund Policy</a>
               </div>
               <div className="footer-column">
                 <h4>Support</h4>
-                <a href="#">Help Center</a>
                 <a href="#">Contact</a>
-                <a href="#">Community</a>
-              </div>
-              <div className="footer-column">
-                <h4>Company</h4>
-                <a href="#">About Us</a>
-                <a href="#">Careers</a>
-                <a href="#">Privacy</a>
               </div>
             </div>
           </div>
           <div className="footer-bottom">
-            <p>&copy; 2024 MindDumper. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} JBS BV. All rights reserved.</p>
+            <p className="trademark">MindDumper is a trademark of JBS BV</p>
           </div>
         </div>
       </footer>

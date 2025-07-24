@@ -46,6 +46,12 @@
 - **UI Consistency**: Fixed "4 steps" title vs 3 actual steps shown
 - **Accuracy**: Changed "daily" to "regularly" for realistic usage frequency
 
+### Security Improvements (July 24, 2025)
+- **Webhook Security Fix**: Added Row Level Security (RLS) policies to webhook_lock table
+- **Supabase Compliance**: Resolved security warning for public table without RLS
+- **Minimal Impact**: Database-only change, no application code modifications needed
+- **Service Role Access**: Maintained webhook functionality while blocking public access
+
 ### Development Notes
 - All changes focused on conversion optimization and user clarity
 - Maintained semantic HTML structure and accessibility
