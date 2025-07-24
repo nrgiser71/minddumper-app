@@ -222,7 +222,14 @@ a:hover .btn-secondary:hover {
     width: 100%;
     height: auto;
     border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transform: perspective(1000px) rotateX(5deg) rotateY(-8deg);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.hero-image img:hover {
+    transform: perspective(1000px) rotateX(2deg) rotateY(-4deg) translateY(-5px);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.2), 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 /* Section Styling */
@@ -349,7 +356,39 @@ a:hover .btn-secondary:hover {
 .showcase-image img {
     width: 100%;
     border-radius: 16px;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transform: perspective(1000px) rotateX(3deg) rotateY(6deg);
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.showcase-image img:hover {
+    transform: perspective(1000px) rotateX(1deg) rotateY(3deg) translateY(-5px);
+    box-shadow: 0 35px 70px rgba(0, 0, 0, 0.2), 0 15px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Responsive 3D effects */
+@media (max-width: 768px) {
+    .hero-image img, .showcase-image img {
+        transform: perspective(800px) rotateX(2deg) rotateY(-3deg);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.12);
+    }
+    
+    .hero-image img:hover, .showcase-image img:hover {
+        transform: perspective(800px) rotateX(1deg) rotateY(-1deg) translateY(-3px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-image img, .showcase-image img {
+        transform: none;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    }
+    
+    .hero-image img:hover, .showcase-image img:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 25px rgba(0, 0, 0, 0.12);
+    }
 }
 
 /* Testimonials */
