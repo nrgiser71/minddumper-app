@@ -7,16 +7,18 @@ import { useEffect } from 'react'
 
 export default function LinearTestPage() {
   useEffect(() => {
-    // Force dark theme for this page
+    // Force dark theme for this page immediately
     document.documentElement.style.colorScheme = 'dark'
     document.body.style.backgroundColor = '#0d0e10'
     document.body.style.color = '#f6f8fa'
+    document.body.classList.add('linear-dark')
     
     return () => {
       // Cleanup on unmount
       document.documentElement.style.colorScheme = ''
       document.body.style.backgroundColor = ''
       document.body.style.color = ''
+      document.body.classList.remove('linear-dark')
     }
   }, [])
 
