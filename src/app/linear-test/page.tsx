@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import './linear.css'
 import { useEffect } from 'react'
+import './linear.css'
 
-export default function LinearTestPage() {
+export default function MindDumperTestPage() {
   useEffect(() => {
     // Force dark theme for this page immediately
     document.documentElement.style.colorScheme = 'dark'
@@ -23,353 +23,308 @@ export default function LinearTestPage() {
   }, [])
 
   return (
-    <>
-      <style jsx global>{`
-        body { 
-          background-color: #0d0e10 !important; 
-          color: #f6f8fa !important; 
-        }
-        html { 
-          background-color: #0d0e10 !important; 
-        }
-        .linear-page { 
-          background-color: #0d0e10 !important; 
-        }
-      `}</style>
-      <div className="linear-page" style={{backgroundColor: '#0d0e10', color: '#f6f8fa', minHeight: '100vh'}}>
+    <div className="dark-theme linear-page">
       {/* Navigation */}
-      <nav className="nav">
+      <nav className="navbar">
         <div className="nav-container">
-          <Link href="/" className="nav-logo">
-            Linear
-          </Link>
-          
-          <div className="nav-menu">
-            <Link href="#" className="nav-link">Product</Link>
-            <Link href="#" className="nav-link">Resources</Link>
-            <Link href="#" className="nav-link">Pricing</Link>
-            <Link href="#" className="nav-link">Customers</Link>
-            <Link href="#" className="nav-link">Blog</Link>
-            <Link href="#" className="nav-link">Contact</Link>
-            <Link href="#" className="nav-link">Docs</Link>
+          <div className="nav-logo">
+            <h2>MindDumper</h2>
           </div>
-          
-          <div className="nav-actions">
-            <Link href="#" className="nav-link">Open app</Link>
-            <Link href="#" className="btn-secondary">Log in</Link>
-            <Link href="#" className="btn-primary">Sign up</Link>
+          <div className="nav-menu">
+            <a href="#features" className="nav-link">Features</a>
+            <a href="#pricing" className="nav-link">Pricing</a>
+            <a href="https://order.minddumper.com/checkout/minddumper" className="nav-cta">Get Started - €49</a>
           </div>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="hero" style={{backgroundColor: '#0d0e10'}}>
-        <div className="hero-background"></div>
-        <div className="parallax-bg"></div>
-        
+      <section className="hero">
         <div className="hero-container">
-          <div className="hero-badge">
-            <span>🤖</span>
-            <span>Introducing Linear for Agents</span>
+          <div className="hero-content">
+            <h1 className="hero-title">The fastest way to <span className="highlight">clear your head</span></h1>
+            <p className="hero-description">Finally stop juggling endless tasks in your head. Built on proven memory science — not productivity hype. Help busy people extract every forgotten task, project, and idea - so you can focus on what matters most.</p>
+            <div className="hero-stats">
+              <div className="stat">
+                <span className="stat-number">5</span>
+                <span className="stat-label">languages supported</span>
+              </div>
+              <div className="stat">
+                <span className="stat-number">250+</span>
+                <span className="stat-label">triggers per language</span>
+              </div>
+              <div className="stat">
+                <span className="stat-number">100%</span>
+                <span className="stat-label">brain clarity</span>
+              </div>
+            </div>
+            <div className="hero-buttons">
+              <a href="https://order.minddumper.com/checkout/minddumper" className="btn-primary">Clear My Mind Now - €49</a>
+            </div>
+            <p className="hero-guarantee">One-time payment • Trigger words in 5 languages • Lifetime access</p>
+          </div>
+          <div className="hero-image">
+            <Image src="/screenshots/Hoofdpagina.svg" alt="MindDumper Brain Dump Interface" width={600} height={400} />
+          </div>
+        </div>
+      </section>
+
+      {/* Problem Section */}
+      <section className="problem">
+        <div className="section-container">
+          <h2 className="section-title">Every day, every hour, every minute - your mind races with unfinished business</h2>
+          <div className="problem-scenarios">
+            <div className="scenario">
+              <h3>→ That client call you forgot to schedule</h3>
+              <p>It&apos;s 11 PM and you suddenly remember the follow-up meeting you promised last week</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The brilliant idea that vanished</h3>
+              <p>You had the perfect solution for your product, but now it&apos;s gone - lost in the mental chaos</p>
+            </div>
+            <div className="scenario">
+              <h3>→ Projects stuck in your head</h3>
+              <p>Half-finished tasks pile up because you can&apos;t remember what needs to happen next</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The email you meant to send</h3>
+              <p>Important messages sit in drafts while you lose deals because you forgot to hit send</p>
+            </div>
+            <div className="scenario">
+              <h3>→ Team commitments falling through</h3>
+              <p>You promised deliverables to your team but can&apos;t recall all the details you agreed on</p>
+            </div>
+            <div className="scenario">
+              <h3>→ Weekend work anxiety</h3>
+              <p>You can&apos;t relax because you&apos;re sure you&apos;re forgetting something important for Monday</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The important deadline you almost missed</h3>
+              <p>You realize with panic that the proposal/report/presentation is due tomorrow, not next week like you thought</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The family commitment you double-booked</h3>
+              <p>You promised to attend your kid&apos;s school event but scheduled an important client meeting at the same time</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The expense report from 3 months ago</h3>
+              <p>Business receipts pile up in your wallet while you keep forgetting to submit them, losing money every month</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The subscription you meant to cancel</h3>
+              <p>You&apos;re paying for 5 different tools/services you don&apos;t use because canceling them never makes it to your action list</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The strategic decision stuck in limbo</h3>
+              <p>Your business needs a direction change, but the analysis and decision-making keeps getting pushed aside by daily fires</p>
+            </div>
+            <div className="scenario">
+              <h3>→ The health appointment you keep postponing</h3>
+              <p>That important check-up or dental cleaning stays mentally noted but never actually scheduled, affecting your wellbeing</p>
+            </div>
+          </div>
+          <p className="problem-conclusion">Your brain wasn&apos;t designed to be a filing cabinet. When you try to store everything mentally, you lose focus, miss opportunities, and burn out faster.</p>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="features">
+        <div className="section-container">
+          <h2 className="section-title">Mental Clarity System</h2>
+          <p className="section-subtitle">Clear your mind completely with advanced trigger words available in 5 languages - perfect for anyone juggling multiple tasks.</p>
+          
+          <div className="features-single">
+            <div className="tier-card featured single">
+              <div className="tier-header">
+                <h3>MindDumper</h3>
+                <div className="tier-price">€49 <span className="tier-period">lifetime</span></div>
+                <p className="tier-description">Complete mental clarity for busy professionals</p>
+              </div>
+              <ul className="tier-features">
+                <li>Clear your mind completely</li>
+                <li>Extract forgotten tasks with advanced trigger words</li>
+                <li>Get unstuck in your own language — with trigger words in EN, NL, DE, FR & ES.</li>
+                <li>Export directly to Notion, Todoist, Asana</li>
+                <li>Add your own trigger words for your industry</li>
+                <li>Access from anywhere - phone, laptop, tablet</li>
+                <li>Never pay again - all future features included</li>
+                <li>Priority support when you need help</li>
+              </ul>
+              <Link href="#pricing">
+                <button className="btn-primary">Get Lifetime Access - €49</button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How It Works Section */}
+      <section className="how-it-works">
+        <div className="section-container">
+          <h2 className="section-title">From Mental Chaos to Crystal Clarity in 3 Steps</h2>
+          <p className="section-subtitle">Our proven method guides you through extracting every task, so nothing gets forgotten</p>
+          
+          <div className="steps-grid">
+            <div className="step-card">
+              <div className="step-number">1</div>
+              <h3>Follow Smart Triggers</h3>
+              <p>Our scientifically-backed prompts help your brain recall tasks you didn&apos;t even know you forgot</p>
+            </div>
+            
+            <div className="step-card">
+              <div className="step-number">2</div>
+              <h3>Capture Everything</h3>
+              <p>Extract every project, idea, and task that&apos;s been cluttering your mental space</p>
+            </div>
+            
+            <div className="step-card">
+              <div className="step-number">3</div>
+              <h3>Export & Focus</h3>
+              <p>Send your complete list to any app you use. Now your mind is clear to focus on what matters most</p>
+            </div>
           </div>
           
-          <h1 className="hero-title">
-            Linear is a purpose-built tool for planning and building products
-          </h1>
-          
-          <p className="hero-subtitle">
-            Meet the system for modern software development. 
-            Streamline issues, projects, and product roadmaps.
-          </p>
-          
-          <div className="hero-cta">
-            <Link href="#" className="btn-primary btn-large">
-              Start building
+          <div className="how-it-works-cta">
+            <Link href="/app">
+              <button className="btn-primary">Try It Now</button>
             </Link>
           </div>
-          
-          {/* Hero Image Showcase - REPLACE WITH PROFESSIONAL LINEAR SCREENSHOT */}
-          <div className="image-showcase">
-            <div className="floating-cards">
-              <Image 
-                src="/linear-test/hero-image.jpg" 
-                alt="Linear Product Interface" 
-                className="showcase-image card-3d"
-                width={800}
-                height={600}
-                priority
-                // TODO: Replace with professional Linear interface screenshot
-                // Recommended: 1600x1000px, angled perspective, with interface details
-              />
+        </div>
+      </section>
+
+      {/* Product Showcase */}
+      <section className="showcase">
+        <div className="section-container">
+          <div className="showcase-content">
+            <div className="showcase-text">
+              <h2>Built specifically for brain dumping</h2>
+              <p>Unlike complex productivity apps, MindDumper helps you get every task out of your head — without friction, learning curves or distractions.</p>
+              <ul className="showcase-features">
+                <li>Trigger words that help your brain recall forgotten tasks</li>
+                <li>Simple interface designed for speed and clarity</li>
+                <li>Export to any productivity system you already use</li>
+                <li>Trigger words in 5 languages for global teams</li>
+                <li>Built by a solo developer who uses it regularly</li>
+              </ul>
+              <Link href="/app">
+                <button className="btn-primary">Try It Now - €49</button>
+              </Link>
+            </div>
+            <div className="showcase-image">
+              <Image src="/screenshots/MindDump.svg" alt="Simple Brain Dump Interface" width={500} height={350} />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Made for Modern Teams */}
-      <section className="section" style={{backgroundColor: '#0d0e10'}}>
+      {/* FAQ Section */}
+      <section className="faq">
         <div className="section-container">
-          <div className="section-header">
-            <h2 className="section-title">Made for modern product teams</h2>
-            <p className="section-subtitle">
-              Purpose-built for today&apos;s ambitious product teams. Linear helps thousands of 
-              teams pursue mastery of their craft with relentless focus, fast execution, 
-              and quality of craft.
-            </p>
-          </div>
-          
-          <div className="feature-grid">
-            <div className="feature-card">
-              <div className="feature-icon">🎯</div>
-              <h3 className="feature-title">Relentless focus</h3>
-              <p className="feature-description">
-                Cut through the noise with purpose-built tools that keep your team 
-                aligned on what matters most.
-              </p>
+          <h2 className="section-title">Frequently Asked Questions</h2>
+          <div className="faq-grid">
+            <div className="faq-item">
+              <h3>How is this different from just making a to-do list?</h3>
+              <p>Regular to-do lists only capture what you remember. Our trigger word method uses psychological prompts to help your brain recall tasks you didn&apos;t even know you forgot - like that client follow-up from 2 weeks ago or the product idea you had in the shower.</p>
             </div>
             
-            <div className="feature-card">
-              <div className="feature-icon">⚡</div>
-              <h3 className="feature-title">Fast execution</h3>
-              <p className="feature-description">
-                Ship faster with workflows designed for speed. From planning to 
-                deployment, every interaction is optimized.
-              </p>
+            <div className="faq-item">
+              <h3>Is this scientifically proven?</h3>
+              <p>Yes. Our method is based on memory retrieval psychology and cognitive offloading research. Studies show that external memory aids (like our trigger system) significantly reduce mental load and improve focus performance.</p>
             </div>
             
-            <div className="feature-card">
-              <div className="feature-icon">✨</div>
-              <h3 className="feature-title">Quality of craft</h3>
-              <p className="feature-description">
-                Beautiful, thoughtful design in every detail. Linear sets a new 
-                standard for product development tools.
-              </p>
+            <div className="faq-item">
+              <h3>What if I have too many tasks?</h3>
+              <p>That&apos;s exactly why you need this. The more overwhelmed you feel, the more tasks are probably stuck in your head creating anxiety. Our system helps extract everything systematically, so you can prioritize based on reality, not overwhelm.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>Do I need to be tech-savvy to use this?</h3>
+              <p>No technical skills required. MindDumper works in your browser - just open it and start. The interface is designed for simplicity, not complexity.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>Can I use this for both work and personal tasks?</h3>
+              <p>Absolutely. Your brain doesn&apos;t separate work and personal stress. Our system covers everything from client projects to weekend plans, giving you complete mental clarity across all areas of life.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>What if I&apos;m already using other productivity tools?</h3>
+              <p>Perfect! MindDumper works with your existing tools. Export your extracted tasks to Todoist, Notion, Asana, or any app you prefer. Think of us as the missing piece that feeds your productivity system.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>Will this work if I&apos;m not good at remembering things?</h3>
+              <p>That&apos;s exactly who this is for! If you were good at remembering, you wouldn&apos;t need trigger words. Our system is specifically designed to help people with busy minds recall forgotten tasks.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>What if I can&apos;t think of anything during the brain dump?</h3>
+              <p>This happens to everyone initially. That&apos;s why we use trigger words - they act as memory prompts. Most people are surprised by how much they remember once the triggers start working.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>Can I customize the trigger words for my industry/role?</h3>
+              <p>Absolutely. While we provide 1000+ proven trigger words across 5 languages, you can add your own industry-specific triggers to make the system even more effective.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>What happens if I get interrupted during a brain dump?</h3>
+              <p>No problem. Your progress is automatically saved. You can pause anytime and pick up exactly where you left off - even days later.</p>
+            </div>
+            
+            <div className="faq-item">
+              <h3>Does this replace my current task management system?</h3>
+              <p>No, it feeds into it. MindDumper is designed to extract tasks from your head, then export them to whatever system you already use - Todoist, Notion, Apple Notes, etc.</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Project Planning */}
-      <section className="section" style={{backgroundColor: '#111318'}}>
+      {/* CTA Section */}
+      <section className="cta">
         <div className="section-container">
-          <div className="content-grid">
-            <div className="content-text">
-              <h3>Set the product direction</h3>
-              <p>
-                Align your team around the product timeline and manage initiatives 
-                that deliver on your strategy. Plan with the collaborative tools your 
-                team actually wants to use.
-              </p>
-              
-              <div className="feature-list">
-                <div className="feature-item">
-                  <h4>Project Overview</h4>
-                  <p>Get a high-level view of all projects and their progress</p>
-                </div>
-                
-                <div className="feature-item">
-                  <h4>Collaborative documents</h4>
-                  <p>Create and share project specs, requirements, and documentation</p>
-                </div>
-                
-                <div className="feature-item">
-                  <h4>Cross-team projects</h4>
-                  <p>Coordinate work across multiple teams and stakeholders</p>
-                </div>
-              </div>
-            </div>
-            
-            {/* PROJECT SCREENSHOT - Replace with Linear Projects interface */}
-            <div className="floating-cards">
-              <Image 
-                src="/linear-test/projects.jpg" 
-                alt="Project Planning Interface" 
-                className="showcase-image angled"
-                width={700}
-                height={500}
-                // TODO: Replace with Linear Projects screenshot showing roadmaps
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Issue Tracking */}
-      <section className="section" style={{backgroundColor: '#0d0e10'}}>
-        <div className="section-container">
-          <div className="content-grid">
-            {/* ISSUES SCREENSHOT - Replace with Linear Issues interface */}
-            <div className="floating-cards">
-              <Image 
-                src="/linear-test/issues.jpg" 
-                alt="Issue Tracking Interface" 
-                className="showcase-image angled"
-                width={700}
-                height={500}
-                // TODO: Replace with Linear Issues list screenshot
-              />
-            </div>
-            
-            <div className="content-text">
-              <h3>Issue tracking you&apos;ll enjoy using</h3>
-              <p>
-                Finally, issue tracking that doesn&apos;t suck. Powerful yet simple tools 
-                that help you organize, prioritize, and ship work efficiently.
-              </p>
-              
-              <div className="feature-list">
-                <div className="feature-item">
-                  <h4>Cycles</h4>
-                  <p>Time-boxed sprints that keep your team focused and productive</p>
-                </div>
-                
-                <div className="feature-item">
-                  <h4>Triage management</h4>
-                  <p>Organize and prioritize incoming issues efficiently</p>
-                </div>
-                
-                <div className="feature-item">
-                  <h4>Custom workflows</h4>
-                  <p>Adapt Linear to match your team&apos;s unique processes</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* AI Features */}
-      <section className="section" style={{backgroundColor: '#111318'}}>
-        <div className="section-container">
-          <div className="section-header">
-            <h2 className="section-title">
-              <span className="gradient-text">AI that works where you work</span>
-            </h2>
-            <p className="section-subtitle">
-              Introducing Linear for Agents. AI-powered workflows that understand 
-              your codebase, integrate with your tools, and help you ship faster.
-            </p>
-          </div>
-          
-          {/* AI FEATURES SCREENSHOT - Replace with Linear AI interface */}
-          <div className="image-showcase">
-            <div className="floating-cards">
-              <Image 
-                src="/linear-test/ai-features.jpg" 
-                alt="AI Features Interface" 
-                className="showcase-image angled"
-                width={800}
-                height={500}
-                // TODO: Replace with Linear AI/Agents screenshot
-              />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Workflows */}
-      <section className="section" style={{backgroundColor: '#0d0e10'}}>
-        <div className="section-container">
-          <div className="section-header">
-            <h2 className="section-title">Workflows and integrations</h2>
-            <p className="section-subtitle">
-              Linear works with the tools you already use. Connect your favorite 
-              apps and create powerful workflows that span your entire stack.
-            </p>
-          </div>
-          
-          <div className="feature-grid">
-            <div className="feature-card">
-              <div className="feature-icon">🔗</div>
-              <h3 className="feature-title">Git integrations</h3>
-              <p className="feature-description">
-                Automatically link commits and PRs to issues. See exactly what 
-                code changes relate to each issue.
-              </p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">🚀</div>
-              <h3 className="feature-title">Deployment tracking</h3>
-              <p className="feature-description">
-                Track deployments and automatically close issues when code ships 
-                to production.
-              </p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">📊</div>
-              <h3 className="feature-title">Analytics & insights</h3>
-              <p className="feature-description">
-                Get data-driven insights into your team&apos;s velocity, cycle time, 
-                and delivery performance.
-              </p>
-            </div>
-            
-            <div className="feature-card">
-              <div className="feature-icon">💬</div>
-              <h3 className="feature-title">Team collaboration</h3>
-              <p className="feature-description">
-                Built-in commenting, mentions, and notifications keep everyone 
-                in sync across projects.
-              </p>
+          <div className="cta-content">
+            <h2>Stop Carrying The Weight of Unfinished Business</h2>
+            <p>Every day you wait, more tasks pile up in your head. More brilliant ideas get forgotten. More opportunities slip by because you&apos;re too overwhelmed to focus.</p>
+            <p>Take action right now. Clear your mind. Get back to building what matters.</p>
+            <div className="cta-buttons">
+              <Link href="/app">
+                <button className="btn-primary large">Clear My Mind Now - €49</button>
+              </Link>
+              <p className="cta-note">One-time payment • Works immediately • Lifetime access</p>
+              <p className="cta-urgent">Your mind is your most valuable asset. Stop using it as a storage device.</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer" style={{backgroundColor: '#111318'}}>
-        <div className="footer-container">
-          <div className="footer-grid">
-            <div className="footer-section">
-              <h4>Features</h4>
-              <Link href="#">Issues</Link>
-              <Link href="#">Projects</Link>
-              <Link href="#">Cycles</Link>
-              <Link href="#">Roadmap</Link>
-              <Link href="#">Insights</Link>
+      <footer className="footer">
+        <div className="section-container">
+          <div className="footer-content">
+            <div className="footer-brand">
+              <h3>MindDumper</h3>
+              <p>Clear your mind of all tasks and projects with our intelligent brain dump tool.</p>
             </div>
-            
-            <div className="footer-section">
-              <h4>Product</h4>
-              <Link href="#">Pricing</Link>
-              <Link href="#">Changelog</Link>
-              <Link href="#">Method</Link>
-              <Link href="#">Linear for Agents</Link>
-            </div>
-            
-            <div className="footer-section">
-              <h4>Company</h4>
-              <Link href="#">About</Link>
-              <Link href="#">Blog</Link>
-              <Link href="#">Careers</Link>
-              <Link href="#">Brand</Link>
-            </div>
-            
-            <div className="footer-section">
-              <h4>Resources</h4>
-              <Link href="#">Community</Link>
-              <Link href="#">Contact</Link>
-              <Link href="#">Docs</Link>
-              <Link href="#">Help</Link>
-            </div>
-            
-            <div className="footer-section">
-              <h4>Connect</h4>
-              <Link href="#">Twitter</Link>
-              <Link href="#">GitHub</Link>
-              <Link href="#">Discord</Link>
-              <Link href="#">YouTube</Link>
+            <div className="footer-links">
+              <div className="footer-column">
+                <h4>Legal</h4>
+                <Link href="/privacy">Privacy Policy</Link>
+                <Link href="/terms">Terms of Service</Link>
+                <Link href="/refund">Refund Policy</Link>
+              </div>
+              <div className="footer-column">
+                <h4>Support</h4>
+                <Link href="/contact">Contact</Link>
+              </div>
             </div>
           </div>
-          
           <div className="footer-bottom">
-            <p>&copy; 2024 Linear - Test Recreation. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} JBS BV. All rights reserved.</p>
+            <p className="trademark">MindDumper is a trademark of JBS BV</p>
           </div>
         </div>
       </footer>
-      </div>
-    </>
+    </div>
   )
 }
