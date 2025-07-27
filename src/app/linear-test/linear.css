@@ -326,7 +326,7 @@ html {
   transform: rotateX(0deg) rotateY(0deg) translateZ(20px);
 }
 
-/* Image Showcase */
+/* Image Showcase - Ready for professional Linear screenshots */
 .image-showcase {
   position: relative;
   margin: 4rem 0;
@@ -337,13 +337,38 @@ html {
   max-width: 100%;
   border-radius: 12px;
   border: 1px solid var(--border);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: 
+    0 25px 50px -12px rgba(0, 0, 0, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.05);
   transition: transform 0.3s ease;
+  /* Perfect for Linear's interface screenshots */
+  aspect-ratio: 16/10;
+  object-fit: cover;
 }
 
 .showcase-image:hover {
   transform: translateY(-4px);
+  box-shadow: 
+    0 32px 64px -12px rgba(0, 0, 0, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
 }
+
+/* Alternative 3D positioning for Linear-style angled screenshots */
+.showcase-image.angled {
+  transform: perspective(1200px) rotateX(8deg) rotateY(-8deg);
+}
+
+.showcase-image.angled:hover {
+  transform: perspective(1200px) rotateX(4deg) rotateY(-4deg) translateY(-8px);
+}
+
+/* Image replacement instructions:
+   1. Create professional screenshots of Linear interfaces
+   2. Save as high-res PNG/JPG (1600x1000px recommended)
+   3. Replace files in /public/linear-test/
+   4. Use .angled class for 3D perspective effect
+   5. Maintain 16:10 aspect ratio for best results
+*/
 
 /* Content Grid */
 .content-grid {

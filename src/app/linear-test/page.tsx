@@ -73,7 +73,7 @@ export default function LinearTestPage() {
             </Link>
           </div>
           
-          {/* Hero Image Showcase */}
+          {/* Hero Image Showcase - REPLACE WITH PROFESSIONAL LINEAR SCREENSHOT */}
           <div className="image-showcase">
             <div className="floating-cards">
               <Image 
@@ -82,6 +82,9 @@ export default function LinearTestPage() {
                 className="showcase-image card-3d"
                 width={800}
                 height={600}
+                priority
+                // TODO: Replace with professional Linear interface screenshot
+                // Recommended: 1600x1000px, angled perspective, with interface details
               />
             </div>
           </div>
@@ -161,13 +164,15 @@ export default function LinearTestPage() {
               </div>
             </div>
             
+            {/* PROJECT SCREENSHOT - Replace with Linear Projects interface */}
             <div className="floating-cards">
               <Image 
                 src="/linear-test/projects.jpg" 
                 alt="Project Planning Interface" 
-                className="showcase-image card-3d"
+                className="showcase-image angled"
                 width={700}
                 height={500}
+                // TODO: Replace with Linear Projects screenshot showing roadmaps
               />
             </div>
           </div>
@@ -178,13 +183,15 @@ export default function LinearTestPage() {
       <section className="section">
         <div className="section-container">
           <div className="content-grid">
+            {/* ISSUES SCREENSHOT - Replace with Linear Issues interface */}
             <div className="floating-cards">
               <Image 
                 src="/linear-test/issues.jpg" 
                 alt="Issue Tracking Interface" 
-                className="showcase-image card-3d"
+                className="showcase-image angled"
                 width={700}
                 height={500}
+                // TODO: Replace with Linear Issues list screenshot
               />
             </div>
             
@@ -229,14 +236,16 @@ export default function LinearTestPage() {
             </p>
           </div>
           
+          {/* AI FEATURES SCREENSHOT - Replace with Linear AI interface */}
           <div className="image-showcase">
             <div className="floating-cards">
               <Image 
                 src="/linear-test/ai-features.jpg" 
                 alt="AI Features Interface" 
-                className="showcase-image card-3d"
+                className="showcase-image angled"
                 width={800}
                 height={500}
+                // TODO: Replace with Linear AI/Agents screenshot
               />
             </div>
           </div>
