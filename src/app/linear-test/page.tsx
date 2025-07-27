@@ -2,7 +2,6 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import Head from 'next/head'
 import './linear.css'
 import { useEffect } from 'react'
 
@@ -25,13 +24,18 @@ export default function LinearTestPage() {
 
   return (
     <>
-      <Head>
-        <style>{`
-          body { background-color: #0d0e10 !important; color: #f6f8fa !important; }
-          html { background-color: #0d0e10 !important; }
-          * { background-color: inherit !important; }
-        `}</style>
-      </Head>
+      <style jsx global>{`
+        body { 
+          background-color: #0d0e10 !important; 
+          color: #f6f8fa !important; 
+        }
+        html { 
+          background-color: #0d0e10 !important; 
+        }
+        .linear-page { 
+          background-color: #0d0e10 !important; 
+        }
+      `}</style>
       <div className="linear-page" style={{backgroundColor: '#0d0e10', color: '#f6f8fa', minHeight: '100vh'}}>
       {/* Navigation */}
       <nav className="nav">
