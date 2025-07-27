@@ -1,21 +1,28 @@
 /* Linear.app CSS Recreation */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-/* Force dark theme globally for Linear test page */
-html:has(.linear-page),
-body:has(.linear-page) {
+/* AGGRESSIVE DARK THEME FORCING */
+html, body {
   background-color: #0d0e10 !important;
   color: #f6f8fa !important;
 }
 
-/* Fallback for browsers without :has support */
-.linear-page ~ *,
-.linear-page + * {
-  background-color: #0d0e10 !important;
+/* Override ALL possible background conflicts */
+*, *::before, *::after {
+  background-color: transparent !important;
 }
 
-/* Additional body override */
-body.linear-dark {
+/* Force specific containers */
+html:has(.linear-page),
+body:has(.linear-page),
+.linear-page,
+.linear-page *,
+section,
+div,
+main,
+header,
+nav,
+footer {
   background-color: #0d0e10 !important;
   color: #f6f8fa !important;
 }
