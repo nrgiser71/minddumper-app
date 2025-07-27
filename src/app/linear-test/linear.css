@@ -55,6 +55,13 @@ body.linear-dark {
   position: relative;
 }
 
+/* Force dark background on main containers */
+.linear-page .hero,
+.linear-page .section,
+.linear-page .nav {
+  background-color: #0d0e10 !important;
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -157,6 +164,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: #0d0e10 !important;
 }
 
 .hero-background {
@@ -233,10 +241,11 @@ html {
 /* Feature Sections */
 .section {
   padding: 5rem 2rem;
+  background-color: #0d0e10 !important;
 }
 
 .section:nth-child(even) {
-  background: rgba(255, 255, 255, 0.01);
+  background-color: #111318 !important;
 }
 
 .section-container {
