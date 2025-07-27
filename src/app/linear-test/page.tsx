@@ -23,7 +23,7 @@ export default function LinearTestPage() {
   }, [])
 
   return (
-    <div className="linear-page">
+    <div className="linear-page" style={{backgroundColor: '#0d0e10', color: '#f6f8fa', minHeight: '100vh'}}>
       {/* Navigation */}
       <nav className="nav">
         <div className="nav-container">
@@ -50,7 +50,7 @@ export default function LinearTestPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="hero">
+      <section className="hero" style={{backgroundColor: '#0d0e10'}}>
         <div className="hero-background"></div>
         <div className="parallax-bg"></div>
         
@@ -94,7 +94,7 @@ export default function LinearTestPage() {
       </section>
 
       {/* Made for Modern Teams */}
-      <section className="section">
+      <section className="section" style={{backgroundColor: '#0d0e10'}}>
         <div className="section-container">
           <div className="section-header">
             <h2 className="section-title">Made for modern product teams</h2>
@@ -137,7 +137,7 @@ export default function LinearTestPage() {
       </section>
 
       {/* Project Planning */}
-      <section className="section">
+      <section className="section" style={{backgroundColor: '#111318'}}>
         <div className="section-container">
           <div className="content-grid">
             <div className="content-text">
@@ -182,7 +182,7 @@ export default function LinearTestPage() {
       </section>
 
       {/* Issue Tracking */}
-      <section className="section">
+      <section className="section" style={{backgroundColor: '#0d0e10'}}>
         <div className="section-container">
           <div className="content-grid">
             {/* ISSUES SCREENSHOT - Replace with Linear Issues interface */}
@@ -226,7 +226,7 @@ export default function LinearTestPage() {
       </section>
 
       {/* AI Features */}
-      <section className="section">
+      <section className="section" style={{backgroundColor: '#111318'}}>
         <div className="section-container">
           <div className="section-header">
             <h2 className="section-title">
@@ -255,7 +255,7 @@ export default function LinearTestPage() {
       </section>
 
       {/* Workflows */}
-      <section className="section">
+      <section className="section" style={{backgroundColor: '#0d0e10'}}>
         <div className="section-container">
           <div className="section-header">
             <h2 className="section-title">Workflows and integrations</h2>
@@ -306,7 +306,7 @@ export default function LinearTestPage() {
       </section>
 
       {/* Footer */}
-      <footer className="footer">
+      <footer className="footer" style={{backgroundColor: '#111318'}}>
         <div className="footer-container">
           <div className="footer-grid">
             <div className="footer-section">
