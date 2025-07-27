@@ -11,14 +11,14 @@ export default function LinearTestPage() {
     document.documentElement.style.colorScheme = 'dark'
     document.body.style.backgroundColor = '#0d0e10'
     document.body.style.color = '#f6f8fa'
-    document.body.classList.add('linear-dark')
+    document.body.classList.add('linear-dark', 'linear-page-active')
     
     return () => {
       // Cleanup on unmount
       document.documentElement.style.colorScheme = ''
       document.body.style.backgroundColor = ''
       document.body.style.color = ''
-      document.body.classList.remove('linear-dark')
+      document.body.classList.remove('linear-dark', 'linear-page-active')
     }
   }, [])
 

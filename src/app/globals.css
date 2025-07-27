@@ -24,3 +24,15 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* FORCE LINEAR TEST PAGE DARK THEME */
+body:has(.linear-page) {
+  background: #0d0e10 !important;
+  color: #f6f8fa !important;
+}
+
+/* Fallback for browsers without :has */
+.linear-page-active {
+  background: #0d0e10 !important;
+  color: #f6f8fa !important;
+}
