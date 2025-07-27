@@ -3,10 +3,25 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import './linear.css'
+import { useEffect } from 'react'
 
 export default function LinearTestPage() {
+  useEffect(() => {
+    // Force dark theme for this page
+    document.documentElement.style.colorScheme = 'dark'
+    document.body.style.backgroundColor = '#0d0e10'
+    document.body.style.color = '#f6f8fa'
+    
+    return () => {
+      // Cleanup on unmount
+      document.documentElement.style.colorScheme = ''
+      document.body.style.backgroundColor = ''
+      document.body.style.color = ''
+    }
+  }, [])
+
   return (
-    <>
+    <div className="linear-page">
       {/* Navigation */}
       <nav className="nav">
         <div className="nav-container">
@@ -330,6 +345,6 @@ export default function LinearTestPage() {
           </div>
         </div>
       </footer>
-    </>
+    </div>
   )
 }

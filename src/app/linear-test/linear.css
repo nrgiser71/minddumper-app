@@ -1,7 +1,7 @@
 /* Linear.app CSS Recreation */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
 
-* {
+.linear-page * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -24,18 +24,20 @@
   --purple-lighter: rgba(94, 106, 210, 0.05);
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
-body {
+.linear-page {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
-  background: var(--background);
-  color: var(--text-primary);
+  background-color: #0d0e10 !important;
+  color: #f6f8fa !important;
   line-height: 1.6;
   text-wrap: balance;
   overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 /* Navigation */
