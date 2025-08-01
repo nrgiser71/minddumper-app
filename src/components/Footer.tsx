@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const Footer = () => {
   return (
@@ -27,9 +27,9 @@ const Footer = () => {
           <div>
             <h3 className="text-sm font-semibold text-text-primary mb-4">Legal</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Contact</a></li>
+              <li><Link href="/privacy" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Privacy Policy</Link></li>
+              <li><Link href="/terms" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Terms of Service</Link></li>
+              <li><Link href="/contact" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Contact</Link></li>
             </ul>
           </div>
         </div>
@@ -39,9 +39,12 @@ const Footer = () => {
             <span className="text-text-secondary text-sm mb-4 md:mb-0">© 2024 JBS BV. All rights reserved.</span>
             
             <div className="flex items-center space-x-4">
-              <Button variant="hero" size="sm">
+              <a 
+                href="https://order.minddumper.com/checkout/minddumper"
+                className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-primary text-primary-foreground hover:opacity-90 h-9 px-4"
+              >
                 Clear My Mind Now - €49
-              </Button>
+              </a>
             </div>
           </div>
         </div>
