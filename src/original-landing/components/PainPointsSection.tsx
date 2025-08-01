@@ -6,11 +6,11 @@ const PainPointsSection = () => {
     },
     {
       title: "The brilliant idea that vanished",
-      description: "You had the perfect solution for your product, but now it's gone - lost in the mental chaos"
+      description: "You had the perfect solution for your product, but now it&apos;s gone - lost in the mental chaos"
     },
     {
       title: "Projects stuck in your head",
-      description: "Half-finished tasks pile up because you can't remember what needs to happen next"
+      description: "Half-finished tasks pile up because you can&apos;t remember what needs to happen next"
     },
     {
       title: "The email you meant to send",
@@ -18,11 +18,11 @@ const PainPointsSection = () => {
     },
     {
       title: "Team commitments falling through",
-      description: "You promised deliverables to your team but can't recall all the details you agreed on"
+      description: "You promised deliverables to your team but can&apos;t recall all the details you agreed on"
     },
     {
       title: "Weekend work anxiety",
-      description: "You can't relax because you're sure you're forgetting something important for Monday"
+      description: "You can&apos;t relax because you&apos;re sure you&apos;re forgetting something important for Monday"
     },
     {
       title: "The important deadline you almost missed",
@@ -38,7 +38,7 @@ const PainPointsSection = () => {
     },
     {
       title: "The subscription you meant to cancel",
-      description: "You're paying for 5 different tools/services you don't use because canceling them never makes it to your action list"
+      description: "You're paying for 5 different tools/services you don&apos;t use because canceling them never makes it to your action list"
     },
     {
       title: "The strategic decision stuck in limbo",

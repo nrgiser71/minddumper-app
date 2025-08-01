@@ -15,7 +15,7 @@ const StopCarryingSection = () => {
             </h2>
             <p className="text-xl text-text-secondary mb-8">
               Every day you wait, more tasks pile up in your head. More brilliant ideas get forgotten. 
-              More opportunities slip by because you're too overwhelmed to focus.
+              More opportunities slip by because you&apos;re too overwhelmed to focus.
             </p>
             
             <div className="mb-8">

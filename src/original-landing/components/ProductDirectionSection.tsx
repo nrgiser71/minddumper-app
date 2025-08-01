@@ -1,6 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { ArrowRight, Calendar, Target, Users } from "lucide-react";
-import codeMonitor from "/code-monitor.jpg";
+import { Calendar, Target, Users } from "lucide-react";
 
 const ProductDirectionSection = () => {
   return (

@@ -1,9 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-import heroLaptop from "/hero-laptop.jpg";
-import codeMonitor from "/code-monitor.jpg";
-import personLaptop from "/person-laptop.jpg";
-import teamCollaboration from "/team-collaboration.jpg";
 
 const CollaborationSection = () => {
   return (

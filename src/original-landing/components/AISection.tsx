@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Brain } from "lucide-react";
-import heroLaptop from "/hero-laptop.jpg";
 
 const AISection = () => {
   return (
@@ -51,7 +50,7 @@ const AISection = () => {
                 <div>
                   <h3 className="text-xl font-semibold text-text-primary mb-3">Friction-Free Interface</h3>
                   <p className="text-text-secondary leading-relaxed">
-                    Simple, intuitive design that doesn't add complexity to your workflow. Focus on clearing your mind, not learning new tools.
+                    Simple, intuitive design that doesn&apos;t add complexity to your workflow. Focus on clearing your mind, not learning new tools.
                   </p>
                 </div>
               </div>
