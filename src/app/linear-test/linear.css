@@ -1,6 +1,4 @@
 /* Dark theme override for linear-test page */
-/* Import the original landing styles first */
-@import url('../landing/landing.css');
 
 /* Override colors for dark theme */
 .dark-theme {
