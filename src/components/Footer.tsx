@@ -39,9 +39,11 @@ const Footer = () => {
             <span className="text-text-secondary text-sm mb-4 md:mb-0">© 2024 JBS BV. All rights reserved.</span>
             
             <div className="flex items-center space-x-4">
-              <Button variant="hero" size="sm">
-                Clear My Mind Now - €49
-              </Button>
+              <a href="https://order.minddumper.com/checkout/minddumper" className="inline-flex">
+                <Button variant="hero" size="sm">
+                  Clear My Mind Now - €49
+                </Button>
+              </a>
             </div>
           </div>
         </div>

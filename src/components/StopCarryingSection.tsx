@@ -39,10 +39,12 @@ const StopCarryingSection = () => {
               </div>
             </div>
             
-            <Button variant="hero" size="xl" className="group">
-              Clear My Mind Now - €49
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <a href="https://order.minddumper.com/checkout/minddumper" className="inline-flex">
+              <Button variant="hero" size="xl" className="group">
+                Clear My Mind Now - €49
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </a>
           </div>
           
           <div className="relative">

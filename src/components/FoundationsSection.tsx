@@ -118,10 +118,12 @@ const FoundationsSection = () => {
               </div>
             </div>
             
-            <Button variant="outline" className="group">
-              Get Lifetime Access - €49
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <a href="https://order.minddumper.com/checkout/minddumper" className="inline-flex">
+              <Button variant="outline" className="group">
+                Get Lifetime Access - €49
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </a>
           </div>
         </div>
       </div>
