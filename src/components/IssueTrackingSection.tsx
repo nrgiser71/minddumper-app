@@ -1,5 +1,4 @@
-import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, AlertCircle, Clock } from "lucide-react";
+import { CheckCircle, AlertCircle, Clock } from "lucide-react";
 import Image from "next/image";
 
 const IssueTrackingSection = () => {
@@ -36,7 +35,7 @@ const IssueTrackingSection = () => {
                 <div>
                   <h3 className="text-lg font-semibold text-text-primary mb-2">Extract Forgotten Tasks</h3>
                   <p className="text-text-secondary">
-                    Uncover tasks you didn't even know you were tracking mentally. Our trigger system reveals hidden mental load.
+                    Uncover tasks you didn&apos;t even know you were tracking mentally. Our trigger system reveals hidden mental load.
                   </p>
                 </div>
               </div>
