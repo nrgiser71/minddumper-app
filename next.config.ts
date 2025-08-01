@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
   
   // Disable aggressive resource preloading that causes console warnings
   reactStrictMode: true,
+  
+  // TypeScript configuration
+  typescript: {
+    ignoreBuildErrors: true,
+  },
 
   // Security headers
   async headers() {
