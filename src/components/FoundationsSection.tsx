@@ -13,7 +13,7 @@ const FoundationsSection = () => {
               alt="MindDumper pricing and features interface" 
               width={600}
               height={400}
-              quality={95}
+              quality={100}
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />
           </div>
