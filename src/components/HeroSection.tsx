@@ -41,6 +41,8 @@ const HeroSection = () => {
             alt="MindDumper interface showing brain dump functionality" 
             width={600}
             height={400}
+            quality={95}
+            priority
             className="w-full max-w-5xl mx-auto relative z-10"
           />
         </div>

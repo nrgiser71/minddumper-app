@@ -18,11 +18,9 @@ const FeatureSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           <div className="relative group overflow-hidden rounded-xl">
             <div className="h-64 star-wars-container relative">
-              <Image 
+              <img 
                 src="/minddumper-trigger-words.png" 
                 alt="MindDumper trigger words scrolling list" 
-                width={600}
-                height={400}
                 className="w-full h-auto absolute top-0 left-0 animate-star-wars"
                 style={{ 
                   height: 'auto', 
@@ -45,6 +43,7 @@ const FeatureSection = () => {
               alt="MindDumper custom triggers interface" 
               width={600}
               height={400}
+              quality={95}
               className="w-full h-64 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-surface-darker/80 to-transparent rounded-xl"></div>
@@ -60,6 +59,7 @@ const FeatureSection = () => {
               alt="MindDumper export and integrations interface" 
               width={600}
               height={400}
+              quality={95}
               className="w-full h-64 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-surface-darker/80 to-transparent rounded-xl"></div>

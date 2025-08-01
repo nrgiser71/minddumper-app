@@ -124,3 +124,35 @@ All colors MUST be HSL.
     @apply bg-background text-foreground;
   }
 }
+
+/* Star Wars scrolling animation for trigger words */
+@keyframes star-wars-crawl {
+  0% {
+    transform: rotateX(40deg) translateY(100%) translateZ(0) scale(4.5);
+    opacity: 0;
+  }
+  8% {
+    transform: rotateX(40deg) translateY(88%) translateZ(0) scale(4.5);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(40deg) translateY(-144%) translateZ(0) scale(4.5);
+    opacity: 0;
+  }
+}
+
+.star-wars-container {
+  perspective: 400px;
+  perspective-origin: center 20%;
+  overflow: hidden;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.8) 100%);
+  position: relative;
+}
+
+.animate-star-wars {
+  animation: star-wars-crawl 25s linear infinite;
+  transform-style: preserve-3d;
+  transform-origin: center bottom;
+  width: 100%;
+  object-fit: contain;
+}

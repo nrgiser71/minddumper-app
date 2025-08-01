@@ -54,6 +54,7 @@ const StopCarryingSection = () => {
               alt="MindDumper stop carrying weight interface" 
               width={600}
               height={400}
+              quality={95}
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />
           </div>
