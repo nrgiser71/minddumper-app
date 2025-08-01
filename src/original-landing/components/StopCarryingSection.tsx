@@ -48,7 +48,7 @@ const StopCarryingSection = () => {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-primary opacity-10 blur-2xl rounded-full"></div>
             <img 
-              src="/minddumper-hero.png" 
+              src="/minddumper-stop-carrying.png" 
               alt="MindDumper stop carrying weight interface" 
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />

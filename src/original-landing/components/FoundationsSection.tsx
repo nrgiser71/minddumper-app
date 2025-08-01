@@ -10,7 +10,7 @@ const FoundationsSection = () => {
           <div className="relative order-2 lg:order-1">
             <div className="absolute inset-0 bg-gradient-primary opacity-30 blur-3xl rounded-full"></div>
             <img 
-              src="/minddumper-hero.png" 
+              src="/minddumper-pricing.png" 
               alt="MindDumper pricing and features interface" 
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />

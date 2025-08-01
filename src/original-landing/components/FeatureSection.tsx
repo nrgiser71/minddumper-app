@@ -21,7 +21,7 @@ const FeatureSection = () => {
           <div className="relative group overflow-hidden rounded-xl">
             <div className="h-64 star-wars-container relative">
               <img 
-                src="/minddumper-hero.png" 
+                src="/minddumper-trigger-words.png" 
                 alt="MindDumper trigger words scrolling list" 
                 className="w-full h-auto absolute top-0 left-0 animate-star-wars"
                 style={{ 
@@ -41,7 +41,7 @@ const FeatureSection = () => {
           
           <div className="relative group">
             <img 
-              src="/minddumper-hero.png" 
+              src="/minddumper-custom-triggers.png" 
               alt="MindDumper custom triggers interface" 
               className="w-full h-64 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
             />
@@ -54,7 +54,7 @@ const FeatureSection = () => {
           
           <div className="relative group">
             <img 
-              src="/minddumper-hero.png" 
+              src="/minddumper-export-integrations.png" 
               alt="MindDumper export and integrations interface" 
               className="w-full h-64 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
             />

@@ -19,7 +19,7 @@ const CollaborationSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           <div className="space-y-4">
             <img 
-              src="/minddumper-hero.png" 
+              src="/hero-laptop.jpg" 
               alt="Dashboard interface" 
               className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
             />
@@ -33,7 +33,7 @@ const CollaborationSection = () => {
           
           <div className="space-y-4">
             <img 
-              src="/minddumper-hero.png" 
+              src="/code-monitor.jpg" 
               alt="Development UI" 
               className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
             />
@@ -47,7 +47,7 @@ const CollaborationSection = () => {
           
           <div className="space-y-4">
             <img 
-              src="/minddumper-hero.png" 
+              src="/person-laptop.jpg" 
               alt="Mobile interface" 
               className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
             />
@@ -61,7 +61,7 @@ const CollaborationSection = () => {
           
           <div className="space-y-4">
             <img 
-              src="/minddumper-hero.png" 
+              src="/team-collaboration.jpg" 
               alt="Team collaboration" 
               className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
             />

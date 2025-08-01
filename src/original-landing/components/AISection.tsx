@@ -65,7 +65,7 @@ const AISection = () => {
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-primary opacity-20 blur-3xl rounded-full"></div>
             <img 
-              src="/minddumper-hero.png" 
+              src="/hero-laptop.jpg" 
               alt="AI-powered interface" 
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />
