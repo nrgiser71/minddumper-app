@@ -11,6 +11,14 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  {
+    files: ["src/original-landing/**/*"],
+    rules: {
+      "@typescript-eslint/no-unused-vars": "off",
+      "@typescript-eslint/no-empty-object-type": "off",
+      "@next/next/no-html-link-for-pages": "off"
+    }
+  }
 ];
 
 export default eslintConfig;

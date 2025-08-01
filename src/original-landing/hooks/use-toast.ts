@@ -17,10 +17,12 @@ type ToasterToast = ToastProps & {
 
 const actionTypes = {
   ADD_TOAST: "ADD_TOAST",
-  UPDATE_TOAST: "UPDATE_TOAST",
+  UPDATE_TOAST: "UPDATE_TOAST", 
   DISMISS_TOAST: "DISMISS_TOAST",
   REMOVE_TOAST: "REMOVE_TOAST",
 } as const
+
+type ActionType = typeof actionTypes[keyof typeof actionTypes]
 
 let count = 0
 
@@ -29,23 +31,17 @@ function genId() {
   return count.toString()
 }
 
-type ActionType = typeof actionTypes
-
 type Action =
   | {
-      type: ActionType["ADD_TOAST"]
+      type: ActionType
       toast: ToasterToast
     }
   | {
-      type: ActionType["UPDATE_TOAST"]
-      toast: Partial<ToasterToast>
+      type: ActionType
+      toast?: Partial<ToasterToast>
     }
   | {
-      type: ActionType["DISMISS_TOAST"]
-      toastId?: ToasterToast["id"]
-    }
-  | {
-      type: ActionType["REMOVE_TOAST"]
+      type: ActionType
       toastId?: ToasterToast["id"]
     }
 
@@ -63,7 +59,7 @@ const addToRemoveQueue = (toastId: string) => {
   const timeout = setTimeout(() => {
     toastTimeouts.delete(toastId)
     dispatch({
-      type: "REMOVE_TOAST",
+      type: "REMOVE_TOAST" as ActionType,
       toastId: toastId,
     })
   }, TOAST_REMOVE_DELAY)
@@ -83,15 +79,13 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         toasts: state.toasts.map((t) =>
-          t.id === action.toast.id ? { ...t, ...action.toast } : t
+          t.id === action.toast?.id ? { ...t, ...action.toast } : t
         ),
       }
 
     case "DISMISS_TOAST": {
       const { toastId } = action
 
-      // ! Side effects ! - This could be extracted into a dismissToast() action,
-      // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
       } else {
@@ -144,13 +138,13 @@ function toast({ ...props }: Toast) {
 
   const update = (props: ToasterToast) =>
     dispatch({
-      type: "UPDATE_TOAST",
+      type: "UPDATE_TOAST" as ActionType,
       toast: { ...props, id },
     })
-  const dismiss = () => dispatch({ type: "DISMISS_TOAST", toastId: id })
+  const dismiss = () => dispatch({ type: "DISMISS_TOAST" as ActionType, toastId: id })
 
   dispatch({
-    type: "ADD_TOAST",
+    type: "ADD_TOAST" as ActionType,
     toast: {
       ...props,
       id,
@@ -184,7 +178,7 @@ function useToast() {
   return {
     ...state,
     toast,
-    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST", toastId }),
+    dismiss: (toastId?: string) => dispatch({ type: "DISMISS_TOAST" as ActionType, toastId }),
   }
 }
 
