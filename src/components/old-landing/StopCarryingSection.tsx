@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
-
+import Image from "next/image";
 
 const StopCarryingSection = () => {
   return (
@@ -39,17 +38,24 @@ const StopCarryingSection = () => {
               </div>
             </div>
             
-            <Button variant="hero" size="xl" className="group">
+            <a 
+              href="https://order.minddumper.com/checkout/minddumper"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-gradient-primary text-primary-foreground hover:opacity-90 h-12 px-8 text-lg group"
+            >
               Clear My Mind Now - €49
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            </a>
           </div>
           
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-primary opacity-10 blur-2xl rounded-full"></div>
-            <img 
+            <Image 
               src="/minddumper-stop-carrying.png" 
               alt="MindDumper stop carrying weight interface" 
+              width={600}
+              height={400}
+              quality={100}
+              unoptimized
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />
           </div>

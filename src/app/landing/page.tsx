@@ -1,14 +1,16 @@
 'use client'
 
-import Header from "@/components/Header";
-import HeroSection from "@/components/HeroSection";
-import PainPointsSection from "@/components/PainPointsSection";
-import StopCarryingSection from "@/components/StopCarryingSection";
-import FeatureSection from "@/components/FeatureSection";
-import IssueTrackingSection from "@/components/IssueTrackingSection";
-import FoundationsSection from "@/components/FoundationsSection";
-import FAQSection from "@/components/FAQSection";
-import Footer from "@/components/Footer";
+import React from 'react'
+import HeroSection from "@/components/HeroSection"
+import PainPointsSection from "@/components/PainPointsSection"
+import StopCarryingSection from "@/components/StopCarryingSection"
+import FeatureSection from "@/components/FeatureSection"
+import IssueTrackingSection from "@/components/IssueTrackingSection"
+import FoundationsSection from "@/components/FoundationsSection"
+import FAQSection from "@/components/FAQSection"
+import Footer from "@/components/Footer"
+import Header from "@/components/Header"
+import "../../original-landing/index.css"
 
 export default function LandingPage() {
   return (
@@ -23,5 +25,5 @@ export default function LandingPage() {
       <FAQSection />
       <Footer />
     </div>
-  );
+  )
 }

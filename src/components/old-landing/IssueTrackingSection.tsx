@@ -1,4 +1,5 @@
 import { CheckCircle, AlertCircle, Clock } from "lucide-react";
+import Image from "next/image";
 
 const IssueTrackingSection = () => {
   return (
@@ -7,9 +8,11 @@ const IssueTrackingSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative order-2 lg:order-1">
             <div className="absolute inset-0 bg-gradient-primary opacity-10 blur-2xl rounded-full"></div>
-            <img 
+            <Image 
               src="/macbook-desk.jpg" 
               alt="Issue tracking interface" 
+              width={600}
+              height={400}
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />
           </div>

@@ -1,6 +1,5 @@
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield, Zap, Globe, Lock, Brain, Download, Settings, Cloud, Headphones } from "lucide-react";
-
+import Image from "next/image";
 
 const FoundationsSection = () => {
   return (
@@ -9,9 +8,12 @@ const FoundationsSection = () => {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           <div className="relative order-2 lg:order-1">
             <div className="absolute inset-0 bg-gradient-primary opacity-30 blur-3xl rounded-full"></div>
-            <img 
+            <Image 
               src="/minddumper-pricing.png" 
               alt="MindDumper pricing and features interface" 
+              width={600}
+              height={400}
+              quality={100}
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />
           </div>
@@ -118,10 +120,13 @@ const FoundationsSection = () => {
               </div>
             </div>
             
-            <Button variant="outline" className="group">
+            <a 
+              href="https://order.minddumper.com/checkout/minddumper"
+              className="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 group"
+            >
               Get Lifetime Access - €49
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            </a>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles, Zap, Brain } from "lucide-react";
+import Image from "next/image";
 
 const AISection = () => {
   return (
@@ -64,9 +65,11 @@ const AISection = () => {
           
           <div className="relative">
             <div className="absolute inset-0 bg-gradient-primary opacity-20 blur-3xl rounded-full"></div>
-            <img 
+            <Image 
               src="/hero-laptop.jpg" 
               alt="AI-powered interface" 
+              width={600}
+              height={400}
               className="w-full rounded-2xl shadow-elegant relative z-10"
             />
           </div>

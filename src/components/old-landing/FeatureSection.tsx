@@ -1,6 +1,4 @@
-
-
-
+import Image from "next/image";
 
 const FeatureSection = () => {
   return (
@@ -40,9 +38,12 @@ const FeatureSection = () => {
           </div>
           
           <div className="relative group">
-            <img 
+            <Image 
               src="/minddumper-custom-triggers.png" 
               alt="MindDumper custom triggers interface" 
+              width={600}
+              height={400}
+              quality={100}
               className="w-full h-64 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-surface-darker/80 to-transparent rounded-xl"></div>
@@ -53,9 +54,12 @@ const FeatureSection = () => {
           </div>
           
           <div className="relative group">
-            <img 
+            <Image 
               src="/minddumper-export-integrations.png" 
               alt="MindDumper export and integrations interface" 
+              width={600}
+              height={400}
+              quality={100}
               className="w-full h-64 object-cover rounded-xl group-hover:scale-105 transition-transform duration-300"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-surface-darker/80 to-transparent rounded-xl"></div>

@@ -36,7 +36,7 @@ const FAQSection = () => {
       answer: "That's exactly who this is for! If you were good at remembering, you wouldn't need trigger words."
     },
     {
-      question: "What if I can&apos;t think of anything during the brain dump?",
+      question: "What if I can't think of anything during the brain dump?",
       answer: "This happens to everyone initially. That's why we use trigger words - they act as memory prompts."
     },
     {

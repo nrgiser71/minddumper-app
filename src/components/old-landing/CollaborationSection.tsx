@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import Image from "next/image";
 
 const CollaborationSection = () => {
   return (
@@ -18,9 +19,11 @@ const CollaborationSection = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           <div className="space-y-4">
-            <img 
+            <Image 
               src="/hero-laptop.jpg" 
               alt="Dashboard interface" 
+              width={600}
+              height={400}
               className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
             />
             <div className="bg-surface-light rounded-lg p-4">
@@ -32,9 +35,11 @@ const CollaborationSection = () => {
           </div>
           
           <div className="space-y-4">
-            <img 
+            <Image 
               src="/code-monitor.jpg" 
               alt="Development UI" 
+              width={600}
+              height={400}
               className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
             />
             <div className="bg-surface-light rounded-lg p-4">
@@ -46,9 +51,11 @@ const CollaborationSection = () => {
           </div>
           
           <div className="space-y-4">
-            <img 
+            <Image 
               src="/person-laptop.jpg" 
               alt="Mobile interface" 
+              width={600}
+              height={400}
               className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
             />
             <div className="bg-surface-light rounded-lg p-4">
@@ -60,9 +67,11 @@ const CollaborationSection = () => {
           </div>
           
           <div className="space-y-4">
-            <img 
+            <Image 
               src="/team-collaboration.jpg" 
               alt="Team collaboration" 
+              width={600}
+              height={400}
               className="w-full h-48 object-cover rounded-xl hover:scale-105 transition-transform duration-300"
             />
             <div className="bg-surface-light rounded-lg p-4">
