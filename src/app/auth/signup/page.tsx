@@ -63,14 +63,21 @@ export default function SignupPage() {
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      backgroundColor: '#f8f9fa',
-      padding: '1rem'
-    }}>
+    <>
+      <style jsx global>{`
+        body {
+          background-color: #f8f9fa !important;
+          color: #333 !important;
+        }
+      `}</style>
+      <div style={{
+        minHeight: '100vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: '#f8f9fa',
+        padding: '1rem'
+      }}>
       <div style={{
         backgroundColor: 'white',
         padding: '2rem',
@@ -267,5 +274,6 @@ export default function SignupPage() {
         </div>
       </div>
     </div>
+    </>
   )
 }
