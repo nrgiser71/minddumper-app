@@ -75,3 +75,19 @@
 - **Component Architecture**: New landing components now serve as main components
 - **Performance**: Landing page size increased to 21.1 kB but with better content and functionality
 
+### Language Preference UX Improvement (August 3, 2025)
+- **Smart Language Selection**: Users choose language once, stored as preference
+- **New User Flow**: First-time users select language, saved to profile automatically
+- **Returning User Flow**: "Start Brain Dump" uses saved language preference (no selection needed)
+- **Configuration Integration**: Language preference editable in Configuration screen
+- **Database Schema**: Utilizes existing profiles.language column for persistence
+- **UX Benefits**: Significantly faster workflow for returning users while maintaining choice for new users
+
+### Technical Implementation Details
+- **Profile Language Functions**: getUserProfileLanguage() and updateUserProfileLanguage()
+- **Smart Brain Dump Logic**: handleStartBrainDump() checks preference before proceeding
+- **Language Selection Enhancement**: startMindDumpWithLanguageSave() for first-time users
+- **Configuration Sync**: Language dropdown in config reflects and updates profile preference
+- **User Interface**: Clear labeling "Preferred Language" with explanatory text
+- **Debug Support**: Added /api/debug/reset-language for testing new user flow
+

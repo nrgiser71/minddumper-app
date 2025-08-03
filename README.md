@@ -67,8 +67,17 @@ src/
 └── lib/                 # Utilities and configurations
 ```
 
-## Recent Updates (July 2025)
+## Recent Updates (July-August 2025)
 
+### August 2025
+- [x] **Language Preference UX**: Smart language selection - users choose once, app remembers preference
+- [x] **New User Onboarding**: First-time users select language, automatically saved to profile
+- [x] **Returning User Flow**: "Start Brain Dump" uses saved language (no re-selection needed)
+- [x] **Configuration Enhancement**: Language preference editable in settings with clear labeling
+- [x] **Bug Fixes**: Fixed login page text visibility (white-on-white issue resolved)
+- [x] **Security Fix**: Resolved configuration save issue (admin auth removed from user function)
+
+### July 2025
 - [x] **Landing Page Optimization**: Updated marketing copy for better clarity
 - [x] **FAQ Section**: Expanded from 6 to 11 FAQ items with better questions  
 - [x] **Problem Scenarios**: Added 6 additional mental overwhelm scenarios (12 total)
@@ -82,11 +91,13 @@ src/
 - [x] Complete brain dump app mockup
 - [x] Export functionaliteit
 - [x] Landing page optimization en content verbetering
-- [ ] Supabase database integratie
-- [ ] User authentication
-- [ ] Real triggerwoorden database
-- [ ] Payment integratie (PlugAndPay)
-- [ ] Custom domain (minddumper.com)
+- [x] Supabase database integratie
+- [x] User authentication
+- [x] Real triggerwoorden database
+- [x] Payment integratie (PlugAndPay)
+- [x] Custom domain (minddumper.com)
+- [x] Language preference system
+- [x] User onboarding optimization
 
 ## License
 
