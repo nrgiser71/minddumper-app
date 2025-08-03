@@ -168,6 +168,8 @@ function AppContent() {
   const [userWordsLoading, setUserWordsLoading] = useState(false)
   const [savingPreferences, setSavingPreferences] = useState(false)
   const [autoSaveStatus, setAutoSaveStatus] = useState<string>('')
+  const [userProfileLanguage, setUserProfileLanguage] = useState<Language | null>(null)
+  const [profileLanguageLoading, setProfileLanguageLoading] = useState(true)
   const autoSaveIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const [sessionId, setSessionId] = useState<string | null>(null)
   const [isOnline, setIsOnline] = useState(true)
@@ -227,6 +229,24 @@ function AppContent() {
     }
   }, [])
 
+  // Load user profile language preference on component mount
+  useEffect(() => {
+    const loadUserLanguagePreference = async () => {
+      setProfileLanguageLoading(true)
+      const profileLanguage = await getUserProfileLanguage()
+      setUserProfileLanguage(profileLanguage)
+      
+      // If user has a language preference, also set it as current language
+      if (profileLanguage) {
+        setCurrentLanguage(profileLanguage)
+      }
+      
+      setProfileLanguageLoading(false)
+    }
+
+    loadUserLanguagePreference()
+  }, [])
+
   const showScreen = (screenId: Screen) => {
     setCurrentScreen(screenId)
     
@@ -243,6 +263,79 @@ function AppContent() {
     // Load user words when going to config screen
     if (screenId === 'config') {
       loadUserWords()
+    }
+  }
+
+  // Function to get user profile language preference
+  const getUserProfileLanguage = async (): Promise<Language | null> => {
+    try {
+      const { data: user } = await supabase.auth.getUser()
+      if (!user.user) {
+        return null
+      }
+
+      const { data: profile, error } = await supabase
+        .from('profiles')
+        .select('language')
+        .eq('id', user.user.id)
+        .single()
+
+      if (error) {
+        console.error('Error fetching user profile:', error)
+        return null
+      }
+
+      return profile?.language as Language || null
+    } catch (error) {
+      console.error('Error getting user profile language:', error)
+      return null
+    }
+  }
+
+  // Function to update user profile language preference
+  const updateUserProfileLanguage = async (language: Language) => {
+    try {
+      const { data: user } = await supabase.auth.getUser()
+      if (!user.user) {
+        showToast('Not logged in', 'error')
+        return false
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ language })
+        .eq('id', user.user.id)
+
+      if (error) {
+        console.error('Error updating user profile language:', error)
+        showToast('Failed to save language preference', 'error')
+        return false
+      }
+
+      setUserProfileLanguage(language)
+      showToast('Language preference saved', 'success')
+      return true
+    } catch (error) {
+      console.error('Error updating user profile language:', error)
+      showToast('Failed to save language preference', 'error')
+      return false
+    }
+  }
+
+  // Smart brain dump starter - checks language preference first
+  const handleStartBrainDump = () => {
+    if (profileLanguageLoading) {
+      // Still loading profile, wait a bit
+      showToast('Loading user preferences...', 'info')
+      return
+    }
+
+    if (userProfileLanguage) {
+      // User has a language preference, start directly with that language
+      startMindDump(userProfileLanguage)
+    } else {
+      // No language preference, go to language selection screen
+      showScreen('language')
     }
   }
 
@@ -744,6 +837,17 @@ function AppContent() {
     setSavingPreferences(false)
   }
 
+  // Function to start mind dump and save language preference for first-time users
+  const startMindDumpWithLanguageSave = async (language: Language) => {
+    // If user doesn't have a language preference yet, save it
+    if (!userProfileLanguage) {
+      await updateUserProfileLanguage(language)
+    }
+    
+    // Start the mind dump
+    await startMindDump(language)
+  }
+
   const startMindDump = async (language: Language) => {
     setLoading(true)
     setCurrentLanguage(language)
@@ -986,7 +1090,7 @@ function AppContent() {
             
             <div className="home-content">
               <div className="primary-action-card">
-                <button className="btn-primary large hero-button" onClick={() => showScreen('language')}>
+                <button className="btn-primary large hero-button" onClick={handleStartBrainDump}>
                   <div className="button-icon">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                       <path d="M12 2C8.13 2 5 5.13 5 9C5 11.39 6.16 13.49 7.89 14.81L8 15V18C8 19.1 8.9 20 10 20H14C15.1 20 16 19.1 16 18V15L16.11 14.81C17.84 13.49 19 11.39 19 9C19 5.13 15.87 2 12 2ZM12 4C14.76 4 17 6.24 17 9C17 10.78 16.15 12.37 14.78 13.33L14 13.86V18H10V13.86L9.22 13.33C7.85 12.37 7 10.78 7 9C7 6.24 9.24 4 12 4Z" fill="currentColor"/>
@@ -1049,27 +1153,27 @@ function AppContent() {
             </div>
             
             <div className="language-grid">
-              <button className="language-option" onClick={() => startMindDump('nl')} disabled={loading}>
+              <button className="language-option" onClick={() => startMindDumpWithLanguageSave('nl')} disabled={loading}>
                 <div className="flag">🇳🇱</div>
                 <span>Nederlands</span>
               </button>
               
-              <button className="language-option" onClick={() => startMindDump('en')} disabled={loading}>
+              <button className="language-option" onClick={() => startMindDumpWithLanguageSave('en')} disabled={loading}>
                 <div className="flag">🇬🇧</div>
                 <span>English</span>
               </button>
               
-              <button className="language-option" onClick={() => startMindDump('de')} disabled={loading}>
+              <button className="language-option" onClick={() => startMindDumpWithLanguageSave('de')} disabled={loading}>
                 <div className="flag">🇩🇪</div>
                 <span>Deutsch</span>
               </button>
               
-              <button className="language-option" onClick={() => startMindDump('fr')} disabled={loading}>
+              <button className="language-option" onClick={() => startMindDumpWithLanguageSave('fr')} disabled={loading}>
                 <div className="flag">🇫🇷</div>
                 <span>Français</span>
               </button>
               
-              <button className="language-option" onClick={() => startMindDump('es')} disabled={loading}>
+              <button className="language-option" onClick={() => startMindDumpWithLanguageSave('es')} disabled={loading}>
                 <div className="flag">🇪🇸</div>
                 <span>Español</span>
               </button>
@@ -1261,11 +1365,15 @@ function AppContent() {
               <h3>Language</h3>
               <select 
                 className="language-select" 
-                value={currentLanguage} 
+                value={userProfileLanguage || currentLanguage} 
                 onChange={async (e) => {
                   const newLanguage = e.target.value as Language
                   setCurrentLanguage(newLanguage)
                   setConfigLoading(true)
+                  
+                  // Update user profile language preference
+                  await updateUserProfileLanguage(newLanguage)
+                  
                   try {
                     const words = await getTriggerWordsList(newLanguage)
                     setConfigTriggerWords(words)
