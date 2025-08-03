@@ -1362,7 +1362,10 @@ function AppContent() {
             </div>
             
             <div className="config-section">
-              <h3>Language</h3>
+              <h3>Preferred Language</h3>
+              <p style={{fontSize: '0.9rem', color: '#666', marginBottom: '1rem'}}>
+                Your default language for brain dumps. This will be used when you click &quot;Start Brain Dump&quot;.
+              </p>
               <select 
                 className="language-select" 
                 value={userProfileLanguage || currentLanguage} 
