@@ -124,7 +124,7 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
       {/* Highlight target element - skip for welcome step */}
       {isActive && spotlightElement && step.target !== 'none' && (
         <div
-          className="fixed border-4 border-orange-500 rounded-lg pointer-events-none z-[55]"
+          className="fixed border-4 border-white rounded-lg pointer-events-none z-[55]"
           style={{
             top: spotlightElement.getBoundingClientRect().top - 4,
             left: spotlightElement.getBoundingClientRect().left - 4,
