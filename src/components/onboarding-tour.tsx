@@ -22,7 +22,7 @@ const TOUR_STEPS: TourStep[] = [
     id: 'welcome',
     title: 'Welcome to MindDumper!',
     content: "Let's give you a quick tour of the app so you can start clearing your mind effectively.",
-    target: '.main-container',
+    target: '[data-tour="start-brain-dump"]',
     position: 'bottom'
   },
   {
@@ -111,41 +111,43 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
 
   return (
     <TooltipProvider>
-      {/* Dark overlay */}
-      <div className="fixed inset-0 bg-black bg-opacity-80 z-50 pointer-events-none">
-        {/* Spotlight effect */}
-        {spotlightElement && (
-          <div
-            className="absolute bg-white rounded-lg shadow-2xl pointer-events-none"
-            style={{
-              top: spotlightElement.getBoundingClientRect().top - 8,
-              left: spotlightElement.getBoundingClientRect().left - 8,
-              width: spotlightElement.getBoundingClientRect().width + 16,
-              height: spotlightElement.getBoundingClientRect().height + 16,
-              boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.8)',
-              zIndex: 51
-            }}
-          />
-        )}
-      </div>
+      {/* Dark overlay - only show when tour is active */}
+      {isActive && (
+        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 pointer-events-none">
+          {/* Spotlight effect */}
+          {spotlightElement && (
+            <div
+              className="absolute bg-white rounded-lg shadow-2xl pointer-events-none"
+              style={{
+                top: spotlightElement.getBoundingClientRect().top - 8,
+                left: spotlightElement.getBoundingClientRect().left - 8,
+                width: spotlightElement.getBoundingClientRect().width + 16,
+                height: spotlightElement.getBoundingClientRect().height + 16,
+                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.8)',
+                zIndex: 51
+              }}
+            />
+          )}
+        </div>
+      )}
 
-      {/* Tour tooltip */}
-      {spotlightElement && (
+      {/* Tour tooltip - only show when tour is active */}
+      {isActive && spotlightElement && (
         <div
           className="fixed z-[60] pointer-events-auto"
           style={{
             top: step.position === 'bottom' 
               ? Math.min(spotlightElement.getBoundingClientRect().bottom + 16, window.innerHeight - 300)
               : step.position === 'top'
-              ? Math.max(spotlightElement.getBoundingClientRect().top - 16, 100)
+              ? Math.max(spotlightElement.getBoundingClientRect().top - 200, 20)
               : spotlightElement.getBoundingClientRect().top,
             left: Math.min(
               Math.max(
                 step.position === 'right'
                   ? spotlightElement.getBoundingClientRect().right + 16
                   : step.position === 'left'
-                  ? spotlightElement.getBoundingClientRect().left - 16
-                  : spotlightElement.getBoundingClientRect().left,
+                  ? spotlightElement.getBoundingClientRect().left - 320
+                  : spotlightElement.getBoundingClientRect().left + (spotlightElement.getBoundingClientRect().width / 2) - 192,
                 16
               ),
               window.innerWidth - 400
