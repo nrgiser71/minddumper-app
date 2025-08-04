@@ -241,10 +241,10 @@ export async function POST(request: NextRequest) {
             console.log('✅ Profile updated for user:', userId)
           }
         } else {
-          // Create new profile record
+          // Create new profile record using UPSERT to handle duplicates
           const { error: profileError } = await supabase
             .from('profiles')
-            .insert({
+            .upsert({
               id: userId,
               email: email,
               full_name: fullName,
@@ -261,10 +261,10 @@ export async function POST(request: NextRequest) {
             })
 
           if (profileError) {
-            console.error('❌ Error creating profile:', profileError)
+            console.error('❌ Error upserting profile:', profileError)
             // Don't return error - user is created, profile creation can be retried
           } else {
-            console.log('✅ Profile created for user:', userId)
+            console.log('✅ Profile upserted for user:', userId)
           }
         }
 
