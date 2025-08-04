@@ -126,7 +126,7 @@ const CONFIG_TOUR_STEPS: TourStep[] = [
   {
     id: 'language',
     title: 'Language Preference',
-    content: 'Choose your preferred language for trigger words and the interface.',
+    content: 'Choose your preferred language for trigger words. The interface stays in English.',
     target: '.language-setting',
     position: 'bottom'
   },
