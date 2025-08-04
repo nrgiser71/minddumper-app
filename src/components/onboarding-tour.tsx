@@ -81,14 +81,6 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
     
     if (!element) {
       console.warn(`Tour step ${currentStep}: Element not found for selector "${step.target}"`)
-      // If element not found, try to skip to next step
-      setTimeout(() => {
-        if (currentStep < TOUR_STEPS.length - 1) {
-          setCurrentStep(currentStep + 1)
-        } else {
-          onComplete()
-        }
-      }, 100)
       return
     }
 
@@ -96,7 +88,7 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
 
     // Scroll element into view
     element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-  }, [currentStep, isActive, onComplete])
+  }, [currentStep, isActive])
 
   const nextStep = () => {
     if (currentStep < TOUR_STEPS.length - 1) {
@@ -129,41 +121,30 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
 
   return (
     <TooltipProvider>
-      {/* Dark overlay with cutout - only show when tour is active */}
+      {/* Simple dark overlay */}
+      {isActive && (
+        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 pointer-events-none" />
+      )}
+
+      {/* Highlight target element */}
       {isActive && spotlightElement && (
-        <div 
-          className="fixed inset-0 z-50 pointer-events-none"
+        <div
+          className="fixed border-4 border-blue-500 rounded-lg pointer-events-none z-[55]"
           style={{
-            background: `radial-gradient(circle at ${spotlightElement.getBoundingClientRect().left + spotlightElement.getBoundingClientRect().width/2}px ${spotlightElement.getBoundingClientRect().top + spotlightElement.getBoundingClientRect().height/2}px, transparent ${Math.max(spotlightElement.getBoundingClientRect().width, spotlightElement.getBoundingClientRect().height)/2 + 20}px, rgba(0,0,0,0.8) ${Math.max(spotlightElement.getBoundingClientRect().width, spotlightElement.getBoundingClientRect().height)/2 + 40}px)`
+            top: spotlightElement.getBoundingClientRect().top - 4,
+            left: spotlightElement.getBoundingClientRect().left - 4,
+            width: spotlightElement.getBoundingClientRect().width + 8,
+            height: spotlightElement.getBoundingClientRect().height + 8,
           }}
         />
       )}
 
-      {/* Tour tooltip - only show when tour is active */}
-      {isActive && spotlightElement && (
+      {/* Tour tooltip */}
+      {isActive && (
         <div
-          className="fixed z-[60] pointer-events-auto"
-          style={{
-            top: step.position === 'bottom' 
-              ? Math.min(spotlightElement.getBoundingClientRect().bottom + 16, window.innerHeight - 300)
-              : step.position === 'top'
-              ? Math.max(spotlightElement.getBoundingClientRect().top - 200, 20)
-              : spotlightElement.getBoundingClientRect().top,
-            left: Math.min(
-              Math.max(
-                step.position === 'right'
-                  ? spotlightElement.getBoundingClientRect().right + 16
-                  : step.position === 'left'
-                  ? spotlightElement.getBoundingClientRect().left - 320
-                  : spotlightElement.getBoundingClientRect().left + (spotlightElement.getBoundingClientRect().width / 2) - 192,
-                16
-              ),
-              window.innerWidth - 400
-            ),
-            transform: step.position === 'top' ? 'translateY(-100%)' : 'none'
-          }}
+          className="fixed z-[60] pointer-events-auto top-4 left-4 right-4"
         >
-          <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-4 sm:p-6 w-80 sm:w-96 max-w-[calc(100vw-32px)]">
+          <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-4 sm:p-6 max-w-md mx-auto">
             {/* Progress indicator */}
             <div className="flex items-center justify-between mb-4">
               <div className="text-xs sm:text-sm text-gray-500">
