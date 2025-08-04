@@ -11,6 +11,7 @@ import { supabase } from '@/lib/supabase'
 import { ToastProvider, useToast } from '@/components/toast-context'
 import { ToastContainer } from '@/components/toast-container'
 import { ConfirmationModal } from '@/components/confirmation-modal'
+import { OnboardingTour } from '@/components/onboarding-tour'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
@@ -172,6 +173,9 @@ function AppContent() {
   const [profileLanguageLoading, setProfileLanguageLoading] = useState(true)
   const autoSaveIntervalRef = useRef<NodeJS.Timeout | null>(null)
   const [sessionId, setSessionId] = useState<string | null>(null)
+  
+  // Onboarding tour state
+  const [showTour, setShowTour] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [pendingSaves, setPendingSaves] = useState<{
     language: string
@@ -246,6 +250,28 @@ function AppContent() {
 
     loadUserLanguagePreference()
   }, [])
+
+  // Check if user needs onboarding tour
+  useEffect(() => {
+    const tourCompleted = localStorage.getItem('minddumper-tour-completed')
+    if (!tourCompleted) {
+      // Show tour after a short delay to let the page load
+      setTimeout(() => {
+        setShowTour(true)
+      }, 1000)
+    }
+  }, [])
+
+  // Tour handlers
+  const handleTourComplete = () => {
+    localStorage.setItem('minddumper-tour-completed', 'true')
+    setShowTour(false)
+  }
+
+  const handleTourSkip = () => {
+    localStorage.setItem('minddumper-tour-completed', 'true')
+    setShowTour(false)
+  }
 
   const showScreen = (screenId: Screen) => {
     setCurrentScreen(screenId)
@@ -1081,7 +1107,7 @@ function AppContent() {
     <div>
       {/* Home Screen */}
       {currentScreen === 'home' && (
-        <div className="screen active">
+        <div className="screen active main-container">
           <div className="app-container">
             <div className="app-header">
               <h1 className="app-title">MindDumper</h1>
@@ -1090,7 +1116,7 @@ function AppContent() {
             
             <div className="home-content">
               <div className="primary-action-card">
-                <button className="btn-primary large hero-button" onClick={handleStartBrainDump}>
+                <button className="btn-primary large hero-button" onClick={handleStartBrainDump} data-tour="start-brain-dump">
                   <div className="button-icon">
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
                       <path d="M12 2C8.13 2 5 5.13 5 9C5 11.39 6.16 13.49 7.89 14.81L8 15V18C8 19.1 8.9 20 10 20H14C15.1 20 16 19.1 16 18V15L16.11 14.81C17.84 13.49 19 11.39 19 9C19 5.13 15.87 2 12 2ZM12 4C14.76 4 17 6.24 17 9C17 10.78 16.15 12.37 14.78 13.33L14 13.86V18H10V13.86L9.22 13.33C7.85 12.37 7 10.78 7 9C7 6.24 9.24 4 12 4Z" fill="currentColor"/>
@@ -1103,7 +1129,7 @@ function AppContent() {
               
               <div className="action-cards">
                 <div className="action-card">
-                  <button className="btn-secondary large modern-config" onClick={() => showScreen('config')}>
+                  <button className="btn-secondary large modern-config" onClick={() => showScreen('config')} data-tour="configuration">
                     <div className="button-icon">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
                         <path d="M3 6H21V8H3V6ZM3 11H21V13H3V11ZM3 16H21V18H3V16Z" fill="currentColor"/>
@@ -1120,7 +1146,7 @@ function AppContent() {
             
             <div className="secondary-actions">
               <div className="secondary-action-group">
-                <button className="btn-text modern-text-btn" onClick={() => showScreen('history')}>
+                <button className="btn-text modern-text-btn" onClick={() => showScreen('history')} data-tour="history">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
                     <polyline points="12,6 12,12 16,14" stroke="currentColor" strokeWidth="2"/>
@@ -1159,7 +1185,7 @@ function AppContent() {
               <h2>Choose Your Language</h2>
             </div>
             
-            <div className="language-grid">
+            <div className="language-grid" data-tour="language-buttons">
               <button className="language-option" onClick={() => startMindDumpWithLanguageSave('nl')} disabled={loading}>
                 <div className="flag">🇳🇱</div>
                 <span>Nederlands</span>
@@ -1754,6 +1780,13 @@ function AppContent() {
         confirmButtonStyle={confirmModal.confirmButtonStyle}
         onConfirm={confirmModal.onConfirm}
         onCancel={hideConfirmation}
+      />
+
+      {/* Onboarding Tour */}
+      <OnboardingTour
+        isActive={showTour}
+        onComplete={handleTourComplete}
+        onSkip={handleTourSkip}
       />
     </div>
   )
