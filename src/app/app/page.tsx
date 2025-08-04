@@ -139,7 +139,7 @@ const cleanupOldSessions = () => {
 }
 
 function AppContent() {
-  const { signOut } = useAuth()
+  const { user, signOut } = useAuth()
   const { showToast } = useToast()
   const [currentScreen, setCurrentScreen] = useState<Screen>('home')
   const [currentLanguage, setCurrentLanguage] = useState<Language>('nl')
@@ -1127,6 +1127,13 @@ function AppContent() {
                   </svg>
                   View History
                 </button>
+                <div className="user-info" style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 12px', borderRadius: '8px', backgroundColor: 'rgba(0,0,0,0.03)', fontSize: '14px', color: '#666' }}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="2"/>
+                    <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2"/>
+                  </svg>
+                  {user?.email}
+                </div>
                 <button className="btn-text modern-text-btn" onClick={() => signOut()}>
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                     <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2"/>
