@@ -74,14 +74,14 @@ const BRAINDUMP_TOUR_STEPS: TourStep[] = [
   {
     id: 'trigger-words',
     title: 'Trigger Words',
-    content: 'These words help spark thoughts and memories. Click on any that resonate with you right now.',
+    content: 'Trigger words will appear automatically to spark thoughts and memories. If ideas come to mind, type them and press Enter. No ideas? Just press Enter for the next word.',
     target: '.trigger-words-container',
     position: 'bottom'
   },
   {
     id: 'text-input',
     title: 'Write Your Thoughts',
-    content: 'Type whatever comes to mind. Don\'t worry about grammar or organization - just let your thoughts flow.',
+    content: 'Type whatever comes to mind and press Enter to continue. Don\'t worry about grammar or organization - just let your thoughts flow using only your keyboard.',
     target: '.minddump-input',
     position: 'top'
   },
@@ -175,10 +175,13 @@ export function OnboardingTour({ isActive, onComplete, onSkip, tourType = 'main'
       return
     }
 
-    setSpotlightElement(element)
-
-    // Scroll element into view
+    // First scroll the element into view
     element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    
+    // Then set spotlight element after scroll completes
+    setTimeout(() => {
+      setSpotlightElement(element)
+    }, 500) // Wait for smooth scroll to complete
   }, [currentStep, isActive])
 
   const nextStep = () => {
