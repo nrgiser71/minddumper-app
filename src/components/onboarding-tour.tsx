@@ -22,22 +22,15 @@ const TOUR_STEPS: TourStep[] = [
     id: 'welcome',
     title: 'Welcome to MindDumper!',
     content: "Let's give you a quick tour of the app so you can start clearing your mind effectively.",
-    target: '[data-tour="start-brain-dump"]',
-    position: 'bottom'
-  },
-  {
-    id: 'language',
-    title: 'Language Selection',
-    content: 'Here you can select your preferred language for brain dumps. Choose the language you think in!',
-    target: '[data-tour="language-buttons"]',
+    target: 'none',
     position: 'bottom'
   },
   {
     id: 'start-brain-dump',
     title: 'Start Your Brain Dump',
-    content: 'This is the main button - click here to start clearing your mind with guided trigger words.',
+    content: 'Click this button to start your brain dump. If this is your first time, you can choose your preferred language - pick the language you think in!',
     target: '[data-tour="start-brain-dump"]',
-    position: 'top'
+    position: 'bottom'
   },
   {
     id: 'user-email',
@@ -55,7 +48,7 @@ const TOUR_STEPS: TourStep[] = [
   },
   {
     id: 'history',
-    title: 'View Your Progress',
+    title: 'View Your History',
     content: 'View all your previous brain dumps here to track your mental clarity journey over time.',
     target: '[data-tour="history"]',
     position: 'bottom'
@@ -77,6 +70,13 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
     if (!isActive) return
 
     const step = TOUR_STEPS[currentStep]
+    
+    // Skip element selection for welcome step
+    if (step.target === 'none') {
+      setSpotlightElement(null)
+      return
+    }
+    
     const element = document.querySelector(step.target)
     
     if (!element) {
@@ -121,15 +121,10 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
 
   return (
     <TooltipProvider>
-      {/* Simple dark overlay */}
-      {isActive && (
-        <div className="fixed inset-0 bg-black bg-opacity-75 z-50 pointer-events-none" />
-      )}
-
-      {/* Highlight target element */}
-      {isActive && spotlightElement && (
+      {/* Highlight target element - skip for welcome step */}
+      {isActive && spotlightElement && step.target !== 'none' && (
         <div
-          className="fixed border-4 border-blue-500 rounded-lg pointer-events-none z-[55]"
+          className="fixed border-4 border-orange-500 rounded-lg pointer-events-none z-[55]"
           style={{
             top: spotlightElement.getBoundingClientRect().top - 4,
             left: spotlightElement.getBoundingClientRect().left - 4,
