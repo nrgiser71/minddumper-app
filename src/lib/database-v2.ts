@@ -93,10 +93,10 @@ WHERE system_trigger_words.language = '${language}'
       console.log(`🔍 [DEBUG] First 5 preferences:`, Array.from(userPrefs.entries()).slice(0, 5))
     }
 
-    // Filter based on user preferences (default to disabled if no preference)
+    // Filter based on user preferences (default to enabled if no preference)
     const enabledSystemWords = (systemWords || [])
       .filter(word => {
-        const isEnabled = userPrefs.get(word.id) ?? false
+        const isEnabled = userPrefs.get(word.id) ?? true
         
         // Debug: Specific word tracking
         if (word.word === 'Reparaties' || word.word === 'Amusement') {
@@ -287,7 +287,7 @@ export async function getStructuredTriggerWords(language: string) {
       }
 
       const subCategory = mainCategory.subCategories.get(subCat.id)!
-      const isEnabled = userPrefs.get(word.id) ?? false // Default to disabled if no preference
+      const isEnabled = userPrefs.get(word.id) ?? true // Default to enabled if no preference
       subCategory.words.push({
         id: word.id,
         word: word.word,
