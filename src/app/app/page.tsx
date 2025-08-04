@@ -1300,7 +1300,7 @@ function AppContent() {
                   )}
                 </div>
               )}
-              <button className="btn-stop" onClick={finishMindDump}>Stop</button>
+              <button className="btn-stop stop-button" onClick={finishMindDump}>Stop</button>
             </div>
             
             <div className="progress-container">
@@ -1310,7 +1310,7 @@ function AppContent() {
               <span className="progress-text">{progress}%</span>
             </div>
             
-            <div className="trigger-container">
+            <div className="trigger-container trigger-words-container">
               <div className="category-hierarchy">
                 {mainCategory && (
                   <div className="main-category-display">
@@ -1335,7 +1335,7 @@ function AppContent() {
             <div className="input-container">
               <input 
                 type="text" 
-                className="idea-input" 
+                className="idea-input minddump-input" 
                 placeholder="Type your idea and press Enter..." 
                 value={ideaInput}
                 onChange={(e) => setIdeaInput(e.target.value)}
@@ -1438,7 +1438,7 @@ function AppContent() {
               <h2>Configuration</h2>
             </div>
             
-            <div className="config-section">
+            <div className="config-section language-setting">
               <h3>Preferred Language</h3>
               <p style={{fontSize: '0.9rem', color: '#666', marginBottom: '1rem'}}>
                 Your default language for brain dumps. This will be used when you click &quot;Start Brain Dump&quot;.
@@ -1554,7 +1554,7 @@ function AppContent() {
                 </div>
               ) : (
                 <>
-                  <div className="category-hierarchy">
+                  <div className="category-hierarchy config-trigger-words">
                     {categoryStructure.map((mainCategory, mainIndex) => (
                       <div key={mainIndex} className="main-category">
                         <div className="main-category-header">
@@ -1630,7 +1630,7 @@ function AppContent() {
               )}
             </div>
             
-            <div className="config-section">
+            <div className="config-section custom-words-section">
               <h3>My Words</h3>
               
               {userWordsLoading ? (

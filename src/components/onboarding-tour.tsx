@@ -86,10 +86,10 @@ const BRAINDUMP_TOUR_STEPS: TourStep[] = [
     position: 'top'
   },
   {
-    id: 'save',
-    title: 'Save Your Progress',
-    content: 'Click save to store your brain dump. You can always come back and continue later.',
-    target: '.save-button',
+    id: 'stop',
+    title: 'Stop Your Session',
+    content: 'Click stop when you\'re done to finish your brain dump session and save your progress.',
+    target: '.stop-button',
     position: 'top'
   },
   {
