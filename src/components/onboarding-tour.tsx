@@ -78,18 +78,33 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
 
     const step = TOUR_STEPS[currentStep]
     const element = document.querySelector(step.target)
+    
+    if (!element) {
+      console.warn(`Tour step ${currentStep}: Element not found for selector "${step.target}"`)
+      // If element not found, try to skip to next step
+      setTimeout(() => {
+        if (currentStep < TOUR_STEPS.length - 1) {
+          setCurrentStep(currentStep + 1)
+        } else {
+          onComplete()
+        }
+      }, 100)
+      return
+    }
+
     setSpotlightElement(element)
 
     // Scroll element into view
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
-  }, [currentStep, isActive])
+    element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }, [currentStep, isActive, onComplete])
 
   const nextStep = () => {
     if (currentStep < TOUR_STEPS.length - 1) {
       setCurrentStep(currentStep + 1)
     } else {
+      // Reset tour state before completing
+      setCurrentStep(0)
+      setSpotlightElement(null)
       onComplete()
     }
   }
@@ -101,6 +116,9 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
   }
 
   const skipTour = () => {
+    // Reset tour state before skipping
+    setCurrentStep(0)
+    setSpotlightElement(null)
     onSkip()
   }
 
@@ -111,24 +129,14 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
 
   return (
     <TooltipProvider>
-      {/* Dark overlay - only show when tour is active */}
-      {isActive && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 z-50 pointer-events-none">
-          {/* Spotlight effect */}
-          {spotlightElement && (
-            <div
-              className="absolute bg-white rounded-lg shadow-2xl pointer-events-none"
-              style={{
-                top: spotlightElement.getBoundingClientRect().top - 8,
-                left: spotlightElement.getBoundingClientRect().left - 8,
-                width: spotlightElement.getBoundingClientRect().width + 16,
-                height: spotlightElement.getBoundingClientRect().height + 16,
-                boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.8)',
-                zIndex: 51
-              }}
-            />
-          )}
-        </div>
+      {/* Dark overlay with cutout - only show when tour is active */}
+      {isActive && spotlightElement && (
+        <div 
+          className="fixed inset-0 z-50 pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${spotlightElement.getBoundingClientRect().left + spotlightElement.getBoundingClientRect().width/2}px ${spotlightElement.getBoundingClientRect().top + spotlightElement.getBoundingClientRect().height/2}px, transparent ${Math.max(spotlightElement.getBoundingClientRect().width, spotlightElement.getBoundingClientRect().height)/2 + 20}px, rgba(0,0,0,0.8) ${Math.max(spotlightElement.getBoundingClientRect().width, spotlightElement.getBoundingClientRect().height)/2 + 40}px)`
+          }}
+        />
       )}
 
       {/* Tour tooltip - only show when tour is active */}
