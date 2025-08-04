@@ -91,3 +91,38 @@
 - **User Interface**: Clear labeling "Preferred Language" with explanatory text
 - **Debug Support**: Added /api/debug/reset-language for testing new user flow
 
+### Onboarding Tour System Implementation (August 4, 2025)
+- **Multi-Tour Architecture**: Complete onboarding system with 3 independent tour types
+- **Main Tour**: 6-step introduction for first-time app users with localStorage tracking
+- **Brain Dump Tour**: 5-step guidance for first-time brain dump screen users
+- **Configuration Tour**: 5-step walkthrough for first-time configuration screen users
+- **Smart Highlighting**: White border system with scroll-first positioning for accurate element targeting
+- **Keyboard-First Content**: Tour content emphasizes Enter key workflow and automatic trigger word display
+- **English Content**: All tours use English for international compatibility
+- **Responsive Design**: Mobile-friendly tooltip positioning and navigation controls
+
+### Technical Implementation Details - Tours
+- **Component**: `/src/components/onboarding-tour.tsx` - 280+ lines of React tour logic
+- **Tour Tracking**: Independent localStorage keys for each tour type completion
+- **Element Targeting**: CSS class-based targeting with data-tour attributes for main elements
+- **Timing Fix**: 500ms delay after scroll before border positioning to ensure accuracy
+- **Tour States**: pending/in_progress/completed tracking with single active tour limit
+- **CSS Integration**: Added tour-specific classes to app/page.tsx for proper element targeting
+- **Content Updates**: Multiple iterations based on user feedback for accuracy and clarity
+
+### Onboarding Tour Debugging & Refinements (August 4, 2025)
+- **Brain Dump Content Fixes**: Updated steps 2 & 3 to reflect keyboard-first workflow and automatic trigger word display
+- **Configuration Tour Highlighting Issues**: Fixed white border positioning problems for steps 2, 3, and 4
+- **Root Cause Resolution**: Changed timing from immediate border drawing to scroll-first approach with 500ms delay
+- **Content Accuracy**: Corrected "save button" reference to "stop button" in brain dump tour step 4
+- **Language Preference Clarity**: Simplified tour text to avoid confusion about interface language (only trigger words change)
+- **Missing CSS Classes**: Added proper tour targeting classes for brain dump and config screens
+- **User Feedback Integration**: Multiple rapid iterations based on real-time user testing and feedback
+
+### Development Notes - Tour System
+- **Lesson Learned**: Border positioning must wait for smooth scroll completion to avoid misalignment
+- **User Testing Value**: Real-time feedback crucial for tour content accuracy and user experience
+- **Keyboard Workflow**: App designed for mouse-free operation - tours must reflect this design philosophy
+- **Content Precision**: Tour text must be precise about actual functionality to avoid user confusion
+- **Deployment Speed**: Rapid iteration cycle with immediate production testing for tour refinements
+
