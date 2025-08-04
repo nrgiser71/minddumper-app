@@ -176,6 +176,8 @@ function AppContent() {
   
   // Onboarding tour state
   const [showTour, setShowTour] = useState(false)
+  const [showBrainDumpTour, setShowBrainDumpTour] = useState(false)
+  const [showConfigTour, setShowConfigTour] = useState(false)
   const [isOnline, setIsOnline] = useState(true)
   const [pendingSaves, setPendingSaves] = useState<{
     language: string
@@ -251,26 +253,68 @@ function AppContent() {
     loadUserLanguagePreference()
   }, [])
 
-  // Check if user needs onboarding tour
+  // Check if user needs main onboarding tour
   useEffect(() => {
-    const tourCompleted = localStorage.getItem('minddumper-tour-completed')
-    if (!tourCompleted) {
+    const tourCompleted = localStorage.getItem('minddumper-main-tour-completed')
+    if (!tourCompleted && currentScreen === 'home') {
       // Show tour after a short delay to let the page load
       setTimeout(() => {
         setShowTour(true)
       }, 1000)
     }
-  }, [])
+  }, [currentScreen])
+
+  // Check if user needs brain dump tour
+  useEffect(() => {
+    const tourCompleted = localStorage.getItem('minddumper-braindump-tour-completed')
+    if (!tourCompleted && currentScreen === 'minddump') {
+      // Show tour after a short delay to let the page load
+      setTimeout(() => {
+        setShowBrainDumpTour(true)
+      }, 1000)
+    }
+  }, [currentScreen])
+
+  // Check if user needs config tour
+  useEffect(() => {
+    const tourCompleted = localStorage.getItem('minddumper-config-tour-completed')
+    if (!tourCompleted && currentScreen === 'config') {
+      // Show tour after a short delay to let the page load
+      setTimeout(() => {
+        setShowConfigTour(true)
+      }, 1000)
+    }
+  }, [currentScreen])
 
   // Tour handlers
   const handleTourComplete = () => {
-    localStorage.setItem('minddumper-tour-completed', 'true')
+    localStorage.setItem('minddumper-main-tour-completed', 'true')
     setShowTour(false)
   }
 
   const handleTourSkip = () => {
-    localStorage.setItem('minddumper-tour-completed', 'true')
+    localStorage.setItem('minddumper-main-tour-completed', 'true')
     setShowTour(false)
+  }
+
+  const handleBrainDumpTourComplete = () => {
+    localStorage.setItem('minddumper-braindump-tour-completed', 'true')
+    setShowBrainDumpTour(false)
+  }
+
+  const handleBrainDumpTourSkip = () => {
+    localStorage.setItem('minddumper-braindump-tour-completed', 'true')
+    setShowBrainDumpTour(false)
+  }
+
+  const handleConfigTourComplete = () => {
+    localStorage.setItem('minddumper-config-tour-completed', 'true')
+    setShowConfigTour(false)
+  }
+
+  const handleConfigTourSkip = () => {
+    localStorage.setItem('minddumper-config-tour-completed', 'true')
+    setShowConfigTour(false)
   }
 
   const showScreen = (screenId: Screen) => {
@@ -1782,11 +1826,24 @@ function AppContent() {
         onCancel={hideConfirmation}
       />
 
-      {/* Onboarding Tour */}
+      {/* Onboarding Tours */}
       <OnboardingTour
         isActive={showTour}
         onComplete={handleTourComplete}
         onSkip={handleTourSkip}
+        tourType="main"
+      />
+      <OnboardingTour
+        isActive={showBrainDumpTour}
+        onComplete={handleBrainDumpTourComplete}
+        onSkip={handleBrainDumpTourSkip}
+        tourType="braindump"
+      />
+      <OnboardingTour
+        isActive={showConfigTour}
+        onComplete={handleConfigTourComplete}
+        onSkip={handleConfigTourSkip}
+        tourType="config"
       />
     </div>
   )

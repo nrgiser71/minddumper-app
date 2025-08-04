@@ -15,9 +15,10 @@ interface OnboardingTourProps {
   isActive: boolean
   onComplete: () => void
   onSkip: () => void
+  tourType?: 'main' | 'braindump' | 'config'
 }
 
-const TOUR_STEPS: TourStep[] = [
+const MAIN_TOUR_STEPS: TourStep[] = [
   {
     id: 'welcome',
     title: 'Welcome to MindDumper!',
@@ -57,14 +58,104 @@ const TOUR_STEPS: TourStep[] = [
     id: 'complete',
     title: 'You\'re All Set!',
     content: 'Perfect! You now know how to use MindDumper. Ready to start dumping those thoughts and clearing your mind?',
-    target: '.main-container',
+    target: 'none',
     position: 'bottom'
   }
 ]
 
-export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourProps) {
+const BRAINDUMP_TOUR_STEPS: TourStep[] = [
+  {
+    id: 'welcome',
+    title: 'Welcome to Your First Brain Dump!',
+    content: "Let's quickly show you how to clear your mind using trigger words and free writing.",
+    target: 'none',
+    position: 'bottom'
+  },
+  {
+    id: 'trigger-words',
+    title: 'Trigger Words',
+    content: 'These words help spark thoughts and memories. Click on any that resonate with you right now.',
+    target: '.trigger-words-container',
+    position: 'bottom'
+  },
+  {
+    id: 'text-input',
+    title: 'Write Your Thoughts',
+    content: 'Type whatever comes to mind. Don\'t worry about grammar or organization - just let your thoughts flow.',
+    target: '.minddump-input',
+    position: 'top'
+  },
+  {
+    id: 'save',
+    title: 'Save Your Progress',
+    content: 'Click save to store your brain dump. You can always come back and continue later.',
+    target: '.save-button',
+    position: 'top'
+  },
+  {
+    id: 'complete',
+    title: 'That\'s It!',
+    content: 'You\'re ready to start clearing your mind. Remember: there\'s no right or wrong way to brain dump.',
+    target: 'none',
+    position: 'bottom'
+  }
+]
+
+const CONFIG_TOUR_STEPS: TourStep[] = [
+  {
+    id: 'welcome',
+    title: 'Welcome to Settings!',
+    content: "Here you can customize your trigger words and make MindDumper work perfectly for you.",
+    target: 'none',
+    position: 'bottom'
+  },
+  {
+    id: 'trigger-words',
+    title: 'Your Trigger Words',
+    content: 'These are all available trigger words. Toggle them on/off based on what helps spark your thoughts.',
+    target: '.config-trigger-words',
+    position: 'bottom'
+  },
+  {
+    id: 'custom-words',
+    title: 'Add Custom Words',
+    content: 'Add your own trigger words that are specific to your life, work, or interests.',
+    target: '.custom-words-section',
+    position: 'bottom'
+  },
+  {
+    id: 'language',
+    title: 'Language Preference',
+    content: 'Choose your preferred language for trigger words and the interface.',
+    target: '.language-setting',
+    position: 'bottom'
+  },
+  {
+    id: 'complete',
+    title: 'Configuration Complete!',
+    content: 'Your settings are personalized. You can always come back and adjust them anytime.',
+    target: 'none',
+    position: 'bottom'
+  }
+]
+
+export function OnboardingTour({ isActive, onComplete, onSkip, tourType = 'main' }: OnboardingTourProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [spotlightElement, setSpotlightElement] = useState<Element | null>(null)
+
+  // Get the correct tour steps based on type
+  const getTourSteps = () => {
+    switch (tourType) {
+      case 'braindump':
+        return BRAINDUMP_TOUR_STEPS
+      case 'config':
+        return CONFIG_TOUR_STEPS
+      default:
+        return MAIN_TOUR_STEPS
+    }
+  }
+
+  const TOUR_STEPS = getTourSteps()
 
   useEffect(() => {
     if (!isActive) return
