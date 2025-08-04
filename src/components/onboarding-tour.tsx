@@ -142,9 +142,16 @@ export function OnboardingTour({ isActive, onComplete, onSkip }: OnboardingTourP
       {/* Tour tooltip */}
       {isActive && (
         <div
-          className="fixed z-[60] pointer-events-auto top-4 left-4 right-4"
+          className="fixed z-[60] pointer-events-auto"
+          style={{
+            top: '20px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 'calc(100vw - 32px)',
+            maxWidth: '400px'
+          }}
         >
-          <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-4 sm:p-6 max-w-md mx-auto">
+          <div className="bg-white rounded-lg shadow-xl border border-gray-200 p-4 sm:p-6 w-full">
             {/* Progress indicator */}
             <div className="flex items-center justify-between mb-4">
               <div className="text-xs sm:text-sm text-gray-500">
