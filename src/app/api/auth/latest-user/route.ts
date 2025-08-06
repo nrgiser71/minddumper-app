@@ -11,12 +11,12 @@ export async function GET() {
   try {
     console.log('🔍 Looking for latest paid user...')
     
-    // Just get the most recent paid user - no time restrictions for now
+    // Get the most recent paid user - sort by paid_at to get truly latest payment
     const { data: latestUser, error } = await supabase
       .from('profiles')
-      .select('email, full_name, created_at')
+      .select('email, full_name, created_at, paid_at')
       .eq('payment_status', 'paid')
-      .order('created_at', { ascending: false })
+      .order('paid_at', { ascending: false })
       .limit(1)
     
     if (error) {
@@ -40,7 +40,8 @@ export async function GET() {
       user: {
         email: user.email,
         full_name: user.full_name,
-        created_at: user.created_at
+        created_at: user.created_at,
+        paid_at: user.paid_at
       }
     })
     
