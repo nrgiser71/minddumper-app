@@ -136,10 +136,16 @@ export default function AdminDashboard() {
         setStats(statsData.stats)
       }
       if (usersData.success) {
-        setRecentUsers(usersData.users)
+        console.log('Loaded users:', usersData.users?.length || 0, usersData.users)
+        setRecentUsers(usersData.users || [])
+      } else {
+        console.error('Failed to load users:', usersData)
       }
       if (dumpsData.success) {
-        setRecentBrainDumps(dumpsData.brainDumps)
+        console.log('Loaded brain dumps:', dumpsData.brainDumps?.length || 0, dumpsData.brainDumps)
+        setRecentBrainDumps(dumpsData.brainDumps || [])
+      } else {
+        console.error('Failed to load brain dumps:', dumpsData)
       }
       if (revenueData.success) {
         setRevenueStats(revenueData.revenue)
@@ -649,7 +655,18 @@ export default function AdminDashboard() {
               🆕 Laatste 20 Nieuwe Gebruikers
             </h3>
             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              {recentUsers.slice(0, 20).map(user => (
+              {recentUsers.length === 0 ? (
+                <div style={{ 
+                  textAlign: 'center', 
+                  color: '#666',
+                  padding: '2rem',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '6px'
+                }}>
+                  Geen gebruikers gevonden of nog aan het laden...
+                </div>
+              ) : (
+                recentUsers.slice(0, 20).map(user => (
                 <Link 
                   key={user.id}
                   href={`/admin/user/${user.id}`}
@@ -690,7 +707,8 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </Link>
-              ))}
+                ))
+              )}
             </div>
           </div>
 
@@ -710,7 +728,18 @@ export default function AdminDashboard() {
               🧠 Laatste 50 Mind Dumps
             </h3>
             <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-              {recentBrainDumps.slice(0, 50).map(dump => (
+              {recentBrainDumps.length === 0 ? (
+                <div style={{ 
+                  textAlign: 'center', 
+                  color: '#666',
+                  padding: '2rem',
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '6px'
+                }}>
+                  Geen mind dumps gevonden of nog aan het laden...
+                </div>
+              ) : (
+                recentBrainDumps.slice(0, 50).map(dump => (
                 <div 
                   key={dump.id}
                   style={{ 
@@ -742,7 +771,8 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         </div>
