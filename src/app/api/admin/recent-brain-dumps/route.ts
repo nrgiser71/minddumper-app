@@ -18,40 +18,48 @@ export async function GET(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    // Get latest 50 brain dumps with user details
-    const { data: recentBrainDumps, error } = await adminSupabase
+    // Get latest 50 brain dumps first
+    const { data: brainDumpsData, error: brainDumpsError } = await adminSupabase
       .from('brain_dumps')
-      .select(`
-        id,
-        created_at,
-        updated_at,
-        language,
-        total_ideas,
-        total_words,
-        duration_minutes,
-        is_draft,
-        session_id,
-        user_id,
-        profiles!inner(
-          id,
-          full_name,
-          email
-        )
-      `)
+      .select('*')
       .eq('is_draft', false)
       .order('created_at', { ascending: false })
       .limit(50)
 
-    if (error) {
-      console.error('Error fetching recent brain dumps:', error)
+    if (brainDumpsError) {
+      console.error('Error fetching brain dumps:', brainDumpsError)
       return NextResponse.json(
-        { success: false, error: 'Failed to fetch brain dumps', details: error.message },
+        { success: false, error: 'Failed to fetch brain dumps', details: brainDumpsError.message },
         { status: 500 }
       )
     }
 
+    // Get user details for these brain dumps
+    const userIds = [...new Set(brainDumpsData?.map(dump => dump.user_id).filter(Boolean) || [])]
+    const { data: usersData, error: usersError } = await adminSupabase
+      .from('profiles')
+      .select('id, full_name, email')
+      .in('id', userIds)
+
+    if (usersError) {
+      console.error('Error fetching users for brain dumps:', usersError)
+      return NextResponse.json(
+        { success: false, error: 'Failed to fetch users for brain dumps', details: usersError.message },
+        { status: 500 }
+      )
+    }
+
+    // Create user lookup map
+    const userMap = new Map(usersData?.map(user => [user.id, user]) || [])
+
+    // Combine data
+    const recentBrainDumps = brainDumpsData?.map(dump => ({
+      ...dump,
+      profiles: userMap.get(dump.user_id) || { id: dump.user_id, full_name: 'Onbekend', email: '' }
+    })) || []
+
     // Format the brain dump data
-    const formattedBrainDumps = recentBrainDumps?.map(dump => ({
+    const formattedBrainDumps = recentBrainDumps.map(dump => ({
       id: dump.id,
       createdAt: dump.created_at,
       updatedAt: dump.updated_at,
@@ -63,9 +71,9 @@ export async function GET(request: NextRequest) {
       user: {
         id: dump.profiles.id,
         name: dump.profiles.full_name || 'Onbekend',
-        email: dump.profiles.email
+        email: dump.profiles.email || ''
       }
-    })) || []
+    }))
 
     return NextResponse.json({
       success: true,
