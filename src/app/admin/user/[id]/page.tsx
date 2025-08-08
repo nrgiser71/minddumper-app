@@ -194,7 +194,7 @@ export default function UserDetailPage() {
         justifyContent: 'center',
         backgroundColor: '#f8f9fa'
       }}>
-        <div style={{ textAlign: 'center', color: '#666' }}>
+        <div style={{ textAlign: 'center', color: '#2c3e50' }}>
           <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>👤</div>
           <div>Gebruiker laden...</div>
         </div>
@@ -268,7 +268,7 @@ export default function UserDetailPage() {
             }}>
               👤 {user.fullName || 'Onbekende Gebruiker'}
             </h1>
-            <p style={{ margin: 0, color: '#666' }}>
+            <p style={{ margin: 0, color: '#2c3e50' }}>
               {user.email}
             </p>
           </div>
@@ -276,7 +276,7 @@ export default function UserDetailPage() {
             <Link 
               href="/admin/dashboard" 
               style={{ 
-                color: '#666', 
+                color: '#2c3e50', 
                 textDecoration: 'none',
                 padding: '0.5rem 1rem',
                 border: '1px solid #ddd',
@@ -502,11 +502,11 @@ export default function UserDetailPage() {
                     <div style={{ fontWeight: 'bold' }}>
                       {languageNames[dump.language] || dump.language}
                     </div>
-                    <div style={{ fontSize: '0.875rem', color: '#666' }}>
+                    <div style={{ fontSize: '0.875rem', color: '#2c3e50' }}>
                       {formatDate(dump.createdAt)}
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem', fontSize: '0.875rem', color: '#666' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '1rem', fontSize: '0.875rem', color: '#2c3e50' }}>
                     <div><strong>Ideeën:</strong> {dump.totalIdeas}</div>
                     <div><strong>Woorden:</strong> {dump.totalWords}</div>
                     <div><strong>Duur:</strong> {dump.durationMinutes} min</div>
@@ -517,7 +517,7 @@ export default function UserDetailPage() {
           ) : (
             <div style={{ 
               textAlign: 'center', 
-              color: '#666',
+              color: '#2c3e50',
               padding: '2rem',
               backgroundColor: '#f8f9fa',
               borderRadius: '6px'
@@ -611,7 +611,7 @@ export default function UserDetailPage() {
           </div>
           
           {actionLoading && (
-            <div style={{ marginTop: '1rem', color: '#666' }}>
+            <div style={{ marginTop: '1rem', color: '#2c3e50' }}>
               Bezig met actie...
             </div>
           )}
