@@ -325,13 +325,13 @@ export default function UserDetailPage() {
               ℹ️ Basis Informatie
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div><strong>ID:</strong> {user.id}</div>
-              <div><strong>Naam:</strong> {user.fullName || 'Niet ingevuld'}</div>
-              <div><strong>Email:</strong> {user.email}</div>
-              <div><strong>Telefoon:</strong> {user.phone || 'Niet ingevuld'}</div>
-              <div><strong>Taal:</strong> {languageNames[user.language] || user.language}</div>
-              <div><strong>Aangemeld:</strong> {formatDate(user.createdAt)}</div>
-              <div><strong>Laatst bijgewerkt:</strong> {formatDate(user.updatedAt)}</div>
+              <div style={{ color: '#2c3e50' }}><strong>ID:</strong> {user.id}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Naam:</strong> {user.fullName || 'Niet ingevuld'}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Email:</strong> {user.email}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Telefoon:</strong> {user.phone || 'Niet ingevuld'}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Taal:</strong> {languageNames[user.language] || user.language}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Aangemeld:</strong> {formatDate(user.createdAt)}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Laatst bijgewerkt:</strong> {formatDate(user.updatedAt)}</div>
             </div>
           </div>
 
@@ -351,7 +351,7 @@ export default function UserDetailPage() {
               💰 Betaling Informatie
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#2c3e50' }}>
                 <strong>Status:</strong>
                 <span style={{ 
                   backgroundColor: paymentStatusColors[user.paymentStatus] || '#666',
@@ -363,10 +363,10 @@ export default function UserDetailPage() {
                   {user.paymentStatus}
                 </span>
               </div>
-              <div><strong>Bedrag betaald:</strong> {formatCurrency(user.amountPaid)}</div>
-              <div><strong>Betaald op:</strong> {user.paidAt ? formatDate(user.paidAt) : 'Niet betaald'}</div>
-              <div><strong>Order ID:</strong> {user.plugandpayOrderId || 'Geen'}</div>
-              <div><strong>Klant type:</strong> {user.customerType || 'Niet opgegeven'}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Bedrag betaald:</strong> {formatCurrency(user.amountPaid)}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Betaald op:</strong> {user.paidAt ? formatDate(user.paidAt) : 'Niet betaald'}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Order ID:</strong> {user.plugandpayOrderId || 'Geen'}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Klant type:</strong> {user.customerType || 'Niet opgegeven'}</div>
             </div>
           </div>
 
@@ -386,11 +386,11 @@ export default function UserDetailPage() {
               🧠 Mind Dump Statistieken
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-              <div><strong>Totaal dumps:</strong> {user.brainDumpStats.total}</div>
-              <div><strong>Totaal ideeën:</strong> {user.brainDumpStats.totalIdeas}</div>
-              <div><strong>Totaal woorden:</strong> {user.brainDumpStats.totalWords}</div>
-              <div><strong>Totaal minuten:</strong> {user.brainDumpStats.totalDuration}</div>
-              <div><strong>Gem. ideeën per dump:</strong> {
+              <div style={{ color: '#2c3e50' }}><strong>Totaal dumps:</strong> {user.brainDumpStats.total}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Totaal ideeën:</strong> {user.brainDumpStats.totalIdeas}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Totaal woorden:</strong> {user.brainDumpStats.totalWords}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Totaal minuten:</strong> {user.brainDumpStats.totalDuration}</div>
+              <div style={{ color: '#2c3e50' }}><strong>Gem. ideeën per dump:</strong> {
                 user.brainDumpStats.total > 0 
                   ? Math.round(user.brainDumpStats.totalIdeas / user.brainDumpStats.total)
                   : 0
@@ -417,14 +417,14 @@ export default function UserDetailPage() {
               📍 Factuuradres
             </h3>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
-              {user.companyName && <div><strong>Bedrijf:</strong> {user.companyName}</div>}
-              {user.vatNumber && <div><strong>BTW nummer:</strong> {user.vatNumber}</div>}
-              {user.billingAddress.line1 && <div><strong>Adres:</strong> {user.billingAddress.line1}</div>}
-              {user.billingAddress.line2 && <div><strong>Adres 2:</strong> {user.billingAddress.line2}</div>}
-              {user.billingAddress.city && <div><strong>Stad:</strong> {user.billingAddress.city}</div>}
-              {user.billingAddress.postalCode && <div><strong>Postcode:</strong> {user.billingAddress.postalCode}</div>}
-              {user.billingAddress.country && <div><strong>Land:</strong> {user.billingAddress.country}</div>}
-              {user.billingAddress.state && <div><strong>Staat/Provincie:</strong> {user.billingAddress.state}</div>}
+              {user.companyName && <div style={{ color: '#2c3e50' }}><strong>Bedrijf:</strong> {user.companyName}</div>}
+              {user.vatNumber && <div style={{ color: '#2c3e50' }}><strong>BTW nummer:</strong> {user.vatNumber}</div>}
+              {user.billingAddress.line1 && <div style={{ color: '#2c3e50' }}><strong>Adres:</strong> {user.billingAddress.line1}</div>}
+              {user.billingAddress.line2 && <div style={{ color: '#2c3e50' }}><strong>Adres 2:</strong> {user.billingAddress.line2}</div>}
+              {user.billingAddress.city && <div style={{ color: '#2c3e50' }}><strong>Stad:</strong> {user.billingAddress.city}</div>}
+              {user.billingAddress.postalCode && <div style={{ color: '#2c3e50' }}><strong>Postcode:</strong> {user.billingAddress.postalCode}</div>}
+              {user.billingAddress.country && <div style={{ color: '#2c3e50' }}><strong>Land:</strong> {user.billingAddress.country}</div>}
+              {user.billingAddress.state && <div style={{ color: '#2c3e50' }}><strong>Staat/Provincie:</strong> {user.billingAddress.state}</div>}
             </div>
           </div>
         )}
