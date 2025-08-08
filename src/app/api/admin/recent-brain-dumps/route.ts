@@ -31,11 +31,10 @@ export async function GET(request: NextRequest) {
         duration_minutes,
         is_draft,
         session_id,
+        user_id,
         profiles!inner(
           id,
           full_name,
-          first_name,
-          last_name,
           email
         )
       `)
@@ -46,7 +45,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Error fetching recent brain dumps:', error)
       return NextResponse.json(
-        { success: false, error: 'Failed to fetch brain dumps' },
+        { success: false, error: 'Failed to fetch brain dumps', details: error.message },
         { status: 500 }
       )
     }
@@ -63,9 +62,7 @@ export async function GET(request: NextRequest) {
       sessionId: dump.session_id,
       user: {
         id: dump.profiles.id,
-        name: dump.profiles.full_name || 
-              `${dump.profiles.first_name || ''} ${dump.profiles.last_name || ''}`.trim() ||
-              'Onbekend',
+        name: dump.profiles.full_name || 'Onbekend',
         email: dump.profiles.email
       }
     })) || []

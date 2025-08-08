@@ -18,31 +18,17 @@ export async function GET(request: NextRequest) {
       process.env.SUPABASE_SERVICE_ROLE_KEY!
     )
 
-    // Get latest 20 users with their details
+    // Get latest 20 users with their details (using only confirmed columns)
     const { data: recentUsers, error } = await adminSupabase
       .from('profiles')
-      .select(`
-        id,
-        created_at,
-        email,
-        full_name,
-        first_name,
-        last_name,
-        payment_status,
-        paid_at,
-        amount_paid_cents,
-        plugandpay_order_id,
-        customer_type,
-        billing_country,
-        language
-      `)
+      .select('*')
       .order('created_at', { ascending: false })
       .limit(20)
 
     if (error) {
       console.error('Error fetching recent users:', error)
       return NextResponse.json(
-        { success: false, error: 'Failed to fetch users' },
+        { success: false, error: 'Failed to fetch users', details: error.message },
         { status: 500 }
       )
     }
