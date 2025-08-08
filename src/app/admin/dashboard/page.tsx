@@ -31,6 +31,57 @@ interface DashboardStats {
   }
 }
 
+interface RecentUser {
+  id: string
+  name: string
+  email: string
+  createdAt: string
+  paymentStatus: string
+  paidAt?: string
+  amountPaid: number
+  orderId?: string
+  customerType?: string
+  country?: string
+  language: string
+}
+
+interface RecentBrainDump {
+  id: string
+  createdAt: string
+  language: string
+  totalIdeas: number
+  totalWords: number
+  durationMinutes: number
+  user: {
+    id: string
+    name: string
+    email: string
+  }
+}
+
+interface RevenueStats {
+  thisWeek: { amount: number; customers: number }
+  thisMonth: { amount: number; customers: number }
+  thisYear: { amount: number; customers: number }
+  total: { amount: number; customers: number }
+  monthlyBreakdown: Array<{ month: string; revenue: number; customers: number }>
+  weeklyBreakdown: Array<{ week: string; revenue: number; customers: number }>
+}
+
+interface SearchResult {
+  id: string
+  name: string
+  email: string
+  createdAt: string
+  paymentStatus: string
+  paidAt?: string
+  amountPaid: number
+  orderId?: string
+  customerType?: string
+  country?: string
+  language: string
+}
+
 const languageNames: Record<string, string> = {
   'nl': '🇳🇱 Nederlands',
   'en': '🇬🇧 English',
@@ -39,35 +90,90 @@ const languageNames: Record<string, string> = {
   'es': '🇪🇸 Español'
 }
 
+const paymentStatusColors: Record<string, string> = {
+  'paid': '#28a745',
+  'pending': '#ffc107',
+  'failed': '#dc3545',
+  'disabled': '#6c757d'
+}
+
 export default function AdminDashboard() {
   const [stats, setStats] = useState<DashboardStats | null>(null)
+  const [recentUsers, setRecentUsers] = useState<RecentUser[]>([])
+  const [recentBrainDumps, setRecentBrainDumps] = useState<RecentBrainDump[]>([])
+  const [revenueStats, setRevenueStats] = useState<RevenueStats | null>(null)
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([])
+  const [searchQuery, setSearchQuery] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [searchLoading, setSearchLoading] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
   const router = useRouter()
 
-  const fetchStats = async () => {
+  const fetchAllData = async () => {
     try {
-      const response = await fetch('/api/admin/stats')
+      // Fetch all data in parallel
+      const [statsRes, usersRes, dumpsRes, revenueRes] = await Promise.all([
+        fetch('/api/admin/stats'),
+        fetch('/api/admin/recent-users'),
+        fetch('/api/admin/recent-brain-dumps'),
+        fetch('/api/admin/revenue-stats')
+      ])
       
-      if (response.status === 401) {
+      if (statsRes.status === 401) {
         router.push('/admin/login')
         return
       }
       
+      const [statsData, usersData, dumpsData, revenueData] = await Promise.all([
+        statsRes.json(),
+        usersRes.json(),
+        dumpsRes.json(),
+        revenueRes.json()
+      ])
+      
+      if (statsData.success) {
+        setStats(statsData.stats)
+      }
+      if (usersData.success) {
+        setRecentUsers(usersData.users)
+      }
+      if (dumpsData.success) {
+        setRecentBrainDumps(dumpsData.brainDumps)
+      }
+      if (revenueData.success) {
+        setRevenueStats(revenueData.revenue)
+      }
+      
+      setLastUpdated(new Date())
+      setError('')
+    } catch {
+      setError('Er is een fout opgetreden bij het laden van gegevens')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSearch = async () => {
+    if (!searchQuery.trim() || searchQuery.length < 2) {
+      setSearchResults([])
+      return
+    }
+
+    setSearchLoading(true)
+    try {
+      const response = await fetch(`/api/admin/user-search?q=${encodeURIComponent(searchQuery)}`)
       const result = await response.json()
       
       if (result.success) {
-        setStats(result.stats)
-        setLastUpdated(new Date())
-        setError('')
+        setSearchResults(result.users)
       } else {
-        setError(result.error || 'Failed to load statistics')
+        setSearchResults([])
       }
     } catch {
-      setError('Er is een fout opgetreden bij het laden van statistieken')
+      setSearchResults([])
     } finally {
-      setLoading(false)
+      setSearchLoading(false)
     }
   }
 
@@ -85,14 +191,37 @@ export default function AdminDashboard() {
     }
   }
 
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('nl-NL', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+  }
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('nl-NL', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(amount)
+  }
+
   useEffect(() => {
-    fetchStats()
+    fetchAllData()
     
     // Auto-refresh every 30 seconds
-    const interval = setInterval(fetchStats, 30000)
+    const interval = setInterval(fetchAllData, 30000)
     return () => clearInterval(interval)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  useEffect(() => {
+    const timeoutId = setTimeout(handleSearch, 300)
+    return () => clearTimeout(timeoutId)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchQuery])
 
   if (loading) {
     return (
@@ -130,7 +259,7 @@ export default function AdminDashboard() {
           <div style={{ color: '#c33', fontSize: '1.5rem', marginBottom: '1rem' }}>❌</div>
           <div style={{ color: '#c33', marginBottom: '1rem' }}>{error}</div>
           <button 
-            onClick={fetchStats}
+            onClick={fetchAllData}
             style={{
               backgroundColor: '#007AFF',
               color: 'white',
@@ -155,7 +284,7 @@ export default function AdminDashboard() {
       backgroundColor: '#f8f9fa',
       padding: '1rem'
     }}>
-      <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      <div style={{ maxWidth: '1400px', margin: '0 auto' }}>
         {/* Header */}
         <div style={{ 
           display: 'flex', 
@@ -214,6 +343,179 @@ export default function AdminDashboard() {
             </button>
           </div>
         </div>
+
+        {/* User Search */}
+        <div style={{
+          backgroundColor: 'white',
+          padding: '1.5rem',
+          borderRadius: '12px',
+          boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+          marginBottom: '2rem'
+        }}>
+          <h3 style={{ 
+            fontSize: '1.25rem', 
+            fontWeight: 'bold', 
+            color: '#333',
+            margin: '0 0 1rem 0'
+          }}>
+            🔍 Gebruiker Zoeken
+          </h3>
+          <input
+            type="text"
+            placeholder="Zoek op naam, email, order ID..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            style={{
+              width: '100%',
+              padding: '0.75rem',
+              border: '1px solid #ddd',
+              borderRadius: '6px',
+              fontSize: '1rem',
+              marginBottom: '1rem'
+            }}
+          />
+          {searchLoading && <div style={{ color: '#666' }}>Zoeken...</div>}
+          {searchResults.length > 0 && (
+            <div style={{ maxHeight: '300px', overflowY: 'auto' }}>
+              {searchResults.map(user => (
+                <Link 
+                  key={user.id}
+                  href={`/admin/user/${user.id}`}
+                  style={{ 
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    display: 'block',
+                    padding: '0.75rem',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '6px',
+                    marginBottom: '0.5rem',
+                    border: '1px solid #e9ecef'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontWeight: 'bold' }}>{user.name}</div>
+                      <div style={{ fontSize: '0.875rem', color: '#666' }}>{user.email}</div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ 
+                        backgroundColor: paymentStatusColors[user.paymentStatus] || '#666',
+                        color: 'white',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        marginBottom: '0.25rem'
+                      }}>
+                        {user.paymentStatus}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#666' }}>
+                        {formatDate(user.createdAt)}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Revenue Dashboard */}
+        {revenueStats && (
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
+            gap: '1.5rem',
+            marginBottom: '2rem'
+          }}>
+            <div style={{
+              backgroundColor: 'white',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+            }}>
+              <h3 style={{ 
+                fontSize: '1.25rem', 
+                fontWeight: 'bold', 
+                color: '#333',
+                margin: '0 0 1rem 0'
+              }}>
+                💰 Deze Week
+              </h3>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#28a745' }}>
+                {formatCurrency(revenueStats.thisWeek.amount)}
+              </div>
+              <div style={{ color: '#666', fontSize: '0.875rem' }}>
+                {revenueStats.thisWeek.customers} klanten
+              </div>
+            </div>
+
+            <div style={{
+              backgroundColor: 'white',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+            }}>
+              <h3 style={{ 
+                fontSize: '1.25rem', 
+                fontWeight: 'bold', 
+                color: '#333',
+                margin: '0 0 1rem 0'
+              }}>
+                📅 Deze Maand
+              </h3>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#007AFF' }}>
+                {formatCurrency(revenueStats.thisMonth.amount)}
+              </div>
+              <div style={{ color: '#666', fontSize: '0.875rem' }}>
+                {revenueStats.thisMonth.customers} klanten
+              </div>
+            </div>
+
+            <div style={{
+              backgroundColor: 'white',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+            }}>
+              <h3 style={{ 
+                fontSize: '1.25rem', 
+                fontWeight: 'bold', 
+                color: '#333',
+                margin: '0 0 1rem 0'
+              }}>
+                🎯 Dit Jaar
+              </h3>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#17a2b8' }}>
+                {formatCurrency(revenueStats.thisYear.amount)}
+              </div>
+              <div style={{ color: '#666', fontSize: '0.875rem' }}>
+                {revenueStats.thisYear.customers} klanten
+              </div>
+            </div>
+
+            <div style={{
+              backgroundColor: 'white',
+              padding: '1.5rem',
+              borderRadius: '12px',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+            }}>
+              <h3 style={{ 
+                fontSize: '1.25rem', 
+                fontWeight: 'bold', 
+                color: '#333',
+                margin: '0 0 1rem 0'
+              }}>
+                🏆 Totaal
+              </h3>
+              <div style={{ fontSize: '2rem', fontWeight: 'bold', color: '#6f42c1' }}>
+                {formatCurrency(revenueStats.total.amount)}
+              </div>
+              <div style={{ color: '#666', fontSize: '0.875rem' }}>
+                {revenueStats.total.customers} klanten
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Stats Grid */}
         <div style={{ 
@@ -324,6 +626,127 @@ export default function AdminDashboard() {
           </div>
         </div>
 
+        {/* Recent Users and Brain Dumps */}
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(500px, 1fr))',
+          gap: '1.5rem',
+          marginBottom: '2rem'
+        }}>
+          {/* Recent Users */}
+          <div style={{
+            backgroundColor: 'white',
+            padding: '1.5rem',
+            borderRadius: '12px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+          }}>
+            <h3 style={{ 
+              fontSize: '1.25rem', 
+              fontWeight: 'bold', 
+              color: '#333',
+              margin: '0 0 1rem 0'
+            }}>
+              🆕 Laatste 20 Nieuwe Gebruikers
+            </h3>
+            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+              {recentUsers.slice(0, 20).map(user => (
+                <Link 
+                  key={user.id}
+                  href={`/admin/user/${user.id}`}
+                  style={{ 
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    display: 'block',
+                    padding: '0.75rem',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '6px',
+                    marginBottom: '0.5rem',
+                    border: '1px solid #e9ecef'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
+                        {user.name}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#666' }}>
+                        {user.email}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ 
+                        backgroundColor: paymentStatusColors[user.paymentStatus] || '#666',
+                        color: 'white',
+                        padding: '0.25rem 0.5rem',
+                        borderRadius: '4px',
+                        fontSize: '0.75rem',
+                        marginBottom: '0.25rem'
+                      }}>
+                        {user.paymentStatus}
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#666' }}>
+                        {formatDate(user.createdAt)}
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Recent Brain Dumps */}
+          <div style={{
+            backgroundColor: 'white',
+            padding: '1.5rem',
+            borderRadius: '12px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)'
+          }}>
+            <h3 style={{ 
+              fontSize: '1.25rem', 
+              fontWeight: 'bold', 
+              color: '#333',
+              margin: '0 0 1rem 0'
+            }}>
+              🧠 Laatste 50 Mind Dumps
+            </h3>
+            <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+              {recentBrainDumps.slice(0, 50).map(dump => (
+                <div 
+                  key={dump.id}
+                  style={{ 
+                    padding: '0.75rem',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '6px',
+                    marginBottom: '0.5rem',
+                    border: '1px solid #e9ecef'
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
+                        <Link 
+                          href={`/admin/user/${dump.user.id}`}
+                          style={{ textDecoration: 'none', color: '#007AFF' }}
+                        >
+                          {dump.user.name}
+                        </Link>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: '#666' }}>
+                        {languageNames[dump.language] || dump.language} • {dump.totalIdeas} ideeën • {dump.durationMinutes}min
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <div style={{ fontSize: '0.75rem', color: '#666' }}>
+                        {formatDate(dump.createdAt)}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
         {/* Language Distribution & Top Users */}
         <div style={{ 
           display: 'grid', 
@@ -383,14 +806,20 @@ export default function AdminDashboard() {
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               {stats.activity.topUsers.slice(0, 5).map((user, index) => (
-                <div key={user.userId} style={{ 
-                  display: 'flex', 
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  padding: '0.75rem',
-                  backgroundColor: '#f8f9fa',
-                  borderRadius: '6px'
-                }}>
+                <Link
+                  key={user.userId}
+                  href={`/admin/user/${user.userId}`}
+                  style={{
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    display: 'flex', 
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    padding: '0.75rem',
+                    backgroundColor: '#f8f9fa',
+                    borderRadius: '6px'
+                  }}
+                >
                   <div>
                     <div style={{ fontWeight: 'bold', fontSize: '0.875rem' }}>
                       #{index + 1} {user.name}
@@ -406,7 +835,7 @@ export default function AdminDashboard() {
                   }}>
                     {user.brainDumps}
                   </div>
-                </div>
+                </Link>
               ))}
               {stats.activity.topUsers.length === 0 && (
                 <div style={{ 
