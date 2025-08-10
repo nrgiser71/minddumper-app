@@ -9,7 +9,7 @@ const FAQSection = () => {
   const faqItems = [
     {
       question: "How is this different from just making a to-do list?",
-      answer: "Regular to-do lists only capture what you remember. Our trigger word method uses psychological prompts to help your brain recall tasks you didn&apos;t even know you forgot."
+      answer: "Regular to-do lists only capture what you remember. Our trigger word method uses psychological prompts to help your brain recall tasks you didn't even know you forgot."
     },
     {
       question: "Is this scientifically proven?",
@@ -17,7 +17,7 @@ const FAQSection = () => {
     },
     {
       question: "What if I have too many tasks?",
-      answer: "That&apos;s exactly why you need this. The more overwhelmed you feel, the more tasks are probably stuck in your head creating anxiety."
+      answer: "That's exactly why you need this. The more overwhelmed you feel, the more tasks are probably stuck in your head creating anxiety."
     },
     {
       question: "Do I need to be tech-savvy to use this?",
@@ -25,19 +25,19 @@ const FAQSection = () => {
     },
     {
       question: "Can I use this for both work and personal tasks?",
-      answer: "Absolutely. Your brain doesn&apos;t separate work and personal stress. Our system covers everything from client projects to weekend plans."
+      answer: "Absolutely. Your brain doesn't separate work and personal stress. Our system covers everything from client projects to weekend plans."
     },
     {
-      question: "What if I&apos;m already using other productivity tools?",
+      question: "What if I'm already using other productivity tools?",
       answer: "Perfect! MindDumper works with your existing tools. Export your extracted tasks to Todoist, Notion, Asana, or any app you prefer."
     },
     {
-      question: "Will this work if I&apos;m not good at remembering things?",
-      answer: "That&apos;s exactly who this is for! If you were good at remembering, you wouldn&apos;t need trigger words."
+      question: "Will this work if I'm not good at remembering things?",
+      answer: "That's exactly who this is for! If you were good at remembering, you wouldn't need trigger words."
     },
     {
-      question: "What if I can&apos;t think of anything during the brain dump?",
-      answer: "This happens to everyone initially. That&apos;s why we use trigger words - they act as memory prompts."
+      question: "What if I can't think of anything during the brain dump?",
+      answer: "This happens to everyone initially. That's why we use trigger words - they act as memory prompts."
     },
     {
       question: "Can I customize the trigger words for my industry/role?",
