@@ -10,7 +10,7 @@ import FoundationsSection from "@/components/FoundationsSection"
 import FAQSection from "@/components/FAQSection"
 import Footer from "@/components/Footer"
 import Header from "@/components/Header"
-import "../original-landing/index.css"
+import "./landing.css"
 
 export default function HomePage() {
   return (
