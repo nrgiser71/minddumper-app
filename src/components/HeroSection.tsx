@@ -24,9 +24,6 @@ const HeroSection = () => {
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </a>
-            <Button variant="outline" size="xl">
-              Try It Now
-            </Button>
           </div>
         </div>
         
