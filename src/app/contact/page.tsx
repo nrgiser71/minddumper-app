@@ -137,13 +137,13 @@ export default function ContactPage() {
             <div className="business-card">
               <h3>Company Information</h3>
               <p><strong>JBS BV</strong><br />
-              Registered in the Netherlands<br />
+              Registered in Belgium<br />
               Operating MindDumper since 2024</p>
             </div>
             
             <div className="business-card">
               <h3>Specialized Contacts</h3>
-              <p><strong>Privacy concerns:</strong> privacy@minddumper.com<br />
+              <p><strong>Privacy concerns:</strong> support@minddumper.com<br />
               <strong>Legal matters:</strong> legal@minddumper.com<br />
               <strong>Partnerships:</strong> business@minddumper.com</p>
             </div>

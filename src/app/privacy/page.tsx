@@ -13,7 +13,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2>1. Who We Are</h2>
-          <p>MindDumper is operated by JBS BV, a company registered in the Netherlands. We provide a brain dumping tool that helps users extract and organize their thoughts and tasks.</p>
+          <p>MindDumper is operated by JBS BV, a company registered in Belgium. We provide a brain dumping tool that helps users extract and organize their thoughts and tasks.</p>
         </section>
 
         <section>
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
           <h2>5. Data Sharing</h2>
           <p>We never sell your personal information. We only share data when:</p>
           <ul>
-            <li>You explicitly export your data to third-party services (Notion, Todoist, etc.)</li>
+            <li>You explicitly export your data to third-party services</li>
             <li>Required by law or legal process</li>
             <li>Necessary to protect our rights or safety</li>
             <li>With service providers who help operate our platform (under strict confidentiality agreements)</li>
@@ -75,7 +75,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2>6. Your Rights (GDPR)</h2>
-          <p>As a EU-based company, we respect your privacy rights:</p>
+          <p>As a Belgium-based EU company, we respect your privacy rights:</p>
           <ul>
             <li><strong>Access:</strong> Request a copy of your personal data</li>
             <li><strong>Rectification:</strong> Correct inaccurate personal data</li>
@@ -83,7 +83,7 @@ export default function PrivacyPage() {
             <li><strong>Portability:</strong> Export your data in a machine-readable format</li>
             <li><strong>Objection:</strong> Object to processing of your personal data</li>
           </ul>
-          <p>To exercise these rights, contact us at privacy@minddumper.com</p>
+          <p>To exercise these rights, contact us at support@minddumper.com</p>
         </section>
 
         <section>
@@ -109,7 +109,7 @@ export default function PrivacyPage() {
 
         <section>
           <h2>9. International Transfers</h2>
-          <p>Your data is primarily stored within the EU. If data needs to be transferred outside the EU, we ensure adequate protection through:</p>
+          <p>Your data is stored within the EU. If data needs to be transferred outside the EU, we ensure adequate protection through:</p>
           <ul>
             <li>Standard Contractual Clauses</li>
             <li>Adequacy decisions by the European Commission</li>
@@ -127,7 +127,6 @@ export default function PrivacyPage() {
           <p>If you have questions about this privacy policy or your personal data:</p>
           <div className="contact-info">
             <p><strong>JBS BV</strong><br />
-            Email: privacy@minddumper.com<br />
             For general support: support@minddumper.com</p>
           </div>
         </section>

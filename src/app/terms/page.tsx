@@ -14,7 +14,7 @@ export default function TermsPage() {
         <section>
           <h2>1. Agreement to Terms</h2>
           <p>By accessing and using MindDumper, you agree to be bound by these Terms of Service and our Privacy Policy. If you do not agree to these terms, please do not use our service.</p>
-          <p>MindDumper is operated by JBS BV, a company registered in the Netherlands.</p>
+          <p>MindDumper is operated by JBS BV, a company registered in Belgium.</p>
         </section>
 
         <section>
@@ -157,7 +157,7 @@ export default function TermsPage() {
 
         <section>
           <h2>13. Governing Law</h2>
-          <p>These terms are governed by Dutch law. Any disputes will be resolved in the courts of the Netherlands. However, you may also bring claims in your local jurisdiction if required by local consumer protection laws.</p>
+          <p>These terms are governed by Belgian law. Any disputes will be resolved in the courts of Belgium. However, you may also bring claims in your local jurisdiction if required by local consumer protection laws.</p>
         </section>
 
         <section>
