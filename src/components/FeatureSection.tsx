@@ -60,7 +60,7 @@ const FeatureSection = () => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-surface-darker/80 to-transparent rounded-xl"></div>
             <div className="absolute bottom-6 left-6">
-              <h3 className="text-lg font-semibold text-text-primary mb-2">CSV Export & Integrations</h3>
+              <h3 className="text-lg font-semibold text-text-primary mb-2">CSV Export</h3>
               <p className="text-text-secondary text-sm">Export to Notion, Todoist, Asana & more</p>
             </div>
           </div>

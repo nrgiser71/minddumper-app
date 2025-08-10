@@ -69,22 +69,22 @@ const FoundationsSection = () => {
               </div>
               
               <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-teal-500/20 rounded-lg flex items-center justify-center mt-1">
-                  <Download className="w-4 h-4 text-teal-400" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-1">CSV Export</h3>
-                  <p className="text-xs text-text-secondary">Export to Notion, Todoist, Asana</p>
-                </div>
-              </div>
-              
-              <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-pink-500/20 rounded-lg flex items-center justify-center mt-1">
                   <Settings className="w-4 h-4 text-pink-400" />
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-text-primary mb-1">Custom Trigger Words</h3>
                   <p className="text-xs text-text-secondary">Add your own trigger words</p>
+                </div>
+              </div>
+              
+              <div className="flex items-start space-x-3">
+                <div className="w-8 h-8 bg-teal-500/20 rounded-lg flex items-center justify-center mt-1">
+                  <Download className="w-4 h-4 text-teal-400" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-semibold text-text-primary mb-1">CSV Export</h3>
+                  <p className="text-xs text-text-secondary">Export to Notion, Todoist, Asana</p>
                 </div>
               </div>
               
