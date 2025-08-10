@@ -165,7 +165,6 @@ export default function TermsPage() {
           <p>For questions about these terms or our service:</p>
           <div className="contact-info">
             <p><strong>JBS BV</strong><br />
-            Email: legal@minddumper.com<br />
             Support: support@minddumper.com</p>
           </div>
         </section>

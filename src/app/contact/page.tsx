@@ -144,7 +144,6 @@ export default function ContactPage() {
             <div className="business-card">
               <h3>Specialized Contacts</h3>
               <p><strong>Privacy concerns:</strong> support@minddumper.com<br />
-              <strong>Legal matters:</strong> legal@minddumper.com<br />
               <strong>Partnerships:</strong> business@minddumper.com</p>
             </div>
           </div>
