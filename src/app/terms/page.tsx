@@ -9,7 +9,7 @@ export default function TermsPage() {
         <Link href="/landing" className="back-link">← Back to MindDumper</Link>
         
         <h1>Terms of Service</h1>
-        <p className="last-updated">Last updated: July 24, 2025</p>
+        <p className="last-updated">Last updated: August 10, 2025</p>
 
         <section>
           <h2>1. Agreement to Terms</h2>
