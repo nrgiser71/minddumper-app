@@ -105,12 +105,6 @@ const nextConfig: NextConfig = {
         destination: '/landing',
         permanent: false,
       },
-      // Redirect root to waitlist during pre-launch
-      {
-        source: '/',
-        destination: '/minddump-waitlist',
-        permanent: false,
-      },
     ]
   },
   
