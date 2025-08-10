@@ -18,8 +18,8 @@ const Footer = () => {
           <div className="text-right">
             <h3 className="text-sm font-semibold text-text-primary mb-4">Support</h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Terms of Service</a></li>
+              <li><a href="/privacy" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Privacy Policy</a></li>
+              <li><a href="/terms" className="text-text-secondary hover:text-text-primary text-sm transition-colors">Terms of Service</a></li>
               <li><span className="text-text-secondary text-sm">Support: </span><a href="mailto:support@minddumper.com" className="text-text-secondary hover:text-text-primary text-sm transition-colors">support@minddumper.com</a></li>
             </ul>
           </div>
