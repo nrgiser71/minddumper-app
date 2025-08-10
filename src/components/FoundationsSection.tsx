@@ -37,15 +37,6 @@ const FoundationsSection = () => {
                 </div>
               </div>
               
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center mt-1">
-                  <Zap className="w-4 h-4 text-blue-400" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-1">All Updates</h3>
-                  <p className="text-xs text-text-secondary">Future features included</p>
-                </div>
-              </div>
               
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center mt-1">
@@ -73,7 +64,7 @@ const FoundationsSection = () => {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-text-primary mb-1">Advanced Trigger Words</h3>
-                  <p className="text-xs text-text-secondary">1000+ triggers in 5 languages</p>
+                  <p className="text-xs text-text-secondary">250+ triggers in 5 languages</p>
                 </div>
               </div>
               
@@ -82,7 +73,7 @@ const FoundationsSection = () => {
                   <Download className="w-4 h-4 text-teal-400" />
                 </div>
                 <div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-1">CSV Export + Integrations</h3>
+                  <h3 className="text-sm font-semibold text-text-primary mb-1">CSV Export</h3>
                   <p className="text-xs text-text-secondary">Export to Notion, Todoist, Asana</p>
                 </div>
               </div>
@@ -93,19 +84,10 @@ const FoundationsSection = () => {
                 </div>
                 <div>
                   <h3 className="text-sm font-semibold text-text-primary mb-1">Custom Trigger Words</h3>
-                  <p className="text-xs text-text-secondary">Add industry-specific triggers</p>
+                  <p className="text-xs text-text-secondary">Add your own trigger words</p>
                 </div>
               </div>
               
-              <div className="flex items-start space-x-3">
-                <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center mt-1">
-                  <Cloud className="w-4 h-4 text-cyan-400" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-semibold text-text-primary mb-1">Cloud Sync</h3>
-                  <p className="text-xs text-text-secondary">Access from phone, laptop, tablet</p>
-                </div>
-              </div>
               
               <div className="flex items-start space-x-3">
                 <div className="w-8 h-8 bg-yellow-500/20 rounded-lg flex items-center justify-center mt-1">
