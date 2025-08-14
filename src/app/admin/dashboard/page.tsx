@@ -435,7 +435,8 @@ export default function AdminDashboard() {
               border: '1px solid #ddd',
               borderRadius: '6px',
               fontSize: '1rem',
-              marginBottom: '1rem'
+              marginBottom: '1rem',
+              color: '#333'
             }}
           />
           {searchLoading && <div style={{ color: '#666' }}>Zoeken...</div>}
@@ -994,7 +995,8 @@ export default function AdminDashboard() {
                         padding: '0.75rem',
                         border: '1px solid #ddd',
                         borderRadius: '6px',
-                        fontSize: '1rem'
+                        fontSize: '1rem',
+                        color: '#333'
                       }}
                     />
                   </div>
@@ -1019,7 +1021,8 @@ export default function AdminDashboard() {
                         padding: '0.75rem',
                         border: '1px solid #ddd',
                         borderRadius: '6px',
-                        fontSize: '1rem'
+                        fontSize: '1rem',
+                        color: '#333'
                       }}
                     />
                   </div>
@@ -1045,7 +1048,8 @@ export default function AdminDashboard() {
                         border: '1px solid #ddd',
                         borderRadius: '6px',
                         fontSize: '1rem',
-                        resize: 'vertical'
+                        resize: 'vertical',
+                        color: '#333'
                       }}
                     />
                   </div>
