@@ -98,10 +98,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate password reset link
+    // Get the current domain for redirect URL
+    const host = request.headers.get('host')
+    const protocol = request.headers.get('x-forwarded-proto') || 'https'
+    const baseUrl = `${protocol}://${host}`
+    
+    // Generate password reset link with custom redirect URL
     const { data: resetData, error: resetError } = await adminSupabase.auth.admin.generateLink({
       type: 'recovery',
-      email: email.toLowerCase()
+      email: email.toLowerCase(),
+      options: {
+        redirectTo: `${baseUrl}/auth/callback`
+      }
     })
 
     if (resetError || !resetData) {
