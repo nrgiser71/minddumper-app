@@ -108,6 +108,10 @@ export default function AdminDashboard() {
   const [error, setError] = useState('')
   const [searchLoading, setSearchLoading] = useState(false)
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null)
+  const [showCreateModal, setShowCreateModal] = useState(false)
+  const [createLoading, setCreateLoading] = useState(false)
+  const [createForm, setCreateForm] = useState({ email: '', fullName: '', notes: '' })
+  const [createResult, setCreateResult] = useState<{ success: boolean; message: string; resetLink?: string } | null>(null)
   const router = useRouter()
 
   const fetchAllData = async () => {
@@ -195,6 +199,47 @@ export default function AdminDashboard() {
       // Force redirect even if logout fails
       router.push('/admin/login')
     }
+  }
+
+  const handleCreateAccount = async () => {
+    if (!createForm.email || !createForm.fullName) {
+      setCreateResult({ success: false, message: 'Email en naam zijn verplicht' })
+      return
+    }
+
+    setCreateLoading(true)
+    try {
+      const response = await fetch('/api/admin/create-account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(createForm)
+      })
+      
+      const result = await response.json()
+      
+      if (result.success) {
+        setCreateResult({
+          success: true,
+          message: `Account aangemaakt voor ${createForm.email}`,
+          resetLink: result.passwordResetLink
+        })
+        setCreateForm({ email: '', fullName: '', notes: '' })
+        // Refresh data to show new user
+        fetchAllData()
+      } else {
+        setCreateResult({ success: false, message: result.error })
+      }
+    } catch {
+      setCreateResult({ success: false, message: 'Er is een fout opgetreden' })
+    } finally {
+      setCreateLoading(false)
+    }
+  }
+
+  const resetCreateModal = () => {
+    setShowCreateModal(false)
+    setCreateResult(null)
+    setCreateForm({ email: '', fullName: '', notes: '' })
   }
 
   const formatDate = (dateString: string) => {
@@ -322,6 +367,19 @@ export default function AdminDashboard() {
             </p>
           </div>
           <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+            <button
+              onClick={() => setShowCreateModal(true)}
+              style={{
+                backgroundColor: '#28a745',
+                color: 'white',
+                border: 'none',
+                padding: '0.5rem 1rem',
+                borderRadius: '6px',
+                cursor: 'pointer'
+              }}
+            >
+              ➕ Account Aanmaken
+            </button>
             <Link 
               href="/admin" 
               style={{ 
@@ -879,6 +937,228 @@ export default function AdminDashboard() {
             </div>
           </div>
         </div>
+
+        {/* Create Account Modal */}
+        {showCreateModal && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}>
+            <div style={{
+              backgroundColor: 'white',
+              padding: '2rem',
+              borderRadius: '12px',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+              maxWidth: '500px',
+              width: '90%',
+              maxHeight: '90vh',
+              overflowY: 'auto'
+            }}>
+              <h3 style={{
+                fontSize: '1.5rem',
+                fontWeight: 'bold',
+                color: '#333',
+                margin: '0 0 1.5rem 0',
+                textAlign: 'center'
+              }}>
+                ➕ Nieuw Account Aanmaken
+              </h3>
+
+              {!createResult ? (
+                <div>
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 'bold',
+                      color: '#333',
+                      marginBottom: '0.5rem'
+                    }}>
+                      Email *
+                    </label>
+                    <input
+                      type="email"
+                      value={createForm.email}
+                      onChange={(e) => setCreateForm({ ...createForm, email: e.target.value })}
+                      placeholder="trainer@bedrijf.nl"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '1px solid #ddd',
+                        borderRadius: '6px',
+                        fontSize: '1rem'
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: '1rem' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 'bold',
+                      color: '#333',
+                      marginBottom: '0.5rem'
+                    }}>
+                      Volledige Naam *
+                    </label>
+                    <input
+                      type="text"
+                      value={createForm.fullName}
+                      onChange={(e) => setCreateForm({ ...createForm, fullName: e.target.value })}
+                      placeholder="Jan Jansen"
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '1px solid #ddd',
+                        borderRadius: '6px',
+                        fontSize: '1rem'
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ marginBottom: '1.5rem' }}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.875rem',
+                      fontWeight: 'bold',
+                      color: '#333',
+                      marginBottom: '0.5rem'
+                    }}>
+                      Notities (optioneel)
+                    </label>
+                    <textarea
+                      value={createForm.notes}
+                      onChange={(e) => setCreateForm({ ...createForm, notes: e.target.value })}
+                      placeholder="Trainer bij bedrijf X, time management specialist"
+                      rows={3}
+                      style={{
+                        width: '100%',
+                        padding: '0.75rem',
+                        border: '1px solid #ddd',
+                        borderRadius: '6px',
+                        fontSize: '1rem',
+                        resize: 'vertical'
+                      }}
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
+                    <button
+                      onClick={resetCreateModal}
+                      disabled={createLoading}
+                      style={{
+                        backgroundColor: '#6c757d',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '6px',
+                        cursor: createLoading ? 'not-allowed' : 'pointer',
+                        opacity: createLoading ? 0.6 : 1
+                      }}
+                    >
+                      Annuleren
+                    </button>
+                    <button
+                      onClick={handleCreateAccount}
+                      disabled={createLoading || !createForm.email || !createForm.fullName}
+                      style={{
+                        backgroundColor: '#28a745',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '6px',
+                        cursor: (createLoading || !createForm.email || !createForm.fullName) ? 'not-allowed' : 'pointer',
+                        opacity: (createLoading || !createForm.email || !createForm.fullName) ? 0.6 : 1
+                      }}
+                    >
+                      {createLoading ? '⏳ Aanmaken...' : '✅ Account Aanmaken'}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <div style={{
+                    padding: '1rem',
+                    borderRadius: '6px',
+                    backgroundColor: createResult.success ? '#d4edda' : '#f8d7da',
+                    color: createResult.success ? '#155724' : '#721c24',
+                    border: `1px solid ${createResult.success ? '#c3e6cb' : '#f5c6cb'}`,
+                    marginBottom: '1.5rem'
+                  }}>
+                    <div style={{ fontWeight: 'bold', marginBottom: '0.5rem' }}>
+                      {createResult.success ? '✅ Succes!' : '❌ Fout'}
+                    </div>
+                    <div>{createResult.message}</div>
+                  </div>
+
+                  {createResult.success && createResult.resetLink && (
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <label style={{
+                        display: 'block',
+                        fontSize: '0.875rem',
+                        fontWeight: 'bold',
+                        color: '#333',
+                        marginBottom: '0.5rem'
+                      }}>
+                        Password Reset Link (kopieer voor email):
+                      </label>
+                      <div style={{
+                        backgroundColor: '#f8f9fa',
+                        padding: '0.75rem',
+                        borderRadius: '6px',
+                        border: '1px solid #dee2e6',
+                        fontSize: '0.75rem',
+                        wordBreak: 'break-all',
+                        fontFamily: 'monospace'
+                      }}>
+                        {createResult.resetLink}
+                      </div>
+                      <button
+                        onClick={() => navigator.clipboard.writeText(createResult.resetLink || '')}
+                        style={{
+                          backgroundColor: '#007AFF',
+                          color: 'white',
+                          border: 'none',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          marginTop: '0.5rem',
+                          fontSize: '0.875rem'
+                        }}
+                      >
+                        📋 Kopieer Link
+                      </button>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <button
+                      onClick={resetCreateModal}
+                      style={{
+                        backgroundColor: '#007AFF',
+                        color: 'white',
+                        border: 'none',
+                        padding: '0.75rem 1.5rem',
+                        borderRadius: '6px',
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Sluiten
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   )

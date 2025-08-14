@@ -126,3 +126,29 @@
 - **Content Precision**: Tour text must be precise about actual functionality to avoid user confusion
 - **Deployment Speed**: Rapid iteration cycle with immediate production testing for tour refinements
 
+## 🎯 Planned Features
+
+### Try For Free Implementation Plan (August 10, 2025)
+- **Complete Implementation Guide**: Detailed 24-hour trial system documented in `/docs/try-for-free-implementation.md`
+- **Email-Based Trial System**: Users request trial via form → receive unique link via Mailgun
+- **Zero Impact Design**: Completely isolated from existing paid system - no risk to current users
+- **24-Hour Access**: Trial starts on first use, not email send - flexible for users
+- **Limited Trial Experience**: Full brain dump functionality but no history/preferences saving
+- **Anti-Abuse Protection**: Email normalization, disposable email blocking, unique token system
+- **Simple Conversion**: After trial expires, users follow normal purchase flow (no upgrade complexity)
+
+### Technical Architecture - Trial System
+- **New Database Table**: `trial_requests` - completely separate from existing user tables
+- **Email Service**: Mailgun integration for trial link delivery (leveraging existing Tickedify experience)
+- **Separate App Route**: `/trial/[token]` - isolated trial experience with timer
+- **API Endpoints**: `/api/trial/request` and `/api/trial/validate` for trial management
+- **Frontend Components**: Trial request form on landing page + dedicated trial app interface
+- **Implementation Time**: 17 hours total (email service setup, database, frontend, backend, testing)
+
+### Key Benefits of This Approach
+- **Risk-Free Implementation**: Can be completely disabled without affecting paid users
+- **Marketing Value**: Email capture for prospects + conversion funnel
+- **User Experience**: Lets users experience full brain dump before committing €49
+- **Technical Simplicity**: No complex payment state management or upgrade flows
+- **Scalable**: 5,000 emails/month limit allows significant growth before costs
+
