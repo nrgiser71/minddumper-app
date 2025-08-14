@@ -1,40 +1,158 @@
 # MindDumper App - Claude Development Notes
+
+## 🤖 CLAUDE'S STAGING WORKFLOW BEGELEIDING
+
+**BELANGRIJK VOOR CLAUDE: Bij elke nieuwe terminal sessie moet je Jan begeleiden in de staging workflow.**
+
+### Claude's Verantwoordelijkheden:
+- ✅ **Altijd zoveel mogelijk zelf doen** - gebruik tools om Jan's werk te minimaliseren  
+- ✅ **Stap-voor-stap begeleiding** - geef Jan nooit meer dan 1 stap tegelijk
+- ✅ **Workflow enforcer** - controleer altijd de huidige branch voor elke actie
+- ✅ **Safety first** - voorkom elke directe main branch push
+- ✅ **Testing guide** - begeleid Jan door staging tests voor elke deployment
+
+### Staging Workflow Status: ✅ VOLLEDIG OPERATIONEEL
+- ✅ Git branches: develop, staging, main
+- ✅ GitHub branch protection: main branch beveiligd
+- ✅ Staging database: aparte Supabase project actief  
+- ✅ Vercel environment: Preview omgeving geconfigureerd
+- ✅ Staging test pagina: `/staging-test.html` werkend
+
+### Jan's Nieuwe Workflow (Claude begeleidt elke stap):
+1. **Development** → develop branch (Claude doet git commands)
+2. **Staging test** → staging branch merge + test preview URL
+3. **Production** → GitHub PR creation + approval workflow  
+4. **Emergency hotfix** → Staged hotfix testing protocol
+
+### Claude's Workflow Enforcement:
+```bash
+# Voor elke code wijziging, Claude moet checken:
+git branch          # Controleer huidige branch
+git status          # Controleer pending changes
+npm run build       # Valideer build succeeds
+
+# Claude moet Jan ALTIJD leiden door deze flow:
+# develop → staging → test → PR → main
+```
+
+### Staging Environment URLs & Credentials:
+- **Staging Database:** Aparte Supabase project `minddumper-staging`
+- **Staging Test Page:** `[staging-preview-url]/staging-test.html`
+- **GitHub Branch Protection:** Main branch volledig beveiligd
+- **Vercel Preview:** Automatische staging deployments via staging branch
+
+## 🚨 KRITIEKE DEPLOYMENT REGELS - LEES EERST!
+
+**⛔ ABSOLUUT VERBODEN: DIRECTE PUSHES NAAR MAIN BRANCH**
+
+**✅ VERPLICHTE WORKFLOW VOOR ALLE WIJZIGINGEN:**
+
+### 1. Development Work (ALTIJD op develop branch)
+```bash
+git checkout develop
+# ... make changes ...
+git add .
+git commit -m "Feature description"
+git push origin develop
+```
+
+### 2. Staging Testing (VERPLICHT voor elke wijziging)
+```bash
+git checkout staging
+git merge develop --no-ff
+git push origin staging
+# → Test op Vercel staging preview URL
+# → Verifieer alle functionaliteit werkt correct
+```
+
+### 3. Production Deployment (ALLEEN via Pull Request)
+```bash
+# Create PR: staging → main via GitHub interface
+# Wait for approval: "JA, DEPLOY NAAR PRODUCTIE"
+# Merge ALLEEN na expliciete goedkeuring
+```
+
+### 4. Emergency Hotfix Protocol
+```bash
+# 1. Create hotfix branch from main
+git checkout main
+git checkout -b hotfix/critical-bug-description
+# ... fix bug ...
+git commit -m "🚨 HOTFIX: Bug description"
+
+# 2. Test on staging FIRST
+git checkout staging
+git merge hotfix/critical-bug-description --no-ff
+git push origin staging
+# → Test hotfix op staging preview URL
+
+# 3. Production after approval
+# → Create PR: hotfix/critical-bug-description → main
+# → Ask: "🚨 Hotfix getest op staging - klaar voor PRODUCTIE?"
+# → Wait for "JA, DEPLOY NAAR PRODUCTIE"
+```
+
+**🔒 BRANCH CHECK REMINDER: Controleer ALTIJD je huidige branch voor elke git actie!**
+```bash
+git branch  # Controleer waar je bent
+git status  # Controleer wat je gaat committen
+```
+
+**❌ DEZE COMMANDS ZIJN VERBODEN:**
+- `git push origin main` (NOOIT direct naar main!)
+- `git checkout main && git push` (GEEN directe main pushes!)
+- Force pushes naar main branch
+
+**✅ TOEGESTANE WORKFLOW:**
+- develop branch: Unlimited pushes voor development
+- staging branch: Voor testing en verificatie
+- main branch: ALLEEN via approved Pull Requests
+
 ## Standard Workflow
 1. First think through the problem, read the codebase for relevant files, and write a plan to tasks/todo.md.
 2. The plan should have a list of todo items that you can check off as you complete them
 3. Before you begin working, check in with me and I will verify the plan.
 4. Then, begin working on the todo items, marking them as complete as you go.
 5. Please every step of the way just give me a high level explanation of what changes you made
-6. Make every task and code change you do as simple as possible. We want to avoid making any massive or complex changes. Every change should impact as little code as possible. Everything is about simplicity.
+6. Make every task and code change you do as simple as possible. We want to avoid making any massive changes. Every change should impact as little code as possible. Everything is about simplicity.
 7. Finally, add a review section to the [todo.md](http://todo.md/) file with a summary of the changes you made and any other relevant information.
 
-## 🚨 VERPLICHTE WORKFLOW VOOR CODE WIJZIGINGEN
+## 🚨 STAGING-FIRST DEVELOPMENT WORKFLOW
 
-**BELANGRIJK: We testen ALTIJD direct in productie - NOOIT lokaal.**
+**BELANGRIJKE WIJZIGING: We testen EERST op staging, dan naar productie.**
 
 **ALTIJD DEZE STAPPEN VOLGEN VOOR ELKE WIJZIGING:**
 
-1. **Lokaal builden (alleen voor validatie)**:
+1. **Development op develop branch**:
    ```bash
-   npm run build
-   ```
-   
-2. **Alleen committen als build succesvol is**:
-   - Geen TypeScript errors
-   - Geen ESLint errors  
-   - Geen compilation failures
-   
-3. **Direct naar productie pushen**:
-   ```bash
+   git checkout develop
+   npm run build  # Lokale validatie
+   # Controleer: Geen TypeScript/ESLint errors
    git add .
-   git commit -m "beschrijving"
-   git push
+   git commit -m "Feature beschrijving"
+   git push origin develop
    ```
 
-4. **Testen in productie**:
-   - Test nieuwe features op live website
-   - Check browser console voor errors
-   - Verifieer functionaliteit werkt correct
+2. **Staging testing (VERPLICHT)**:
+   ```bash
+   git checkout staging
+   git merge develop --no-ff
+   git push origin staging
+   # → Test op Vercel staging preview URL
+   # → Check browser console voor errors
+   # → Verifieer alle functionaliteit werkt correct
+   ```
+
+3. **Production deployment (ALLEEN via PR)**:
+   - Create Pull Request: staging → main via GitHub
+   - Wait for approval: "JA, DEPLOY NAAR PRODUCTIE"
+   - Merge ALLEEN na expliciete goedkeuring
+   - Test op live website na deployment
+
+4. **Branch protection waarschuwingen**:
+   - ⚠️ Als je "protected branch" error krijgt: GOED! Het systeem werkt.
+   - 🔄 Gebruik de staging → main PR workflow instead
+   - 🚨 NOOIT proberen branch protection te omzeilen
 
 ## Recent Improvements (July 2025)
 
@@ -125,6 +243,27 @@
 - **Keyboard Workflow**: App designed for mouse-free operation - tours must reflect this design philosophy
 - **Content Precision**: Tour text must be precise about actual functionality to avoid user confusion
 - **Deployment Speed**: Rapid iteration cycle with immediate production testing for tour refinements
+
+### Admin Account Creation voor Gratis Trainers (August 14, 2025)
+- **Marketing Tool**: Admin functionaliteit om direct betaalde accounts aan te maken voor time management trainers
+- **Zero Payment Flow**: Trainers krijgen volledige toegang zonder betaling via handmatige account creation
+- **Simple Workflow**: Admin dashboard → "Account Aanmaken" → Password reset link → Trainer kan direct inloggen
+- **Professional Onboarding**: Trainers krijgen exact dezelfde ervaring als betalende klanten
+- **Complete Documentation**: Uitgebreide handleiding in `/docs/admin-account-creation.md`
+
+### Technical Implementation Details - Admin Account Creation
+- **API Endpoint**: `/api/admin/create-account` - Secure admin-only account creation
+- **Admin Dashboard Integration**: Modal form in admin dashboard voor account aanmaken
+- **Supabase Integration**: Direct user creation met `paid` status bypass
+- **Password Reset Generation**: Automatic password reset link generation voor trainer uitnodiging
+- **Email Templates**: Complete email templates voor professionele trainer onboarding
+- **Error Handling**: Full validation, duplicate prevention, en cleanup bij failures
+
+### Marketing Strategy Integration
+- **Target Audience**: Time management trainers en coaches voor opleidingen
+- **Value Proposition**: Gratis toegang in ruil voor product promotie tijdens trainingen
+- **Conversion Funnel**: Trainer experience → Deelnemer interesse → Reguliere verkoop
+- **Control Mechanism**: Handmatige goedkeuring via admin interface voor kwaliteitscontrole
 
 ## 🎯 Planned Features
 
