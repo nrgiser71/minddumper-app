@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MindDumper Staging Environment Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+        }
+        .status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .timestamp {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 0.5rem;
+            border-radius: 5px;
+            font-family: monospace;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        .checks {
+            list-style: none;
+            padding: 0;
+        }
+        .checks li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .checks li:before {
+            content: "✅ ";
+            margin-right: 0.5rem;
+        }
+        .warning {
+            background: rgba(255, 193, 7, 0.3);
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+        .info {
+            background: rgba(23, 162, 184, 0.3);
+            border: 1px solid rgba(23, 162, 184, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🧪 MindDumper Staging Environment</h1>
+        
+        <div class="status">
+            <h2>✅ Staging Deployment Successful</h2>
+            <p>This page confirms that your staging environment is working correctly.</p>
+        </div>
+
+        <div class="timestamp">
+            <strong>Deployment Time:</strong> <span id="deployTime"></span>
+        </div>
+
+        <div class="info">
+            <h3>📋 Staging Verification Checklist</h3>
+            <ul class="checks">
+                <li>Staging branch deployment working</li>
+                <li>Vercel preview URL accessible</li>
+                <li>Static assets loading correctly</li>
+                <li>CSS and JavaScript working</li>
+                <li>Environment isolation confirmed</li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <h3>⚠️ Staging Environment Notice</h3>
+            <p><strong>This is NOT the production website.</strong></p>
+            <p>This staging environment is for testing purposes only. Data may be reset regularly.</p>
+        </div>
+
+        <div class="status">
+            <h3>🔄 Next Steps</h3>
+            <ol>
+                <li>Test all new features thoroughly</li>
+                <li>Check browser console for errors</li>
+                <li>Verify database connections work</li>
+                <li>Test user authentication flow</li>
+                <li>Create Pull Request to main branch</li>
+                <li>Wait for "JA, DEPLOY NAAR PRODUCTIE" approval</li>
+            </ol>
+        </div>
+
+        <div class="info">
+            <h3>🛠️ Environment Information</h3>
+            <p><strong>Environment:</strong> Staging</p>
+            <p><strong>Branch:</strong> staging</p>
+            <p><strong>Purpose:</strong> Pre-production testing</p>
+            <p><strong>URL Pattern:</strong> [unique-preview-url].vercel.app</p>
+        </div>
+    </div>
+
+    <script>
+        // Display current timestamp
+        document.getElementById('deployTime').textContent = new Date().toLocaleString();
+        
+        // Add some basic environment detection
+        if (window.location.hostname.includes('vercel.app')) {
+            console.log('✅ MindDumper Staging Environment Active');
+            console.log('Environment: Staging');
+            console.log('Timestamp:', new Date().toISOString());
+        }
+    </script>
+</body>
+</html>
