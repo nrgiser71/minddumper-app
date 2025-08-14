@@ -95,7 +95,8 @@ export default function AdminLoginPage() {
                 border: '1px solid #ddd',
                 borderRadius: '8px',
                 fontSize: '1rem',
-                boxSizing: 'border-box'
+                boxSizing: 'border-box',
+                color: '#333'
               }}
               placeholder="Wachtwoord..."
             />
