@@ -43,16 +43,27 @@ export async function POST(request: NextRequest) {
       }
     )
 
-    // Check if user already exists
-    const { data: existingUser } = await adminSupabase
+    // Check if user already exists in profiles
+    const { data: existingProfile } = await adminSupabase
       .from('profiles')
       .select('id, email')
       .eq('email', email.toLowerCase())
       .single()
 
-    if (existingUser) {
+    if (existingProfile) {
       return NextResponse.json(
         { success: false, error: 'Account with this email already exists' },
+        { status: 409 }
+      )
+    }
+
+    // Check if auth user already exists
+    const { data: existingAuthUsers } = await adminSupabase.auth.admin.listUsers()
+    const existingAuthUser = existingAuthUsers.users?.find(user => user.email?.toLowerCase() === email.toLowerCase())
+    
+    if (existingAuthUser) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication user with this email already exists' },
         { status: 409 }
       )
     }
