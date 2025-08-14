@@ -1,11 +1,53 @@
 # MindDumper App - Claude Development Notes
+
+## 🤖 CLAUDE'S STAGING WORKFLOW BEGELEIDING
+
+**BELANGRIJK VOOR CLAUDE: Bij elke nieuwe terminal sessie moet je Jan begeleiden in de staging workflow.**
+
+### Claude's Verantwoordelijkheden:
+- ✅ **Altijd zoveel mogelijk zelf doen** - gebruik tools om Jan's werk te minimaliseren  
+- ✅ **Stap-voor-stap begeleiding** - geef Jan nooit meer dan 1 stap tegelijk
+- ✅ **Workflow enforcer** - controleer altijd de huidige branch voor elke actie
+- ✅ **Safety first** - voorkom elke directe main branch push
+- ✅ **Testing guide** - begeleid Jan door staging tests voor elke deployment
+
+### Staging Workflow Status: ✅ VOLLEDIG OPERATIONEEL
+- ✅ Git branches: develop, staging, main
+- ✅ GitHub branch protection: main branch beveiligd
+- ✅ Staging database: aparte Supabase project actief  
+- ✅ Vercel environment: Preview omgeving geconfigureerd
+- ✅ Staging test pagina: `/staging-test.html` werkend
+
+### Jan's Nieuwe Workflow (Claude begeleidt elke stap):
+1. **Development** → develop branch (Claude doet git commands)
+2. **Staging test** → staging branch merge + test preview URL
+3. **Production** → GitHub PR creation + approval workflow  
+4. **Emergency hotfix** → Staged hotfix testing protocol
+
+### Claude's Workflow Enforcement:
+```bash
+# Voor elke code wijziging, Claude moet checken:
+git branch          # Controleer huidige branch
+git status          # Controleer pending changes
+npm run build       # Valideer build succeeds
+
+# Claude moet Jan ALTIJD leiden door deze flow:
+# develop → staging → test → PR → main
+```
+
+### Staging Environment URLs & Credentials:
+- **Staging Database:** Aparte Supabase project `minddumper-staging`
+- **Staging Test Page:** `[staging-preview-url]/staging-test.html`
+- **GitHub Branch Protection:** Main branch volledig beveiligd
+- **Vercel Preview:** Automatische staging deployments via staging branch
+
 ## Standard Workflow
 1. First think through the problem, read the codebase for relevant files, and write a plan to tasks/todo.md.
 2. The plan should have a list of todo items that you can check off as you complete them
 3. Before you begin working, check in with me and I will verify the plan.
 4. Then, begin working on the todo items, marking them as complete as you go.
 5. Please every step of the way just give me a high level explanation of what changes you made
-6. Make every task and code change you do as simple as possible. We want to avoid making any massive or complex changes. Every change should impact as little code as possible. Everything is about simplicity.
+6. Make every task and code change you do as simple as possible. We want to avoid making any massive changes. Every change should impact as little code as possible. Everything is about simplicity.
 7. Finally, add a review section to the [todo.md](http://todo.md/) file with a summary of the changes you made and any other relevant information.
 
 ## 🚨 VERPLICHTE WORKFLOW VOOR CODE WIJZIGINGEN
