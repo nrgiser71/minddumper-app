@@ -56,10 +56,13 @@ export async function GET(request: NextRequest) {
       new Date(user.paid_at) >= startOfThisYear
     ) || []
 
-    // Calculate amounts (assuming 49 euros per customer if amount_paid_cents is not available)
+    // Calculate amounts (using actual amount_paid_cents, fallback to 49 euros if null/undefined)
     const calculateRevenue = (users: typeof paidUsers) => {
       return users.reduce((total, user) => {
-        const amount = user.amount_paid_cents ? user.amount_paid_cents / 100 : 49
+        // Fix: Check for null/undefined, not falsy (0 is valid and should be €0)
+        const amount = user.amount_paid_cents !== null && user.amount_paid_cents !== undefined 
+          ? user.amount_paid_cents / 100 
+          : 49
         return total + amount
       }, 0)
     }
