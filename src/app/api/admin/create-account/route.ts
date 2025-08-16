@@ -82,29 +82,30 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create profile with paid status
+    // Create/update profile with paid status using upsert to handle database trigger
     const { error: profileError } = await adminSupabase
       .from('profiles')
-      .insert({
+      .upsert({
         id: authData.user.id,
         email: email.toLowerCase(),
         full_name: fullName,
         payment_status: 'paid',
         paid_at: new Date().toISOString(),
         amount_paid_cents: 4900, // €49
-        created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         language: 'nl' // Default language
+      }, {
+        onConflict: 'id'
       })
 
     if (profileError) {
-      console.error('Error creating profile:', profileError)
+      console.error('Error upserting profile:', profileError)
       
-      // Cleanup: Delete the auth user if profile creation failed
+      // Cleanup: Delete the auth user if profile upsert failed
       await adminSupabase.auth.admin.deleteUser(authData.user.id)
       
       return NextResponse.json(
-        { success: false, error: 'Failed to create user profile' },
+        { success: false, error: 'Failed to create user profile. Error: ' + profileError.message },
         { status: 500 }
       )
     }
@@ -140,7 +141,7 @@ export async function POST(request: NextRequest) {
         fullName,
         notes
       },
-      passwordResetLink: resetData.properties?.action_link || resetData.properties?.hashed_token_url
+      passwordResetLink: resetData.properties?.action_link || resetData.properties?.hashed_token
     })
 
   } catch (error) {
