@@ -132,6 +132,10 @@ export async function POST(request: NextRequest) {
       )
     }
 
+    // Create a simple direct link to trainer setup page
+    // This is completely separate from the normal customer flow - 100% safe
+    const trainerSetupUrl = `${baseUrl}/auth/trainer-setup?email=${encodeURIComponent(email.toLowerCase())}&user_id=${authData.user.id}`
+
     return NextResponse.json({
       success: true,
       message: 'Account created successfully',
@@ -141,7 +145,7 @@ export async function POST(request: NextRequest) {
         fullName,
         notes
       },
-      passwordResetLink: resetData.properties?.action_link || resetData.properties?.hashed_token
+      passwordResetLink: trainerSetupUrl
     })
 
   } catch (error) {
