@@ -43,16 +43,27 @@ export async function POST(request: NextRequest) {
       }
     )
 
-    // Check if user already exists
-    const { data: existingUser } = await adminSupabase
+    // Check if user already exists in profiles
+    const { data: existingProfile } = await adminSupabase
       .from('profiles')
       .select('id, email')
       .eq('email', email.toLowerCase())
       .single()
 
-    if (existingUser) {
+    if (existingProfile) {
       return NextResponse.json(
         { success: false, error: 'Account with this email already exists' },
+        { status: 409 }
+      )
+    }
+
+    // Check if auth user already exists
+    const { data: existingAuthUsers } = await adminSupabase.auth.admin.listUsers()
+    const existingAuthUser = existingAuthUsers.users?.find(user => user.email?.toLowerCase() === email.toLowerCase())
+    
+    if (existingAuthUser) {
+      return NextResponse.json(
+        { success: false, error: 'Authentication user with this email already exists' },
         { status: 409 }
       )
     }
@@ -71,37 +82,46 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Create profile with paid status
+    // Create/update profile with paid status using upsert to handle database trigger
     const { error: profileError } = await adminSupabase
       .from('profiles')
-      .insert({
+      .upsert({
         id: authData.user.id,
         email: email.toLowerCase(),
         full_name: fullName,
         payment_status: 'paid',
         paid_at: new Date().toISOString(),
         amount_paid_cents: 4900, // €49
-        created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
         language: 'nl' // Default language
+      }, {
+        onConflict: 'id'
       })
 
     if (profileError) {
-      console.error('Error creating profile:', profileError)
+      console.error('Error upserting profile:', profileError)
       
-      // Cleanup: Delete the auth user if profile creation failed
+      // Cleanup: Delete the auth user if profile upsert failed
       await adminSupabase.auth.admin.deleteUser(authData.user.id)
       
       return NextResponse.json(
-        { success: false, error: 'Failed to create user profile' },
+        { success: false, error: 'Failed to create user profile. Error: ' + profileError.message },
         { status: 500 }
       )
     }
 
-    // Generate password reset link
+    // Get the current domain for redirect URL
+    const host = request.headers.get('host')
+    const protocol = request.headers.get('x-forwarded-proto') || 'https'
+    const baseUrl = `${protocol}://${host}`
+    
+    // Generate password reset link with custom redirect URL
     const { data: resetData, error: resetError } = await adminSupabase.auth.admin.generateLink({
       type: 'recovery',
-      email: email.toLowerCase()
+      email: email.toLowerCase(),
+      options: {
+        redirectTo: `${baseUrl}/auth/callback`
+      }
     })
 
     if (resetError || !resetData) {
@@ -121,7 +141,7 @@ export async function POST(request: NextRequest) {
         fullName,
         notes
       },
-      passwordResetLink: resetData.properties?.action_link || resetData.properties?.hashed_token_url
+      passwordResetLink: resetData.properties?.action_link || resetData.properties?.hashed_token
     })
 
   } catch (error) {
