@@ -18,7 +18,7 @@ const HeroSection = () => {
             Finally stop juggling endless tasks in your head. Extract forgotten tasks, reduce mental clutter, and improve focus with our scientifically-backed brain dumping system.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <a href="https://order.minddumper.com/checkout/minddumper" className="inline-flex">
+            <a href="https://pay.baasoverjetijd.be/checkout/minddumper" className="inline-flex">
               <Button variant="hero" size="xl" className="group">
                 Clear My Mind Now - €49
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />

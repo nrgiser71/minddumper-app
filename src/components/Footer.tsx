@@ -30,7 +30,7 @@ const Footer = () => {
             <span className="text-text-secondary text-sm mb-4 md:mb-0">© {new Date().getFullYear()} JBS BV. All rights reserved.</span>
             
             <div className="flex items-center space-x-4">
-              <a href="https://order.minddumper.com/checkout/minddumper" className="inline-flex">
+              <a href="https://pay.baasoverjetijd.be/checkout/minddumper" className="inline-flex">
                 <Button variant="hero" size="sm">
                   Clear My Mind Now - €49
                 </Button>

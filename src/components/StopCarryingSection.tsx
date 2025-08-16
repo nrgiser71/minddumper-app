@@ -39,7 +39,7 @@ const StopCarryingSection = () => {
               </div>
             </div>
             
-            <a href="https://order.minddumper.com/checkout/minddumper" className="inline-flex">
+            <a href="https://pay.baasoverjetijd.be/checkout/minddumper" className="inline-flex">
               <Button variant="hero" size="xl" className="group">
                 Clear My Mind Now - €49
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
