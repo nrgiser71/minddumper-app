@@ -91,7 +91,8 @@ export async function POST(request: NextRequest) {
         full_name: fullName,
         payment_status: 'paid',
         paid_at: new Date().toISOString(),
-        amount_paid_cents: 4900, // €49
+        amount_paid_cents: 0, // €0 - trainers don't pay, excluded from revenue
+        customer_type: 'trainer', // Mark as trainer to exclude from revenue stats
         updated_at: new Date().toISOString(),
         language: 'nl' // Default language
       }, {
