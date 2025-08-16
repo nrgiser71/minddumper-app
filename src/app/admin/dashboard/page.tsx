@@ -207,7 +207,13 @@ export default function AdminDashboard() {
       return
     }
 
+    // Prevent double submissions
+    if (createLoading) {
+      return
+    }
+
     setCreateLoading(true)
+    setCreateResult(null) // Clear previous results
     try {
       const response = await fetch('/api/admin/create-account', {
         method: 'POST',
@@ -227,10 +233,11 @@ export default function AdminDashboard() {
         // Refresh data to show new user
         fetchAllData()
       } else {
-        setCreateResult({ success: false, message: result.error })
+        setCreateResult({ success: false, message: result.error || 'Onbekende fout opgetreden' })
       }
-    } catch {
-      setCreateResult({ success: false, message: 'Er is een fout opgetreden' })
+    } catch (error) {
+      console.error('Error creating account:', error)
+      setCreateResult({ success: false, message: 'Netwerkfout: Controleer je internetverbinding en probeer opnieuw' })
     } finally {
       setCreateLoading(false)
     }
@@ -1074,13 +1081,14 @@ export default function AdminDashboard() {
                       onClick={handleCreateAccount}
                       disabled={createLoading || !createForm.email || !createForm.fullName}
                       style={{
-                        backgroundColor: '#28a745',
+                        backgroundColor: (createLoading || !createForm.email || !createForm.fullName) ? '#6c757d' : '#28a745',
                         color: 'white',
                         border: 'none',
                         padding: '0.75rem 1.5rem',
                         borderRadius: '6px',
                         cursor: (createLoading || !createForm.email || !createForm.fullName) ? 'not-allowed' : 'pointer',
-                        opacity: (createLoading || !createForm.email || !createForm.fullName) ? 0.6 : 1
+                        opacity: (createLoading || !createForm.email || !createForm.fullName) ? 0.8 : 1,
+                        transition: 'background-color 0.2s, opacity 0.2s'
                       }}
                     >
                       {createLoading ? '⏳ Aanmaken...' : '✅ Account Aanmaken'}
