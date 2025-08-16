@@ -33,7 +33,7 @@ export default function MindDumperTestPage() {
           <div className="nav-menu">
             <a href="#features" className="nav-link">Features</a>
             <a href="#pricing" className="nav-link">Pricing</a>
-            <a href="https://order.minddumper.com/checkout/minddumper" className="nav-cta">Get Started - €49</a>
+            <a href="https://pay.baasoverjetijd.be/checkout/minddumper" className="nav-cta">Get Started - €49</a>
           </div>
         </div>
       </nav>
@@ -59,7 +59,7 @@ export default function MindDumperTestPage() {
               </div>
             </div>
             <div className="hero-buttons">
-              <a href="https://order.minddumper.com/checkout/minddumper" className="btn-primary">Clear My Mind Now - €49</a>
+              <a href="https://pay.baasoverjetijd.be/checkout/minddumper" className="btn-primary">Clear My Mind Now - €49</a>
             </div>
             <p className="hero-guarantee">One-time payment • Trigger words in 5 languages • Lifetime access</p>
           </div>
