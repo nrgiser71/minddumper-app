@@ -28,11 +28,12 @@ export async function GET(request: NextRequest) {
     const startOfThisMonth = new Date(now.getFullYear(), now.getMonth(), 1)
     const startOfThisYear = new Date(now.getFullYear(), 0, 1)
 
-    // Get all paid users with payment timestamps
+    // Get all paid users with payment timestamps (excluding trainers)
     const { data: paidUsers, error } = await adminSupabase
       .from('profiles')
       .select('paid_at, amount_paid_cents')
       .eq('payment_status', 'paid')
+      .neq('customer_type', 'trainer') // Exclude trainer accounts from revenue
       .not('paid_at', 'is', null)
 
     if (error) {
