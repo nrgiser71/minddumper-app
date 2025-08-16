@@ -92,9 +92,9 @@ export async function POST(request: NextRequest) {
         payment_status: 'paid',
         paid_at: new Date().toISOString(),
         amount_paid_cents: 0, // €0 - trainers don't pay, excluded from revenue
-        customer_type: 'trainer', // Mark as trainer to exclude from revenue stats
         updated_at: new Date().toISOString(),
         language: 'nl' // Default language
+        // Note: customer_type field will be added in future database migration
       }, {
         onConflict: 'id'
       })
