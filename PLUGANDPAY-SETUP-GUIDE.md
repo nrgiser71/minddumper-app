@@ -29,13 +29,13 @@ This guide provides a detailed step-by-step process for integrating PlugAndPay p
 
 ### Step 1.3: Setup Custom Domain (CRITICAL)
 1. In PlugAndPay dashboard, go to Settings → Domains
-2. Add custom domain: `checkout.yourapp.com`
+2. Add custom domain: `pay.baasoverjetijd.be` (for MindDumper: was order.minddumper.com)
 3. Configure DNS:
    ```
-   CNAME checkout.yourapp.com → plugandpay.nl
+   CNAME pay.baasoverjetijd.be → plugandpay.nl
    ```
 4. Wait for SSL certificate to be issued (can take up to 24 hours)
-5. Test domain: `https://checkout.yourapp.com` should show PlugAndPay page
+5. Test domain: `https://pay.baasoverjetijd.be` should show PlugAndPay page
 
 ### Step 1.4: Get API Keys
 1. In PlugAndPay dashboard, go to API section
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
       console.log('✅ Processing successful payment')
       
       // Create user in Supabase Auth
-      const tempPassword = 'yourapp123' // Fixed password for auto-login
+      const tempPassword = 'minddumper123' // Fixed password for auto-login
       
       const { data: authData, error: authError } = await supabase.auth.admin.createUser({
         email: email,
@@ -275,7 +275,7 @@ function WelcomeContent() {
         
         const latestUserEmail = result.user.email
         setUserEmail(latestUserEmail)
-        const tempPassword = 'yourapp123' // Same as in webhook
+        const tempPassword = 'minddumper123' // Same as in webhook
         
         console.log('📧 Using email for auto-login:', latestUserEmail)
         
@@ -379,7 +379,7 @@ function WelcomeContent() {
                 </Link>
                 
                 <p className="text-sm text-gray-500">
-                  Email: {userEmail} | Password: yourapp123
+                  Email: {userEmail} | Password: minddumper123
                 </p>
               </div>
             </>
@@ -405,7 +405,7 @@ Update all payment buttons in your app to point to PlugAndPay:
 ```typescript
 // Replace Stripe checkout buttons with PlugAndPay
 const handlePayment = () => {
-  window.location.href = 'https://checkout.yourapp.com/checkout/your-product-slug'
+  window.location.href = 'https://pay.baasoverjetijd.be/checkout/minddumper'
 }
 
 // In your component
@@ -443,7 +443,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 2. Go to Webhooks section
 3. Click "Add Webhook"
 4. Configure webhook:
-   - **URL**: `https://yourapp.com/api/plugandpay/webhook`
+   - **URL**: `https://minddumper.com/api/plugandpay/webhook`
    - **Events**: Select "Payment Completed" (NOT invoice events)
    - **Method**: POST
    - **Format**: form-urlencoded (NOT JSON)
@@ -460,7 +460,7 @@ SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
 ### Step 7.1: Update PlugAndPay Success Redirect
 In PlugAndPay dashboard, set success redirect URL to:
 ```
-https://yourapp.com/welcome
+https://minddumper.com/welcome
 ```
 
 ### Step 7.2: Test Complete Flow
@@ -581,4 +581,4 @@ If you encounter issues:
 
 ---
 
-**Note**: This guide was created based on the MindDumper implementation. Replace "Your App Name", "yourapp.com", and "yourapp123" with your actual application details.
+**Note**: This guide documents the actual MindDumper implementation. Domain changed from order.minddumper.com to pay.baasoverjetijd.be to resolve PlugAndPay account conflicts.
