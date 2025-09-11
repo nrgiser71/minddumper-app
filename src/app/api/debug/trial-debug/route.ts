@@ -31,10 +31,10 @@ export async function GET() {
     // Test Supabase connection
     let supabaseTest = { connected: false, error: null };
     try {
-      const { data, error } = await supabase.from('profiles').select('count').limit(1);
+      const { error } = await supabase.from('profiles').select('count').limit(1);
       supabaseTest = { connected: !error, error: error?.message || null };
-    } catch (err: any) {
-      supabaseTest = { connected: false, error: err.message };
+    } catch (err: unknown) {
+      supabaseTest = { connected: false, error: err instanceof Error ? err.message : 'Unknown error' };
     }
 
     // Generate test redirect URL
@@ -54,10 +54,10 @@ export async function GET() {
         supabaseTest.connected ? '✅ Supabase connected' : `❌ Supabase error: ${supabaseTest.error}`
       ]
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
     return NextResponse.json({
       error: 'Debug endpoint failed',
-      details: error.message
+      details: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
 }
