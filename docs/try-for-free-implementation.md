@@ -727,7 +727,7 @@ export default function TrialPage({ params }: { params: { token: string } }) {
   }
 
   const goToPurchase = () => {
-    window.open('https://order.minddumper.com/checkout/minddumper', '_blank')
+    window.open('https://pay.baasoverjetijd.be/checkout/minddumper', '_blank')
   }
 
   if (loading) {

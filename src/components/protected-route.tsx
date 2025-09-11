@@ -14,6 +14,7 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
   const { user, loading } = useAuth()
   const router = useRouter()
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
+  const [trialExpiresAt, setTrialExpiresAt] = useState<Date | null>(null)
   const [checkingPayment, setCheckingPayment] = useState(true)
 
   useEffect(() => {
@@ -22,14 +23,14 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
     }
   }, [user, loading, router])
 
-  // Check payment status when user is loaded
+  // Check payment and trial status when user is loaded
   useEffect(() => {
     if (user && !loading) {
-      const checkPaymentStatus = async () => {
+      const checkStatus = async () => {
         try {
           const { data, error } = await supabase
             .from('profiles')
-            .select('payment_status')
+            .select('payment_status, trial_expires_at')
             .eq('id', user.id)
             .single()
 
@@ -38,6 +39,7 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
             setPaymentStatus('error')
           } else {
             setPaymentStatus(data?.payment_status || 'pending')
+            setTrialExpiresAt(data?.trial_expires_at ? new Date(data.trial_expires_at) : null)
           }
         } catch (error) {
           console.error('Error checking payment status:', error)
@@ -47,16 +49,37 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
         }
       }
 
-      checkPaymentStatus()
+      checkStatus()
     }
   }, [user, loading])
 
-  // Redirect to checkout if payment is not completed
-  useEffect(() => {
-    if (!checkingPayment && paymentStatus && paymentStatus !== 'paid') {
-      router.push('/')
+  // Check if user has valid access (paid or active trial)
+  const hasValidAccess = () => {
+    if (paymentStatus === 'paid') {
+      return true
     }
-  }, [checkingPayment, paymentStatus, router])
+    
+    if (paymentStatus === 'trial' && trialExpiresAt) {
+      return trialExpiresAt > new Date()
+    }
+    
+    return false
+  }
+
+  // Redirect to appropriate page if no valid access
+  useEffect(() => {
+    if (!checkingPayment && paymentStatus) {
+      if (!hasValidAccess()) {
+        // Trial expired or no payment - redirect to upgrade page
+        if (paymentStatus === 'trial') {
+          router.push('/upgrade')
+        } else {
+          // No trial, no payment - redirect to landing
+          router.push('/')
+        }
+      }
+    }
+  }, [checkingPayment, paymentStatus, trialExpiresAt, router])
 
   if (loading || checkingPayment) {
     return (
