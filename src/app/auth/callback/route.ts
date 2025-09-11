@@ -17,6 +17,62 @@ export async function GET(request: NextRequest) {
     )
   }
 
+  // Handle magic link authentication
+  if (token && type === 'magiclink') {
+    console.log('🔗 [AUTH CALLBACK] Processing magic link token...')
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
+    try {
+      // Verify the magic link token and get session
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        token_hash: token,
+        type: 'magiclink'
+      })
+
+      if (verifyError) {
+        console.error('🔗 [AUTH CALLBACK] Error verifying magic link token:', verifyError)
+        return NextResponse.redirect(
+          new URL(`/auth/login?error=${encodeURIComponent(verifyError.message)}`, request.url)
+        )
+      }
+
+      if (data.session) {
+        console.log('🔗 [AUTH CALLBACK] Magic link verified successfully, redirecting to app...')
+        
+        // Get the redirect_to parameter or default to /app
+        const redirectTo = requestUrl.searchParams.get('redirect_to') || '/app'
+        
+        // Create response with session cookies
+        const response = NextResponse.redirect(new URL(redirectTo, request.url))
+        
+        // Set session cookies
+        response.cookies.set('supabase-auth-token', data.session.access_token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: data.session.expires_in || 3600
+        })
+        
+        response.cookies.set('supabase-refresh-token', data.session.refresh_token, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'lax',
+          maxAge: 30 * 24 * 60 * 60 // 30 days
+        })
+        
+        return response
+      }
+    } catch (error) {
+      console.error('🔗 [AUTH CALLBACK] Error in magic link callback:', error)
+      return NextResponse.redirect(
+        new URL(`/auth/login?error=${encodeURIComponent('Magic link authentication failed')}`, request.url)
+      )
+    }
+  }
+
   // Handle password recovery with verification token
   if (token && type === 'recovery') {
     const supabase = createClient(
