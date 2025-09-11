@@ -8,10 +8,14 @@ export async function GET(request: NextRequest) {
   const type = requestUrl.searchParams.get('type')
   const error = requestUrl.searchParams.get('error')
   const errorDescription = requestUrl.searchParams.get('error_description')
+  const redirectTo = requestUrl.searchParams.get('redirect_to') || '/app'
+
+  console.log('🔗 [AUTH CALLBACK] Processing auth callback...')
+  console.log('🔗 [AUTH CALLBACK] Parameters:', { code: !!code, token: !!token, type, error, redirectTo })
 
   // If there's an error, redirect to login with error message
   if (error) {
-    console.error('Auth callback error:', error, errorDescription)
+    console.error('🔗 [AUTH CALLBACK] Auth callback error:', error, errorDescription)
     return NextResponse.redirect(
       new URL(`/auth/login?error=${encodeURIComponent(errorDescription || error)}`, request.url)
     )
@@ -149,6 +153,29 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  // Check if this is a magic link callback without explicit token (Supabase might have already processed it)
+  if (redirectTo && redirectTo !== '/app') {
+    console.log('🔗 [AUTH CALLBACK] Magic link callback without token - attempting direct redirect...')
+    
+    try {
+      // Check if we can get user from the request (Supabase might have set session)
+      const authHeader = request.headers.get('authorization')
+      if (authHeader) {
+        console.log('🔗 [AUTH CALLBACK] Found auth header, redirecting to:', redirectTo)
+        return NextResponse.redirect(new URL(redirectTo, request.url))
+      }
+    } catch (error) {
+      console.error('🔗 [AUTH CALLBACK] Error checking auth header:', error)
+    }
+  }
+  
+  // Fallback for magic link: redirect directly to app and let client-side handle auth
+  if (redirectTo === '/app') {
+    console.log('🔗 [AUTH CALLBACK] Magic link fallback - redirecting to app for client-side auth handling...')
+    return NextResponse.redirect(new URL('/app', request.url))
+  }
+
   // No code provided, redirect to login
+  console.log('🔗 [AUTH CALLBACK] No valid parameters, redirecting to login...')
   return NextResponse.redirect(new URL('/auth/login', request.url))
 }
