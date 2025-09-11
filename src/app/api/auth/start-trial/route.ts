@@ -8,8 +8,19 @@ const supabase = createClient(
 );
 
 export async function POST(request: NextRequest) {
+  const timestamp = new Date().toISOString();
+  console.log(`\n🚀 [${timestamp}] === TRIAL SIGNUP DEBUG START ===`);
+  
   try {
     const { email, fullName } = await request.json();
+    
+    console.log('📝 [DEBUG] Request data:', { email, fullName });
+    console.log('🌐 [DEBUG] Environment check:');
+    console.log('  - NEXT_PUBLIC_SITE_URL:', process.env.NEXT_PUBLIC_SITE_URL || 'NOT SET');
+    console.log('  - NODE_ENV:', process.env.NODE_ENV);
+    console.log('  - VERCEL_ENV:', process.env.VERCEL_ENV);
+    console.log('  - MAILGUN_DOMAIN:', process.env.MAILGUN_DOMAIN || 'NOT SET');
+    console.log('  - MAILGUN_API_KEY available:', !!process.env.MAILGUN_API_KEY);
     
     console.log('🚀 Starting trial signup process for:', email);
     
@@ -212,14 +223,26 @@ export async function POST(request: NextRequest) {
     
     // Generate magic link for auto-login
     console.log('🔗 Generating magic login link...');
+    const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://minddumper-app-git-staging-nrgiser71s-projects.vercel.app').replace(/\/$/, '');
+    const redirectUrl = `${baseUrl}/auth/callback?redirect_to=/app`;
+    console.log('🔗 [DEBUG] Base URL:', baseUrl);
+    console.log('🔗 [DEBUG] Full redirect URL:', redirectUrl);
+    
     try {
       const { data: magicLinkData, error: magicError } = await supabase.auth.admin.generateLink({
         type: 'magiclink',
         email: normalizedEmail,
         options: {
-          redirectTo: `${(process.env.NEXT_PUBLIC_SITE_URL || 'https://minddumper-app-git-staging-nrgiser71s-projects.vercel.app').replace(/\/$/, '')}/auth/callback?redirect_to=/app`
+          redirectTo: redirectUrl
         }
       });
+      
+      console.log('🔗 [DEBUG] Magic link generation result:');
+      console.log('  - Error:', magicError);
+      console.log('  - Has data:', !!magicLinkData);
+      if (magicLinkData?.properties?.action_link) {
+        console.log('  - Magic link preview:', magicLinkData.properties.action_link.substring(0, 100) + '...');
+      }
       
       if (magicError) {
         console.error('⚠️ Magic link generation failed:', magicError);

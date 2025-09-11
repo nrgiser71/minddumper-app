@@ -15,11 +15,22 @@ if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
 export const mailgunClient = mg;
 
 export async function sendTrialWelcomeEmail(email: string, name: string, trialEndDate: Date) {
+  console.log('📧 [MAILGUN DEBUG] Starting sendTrialWelcomeEmail...');
+  console.log('📧 [MAILGUN DEBUG] Email to:', email);
+  console.log('📧 [MAILGUN DEBUG] Mailgun client initialized:', !!mg);
+  console.log('📧 [MAILGUN DEBUG] API Key available:', !!process.env.MAILGUN_API_KEY);
+  console.log('📧 [MAILGUN DEBUG] Domain:', process.env.MAILGUN_DOMAIN);
+  console.log('📧 [MAILGUN DEBUG] From Email:', process.env.MAILGUN_FROM_EMAIL);
+  console.log('📧 [MAILGUN DEBUG] From Name:', process.env.MAILGUN_FROM_NAME);
+  
   if (!mg) {
-    throw new Error('Mailgun client not initialized. Please check MAILGUN_API_KEY and MAILGUN_DOMAIN environment variables.');
+    const error = 'Mailgun client not initialized. Please check MAILGUN_API_KEY and MAILGUN_DOMAIN environment variables.';
+    console.error('📧 [MAILGUN ERROR]', error);
+    throw new Error(error);
   }
   
   const loginUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/app`;
+  console.log('📧 [MAILGUN DEBUG] Login URL:', loginUrl);
   
   try {
     const result = await mg.messages.create(process.env.MAILGUN_DOMAIN!, {
