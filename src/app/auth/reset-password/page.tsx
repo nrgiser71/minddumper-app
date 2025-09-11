@@ -19,6 +19,7 @@ function ResetPasswordForm() {
   const searchParams = useSearchParams()
   
   const isWelcome = searchParams.get('welcome') === 'true'
+  const isTrial = searchParams.get('trial') === 'true'
   const accessToken = searchParams.get('access_token')
   const refreshToken = searchParams.get('refresh_token')
 
@@ -60,7 +61,9 @@ function ResetPasswordForm() {
         setMessage('Fout bij het instellen van wachtwoord: ' + error.message)
         setIsError(true)
       } else {
-        if (isWelcome) {
+        if (isWelcome && isTrial) {
+          setMessage('Welkom bij je 14-dagen gratis proefperiode! Je wachtwoord is ingesteld. Je wordt doorgestuurd naar de app...')
+        } else if (isWelcome) {
           setMessage('Welkom bij MindDumper! Je wachtwoord is ingesteld. Je wordt doorgestuurd naar de app...')
         } else {
           setMessage('Wachtwoord succesvol gewijzigd! Je wordt doorgestuurd naar de app...')
@@ -100,10 +103,13 @@ function ResetPasswordForm() {
 
         <div className="text-center" style={{ marginBottom: '48px' }}>
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            {isWelcome ? 'Welkom bij MindDumper!' : 'Wachtwoord instellen'}
+            {isWelcome && isTrial ? 'Welkom bij je gratis proefperiode!' : 
+             isWelcome ? 'Welkom bij MindDumper!' : 'Wachtwoord instellen'}
           </h1>
           <p className="text-lg text-gray-600">
-            {isWelcome 
+            {isWelcome && isTrial
+              ? '14 dagen gratis proberen! Stel je wachtwoord in om te beginnen.'
+              : isWelcome 
               ? 'Bedankt voor je aankoop! Stel je wachtwoord in om te beginnen.'
               : 'Kies een nieuw wachtwoord voor je account.'
             }
@@ -119,7 +125,9 @@ function ResetPasswordForm() {
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-green-800">Account succesvol aangemaakt!</p>
+                <p className="text-sm font-medium text-green-800">
+                  {isTrial ? 'Proefperiode succesvol gestart!' : 'Account succesvol aangemaakt!'}
+                </p>
                 <p className="text-sm text-green-700 mt-1">Je bent automatisch ingelogd.</p>
               </div>
             </div>
@@ -204,7 +212,8 @@ function ResetPasswordForm() {
                     <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    {isWelcome ? 'Account activeren' : 'Wachtwoord instellen'}
+                    {isWelcome && isTrial ? 'Proefperiode starten' : 
+                     isWelcome ? 'Account activeren' : 'Wachtwoord instellen'}
                   </>
                 )}
               </button>

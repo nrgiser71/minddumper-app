@@ -102,24 +102,12 @@ export async function sendTrialWelcomeEmail(email: string, name: string, trialEn
             </a>
           </div>
           
-          <div style="background: #e7f3ff; padding: 20px; border-radius: 8px; margin: 25px 0;">
-            <h3 style="margin-top: 0; color: #0066cc;">🔐 Hoe log je in de komende dagen?</h3>
-            <p><strong>Belangrijke info:</strong> Je account is automatisch aangemaakt. Voor toekomstige logins:</p>
-            <ol style="text-align: left; color: #333;">
-              <li>Ga naar <a href="${process.env.NEXT_PUBLIC_SITE_URL}/auth/login">minddumper.com/auth/login</a></li>
-              <li>Vul je email in: <strong>${email}</strong></li>
-              <li>Klik op <strong>"Wachtwoord vergeten"</strong></li>
-              <li>Controleer je email voor een login link</li>
-            </ol>
-            <p style="margin-bottom: 0;"><em>💡 Tip: Bookmark deze email - zo vind je altijd de login instructies terug!</em></p>
-          </div>
           
           <h3>🚀 Tips om het meeste uit MindDumper te halen:</h3>
           <ol>
             <li><strong>Start meteen</strong> - Begin met een brain dump van alles wat je bezighoudt</li>
             <li><strong>Gebruik triggers</strong> - Laat MindDumper je gedachten automatisch categoriseren</li>
             <li><strong>Maak het een gewoonte</strong> - 5 minuten per dag kan je mentale rust enorm verbeteren</li>
-            <li><strong>Bookmark de login</strong> - <a href="${process.env.NEXT_PUBLIC_SITE_URL}/auth/login">minddumper.com/auth/login</a> voor makkelijke toegang</li>
           </ol>
           
           <p>We sturen je een paar dagen voor het einde van je trial een reminder, zodat je kunt beslissen of je wilt upgraden naar de volledige versie.</p>
@@ -148,20 +136,11 @@ export async function sendTrialWelcomeEmail(email: string, name: string, trialEn
         
         Start je eerste brain dump: ${loginUrl}
         
-        🔐 BELANGRIJK - Hoe log je in de komende dagen?
-        Je account is automatisch aangemaakt. Voor toekomstige logins:
-        1. Ga naar ${process.env.NEXT_PUBLIC_SITE_URL}/auth/login
-        2. Vul je email in: ${email}
-        3. Klik op "Wachtwoord vergeten"
-        4. Controleer je email voor een login link
-        
-        💡 Tip: Bookmark deze email - zo vind je altijd de login instructies terug!
         
         Tips om het meeste uit MindDumper te halen:
         1. Begin met een brain dump van alles wat je bezighoudt
         2. Gebruik triggers om gedachten te categoriseren
         3. Maak er een dagelijkse gewoonte van
-        4. Bookmark de login: ${process.env.NEXT_PUBLIC_SITE_URL}/auth/login
         
         We sturen je een paar dagen voor het einde van je trial een reminder.
         

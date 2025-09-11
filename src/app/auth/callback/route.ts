@@ -44,30 +44,49 @@ export async function GET(request: NextRequest) {
       }
 
       if (data.session) {
-        console.log('🔗 [AUTH CALLBACK] Magic link verified successfully, redirecting to app...')
+        console.log('🔗 [AUTH CALLBACK] Magic link verified successfully...')
         
-        // Get the redirect_to parameter or default to /app
-        const redirectTo = requestUrl.searchParams.get('redirect_to') || '/app'
+        // Check if this is a trial user by checking the user metadata or email
+        const user = data.user
+        const isTrialUser = user?.app_metadata?.is_trial_user || user?.user_metadata?.is_trial_user
         
-        // Create response with session cookies
-        const response = NextResponse.redirect(new URL(redirectTo, request.url))
-        
-        // Set session cookies
-        response.cookies.set('supabase-auth-token', data.session.access_token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'lax',
-          maxAge: data.session.expires_in || 3600
-        })
-        
-        response.cookies.set('supabase-refresh-token', data.session.refresh_token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'lax',
-          maxAge: 30 * 24 * 60 * 60 // 30 days
-        })
-        
-        return response
+        if (isTrialUser) {
+          console.log('🔗 [AUTH CALLBACK] Trial user detected, redirecting to password reset...')
+          
+          // For trial users, redirect to password reset page to set password
+          const resetPasswordUrl = new URL('/auth/reset-password', request.url)
+          resetPasswordUrl.searchParams.set('access_token', data.session.access_token)
+          resetPasswordUrl.searchParams.set('refresh_token', data.session.refresh_token)
+          resetPasswordUrl.searchParams.set('welcome', 'true')
+          resetPasswordUrl.searchParams.set('trial', 'true')
+          
+          return NextResponse.redirect(resetPasswordUrl)
+        } else {
+          console.log('🔗 [AUTH CALLBACK] Regular user, redirecting to app...')
+          
+          // Get the redirect_to parameter or default to /app
+          const redirectTo = requestUrl.searchParams.get('redirect_to') || '/app'
+          
+          // Create response with session cookies
+          const response = NextResponse.redirect(new URL(redirectTo, request.url))
+          
+          // Set session cookies
+          response.cookies.set('supabase-auth-token', data.session.access_token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: data.session.expires_in || 3600
+          })
+          
+          response.cookies.set('supabase-refresh-token', data.session.refresh_token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 30 * 24 * 60 * 60 // 30 days
+          })
+          
+          return response
+        }
       }
     } catch (error) {
       console.error('🔗 [AUTH CALLBACK] Error in magic link callback:', error)
