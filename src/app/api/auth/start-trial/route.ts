@@ -135,6 +135,7 @@ export async function POST(request: NextRequest) {
           trial_reminder_sent_3day: false,
           trial_reminder_sent_1day: false,
           trial_reminder_sent_expired: false,
+          has_set_password: false, // Trial users need to set password first
           updated_at: new Date().toISOString()
         })
         .eq('id', userId);
@@ -189,6 +190,7 @@ export async function POST(request: NextRequest) {
           trial_reminder_sent_3day: false,
           trial_reminder_sent_1day: false,
           trial_reminder_sent_expired: false,
+          has_set_password: false, // Trial users need to set password first
           language: 'nl', // Default language
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString()

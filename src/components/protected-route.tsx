@@ -15,6 +15,7 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
   const router = useRouter()
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null)
   const [trialExpiresAt, setTrialExpiresAt] = useState<Date | null>(null)
+  const [hasSetPassword, setHasSetPassword] = useState<boolean | null>(null)
   const [checkingPayment, setCheckingPayment] = useState(true)
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
         try {
           const { data, error } = await supabase
             .from('profiles')
-            .select('payment_status, trial_expires_at')
+            .select('payment_status, trial_expires_at, has_set_password')
             .eq('id', user.id)
             .single()
 
@@ -40,6 +41,7 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
           } else {
             setPaymentStatus(data?.payment_status || 'pending')
             setTrialExpiresAt(data?.trial_expires_at ? new Date(data.trial_expires_at) : null)
+            setHasSetPassword(data?.has_set_password ?? null)
           }
         } catch (error) {
           console.error('Error checking payment status:', error)
@@ -53,14 +55,15 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
     }
   }, [user, loading])
 
-  // Check if user has valid access (paid or active trial)
+  // Check if user has valid access (paid or active trial with password set)
   const hasValidAccess = () => {
     if (paymentStatus === 'paid') {
       return true
     }
     
     if (paymentStatus === 'trial' && trialExpiresAt) {
-      return trialExpiresAt > new Date()
+      // Trial users must have active trial AND password set
+      return trialExpiresAt > new Date() && hasSetPassword === true
     }
     
     return false
@@ -70,16 +73,26 @@ export function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
   useEffect(() => {
     if (!checkingPayment && paymentStatus) {
       if (!hasValidAccess()) {
-        // Trial expired or no payment - redirect to upgrade page
         if (paymentStatus === 'trial') {
-          router.push('/upgrade')
+          // Check why trial access failed
+          if (trialExpiresAt && trialExpiresAt <= new Date()) {
+            // Trial expired - redirect to upgrade page
+            router.push('/upgrade')
+          } else if (hasSetPassword === false) {
+            // Trial user without password - redirect to password setup
+            console.log('🔑 Trial user without password, redirecting to password setup...')
+            router.push('/auth/reset-password?welcome=true&trial=true')
+          } else {
+            // Other trial issues - redirect to upgrade
+            router.push('/upgrade')
+          }
         } else {
           // No trial, no payment - redirect to landing
           router.push('/')
         }
       }
     }
-  }, [checkingPayment, paymentStatus, trialExpiresAt, router])
+  }, [checkingPayment, paymentStatus, trialExpiresAt, hasSetPassword, router])
 
   if (loading || checkingPayment) {
     return (

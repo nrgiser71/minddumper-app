@@ -61,6 +61,26 @@ function ResetPasswordForm() {
         setMessage('Fout bij het instellen van wachtwoord: ' + error.message)
         setIsError(true)
       } else {
+        // Update has_set_password flag in profiles table
+        try {
+          const { data: { user } } = await supabase.auth.getUser()
+          if (user) {
+            const { error: updateError } = await supabase
+              .from('profiles')
+              .update({ has_set_password: true })
+              .eq('id', user.id)
+            
+            if (updateError) {
+              console.error('Error updating has_set_password flag:', updateError)
+            } else {
+              console.log('✅ Password flag updated successfully')
+            }
+          }
+        } catch (flagError) {
+          console.error('Error updating password flag:', flagError)
+          // Don't fail the entire operation if flag update fails
+        }
+
         if (isWelcome && isTrial) {
           setMessage('Welkom bij je 14-dagen gratis proefperiode! Je wachtwoord is ingesteld. Je wordt doorgestuurd naar de app...')
         } else if (isWelcome) {
