@@ -12,6 +12,7 @@ import { ToastProvider, useToast } from '@/components/toast-context'
 import { ToastContainer } from '@/components/toast-container'
 import { ConfirmationModal } from '@/components/confirmation-modal'
 import { OnboardingTour } from '@/components/onboarding-tour'
+import { TrialBanner } from '@/components/trial-banner'
 import '../app.css'
 
 type Language = 'nl' | 'en' | 'de' | 'fr' | 'es'
@@ -1149,6 +1150,8 @@ function AppContent() {
 
   return (
     <div>
+      <TrialBanner />
+      
       {/* Home Screen */}
       {currentScreen === 'home' && (
         <div className="screen active main-container">
