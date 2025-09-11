@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-export default function UpgradePage() {
+function UpgradePageContent() {
   const [userEmail, setUserEmail] = useState('');
   const [userName, setUserName] = useState('');
   const [trialExpired, setTrialExpired] = useState(false);
@@ -324,5 +324,13 @@ export default function UpgradePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function UpgradePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <UpgradePageContent />
+    </Suspense>
   );
 }

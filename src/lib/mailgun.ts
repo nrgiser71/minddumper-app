@@ -2,7 +2,7 @@ import formData from 'form-data';
 import Mailgun from 'mailgun.js';
 
 // Initialize Mailgun client only if API key is available
-let mg: any = null;
+let mg: ReturnType<InstanceType<typeof Mailgun>['client']> | null = null;
 if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
   const mailgun = new Mailgun(formData);
   mg = mailgun.client({
