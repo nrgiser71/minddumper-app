@@ -88,13 +88,24 @@
   - [ ] ✅ Moet `has_set_password = true` zetten in database
   - [ ] ✅ Moet doorsturen naar `/app` na password setup
   - [ ] Test volgende login met email + wachtwoord
+- [ ] **Logout Functionaliteit (NIEUW):**
+  - [ ] Test logout via `/auth/logout` route
+  - [ ] ✅ Moet redirecten naar homepage
+  - [ ] ✅ Moet session cookies clearen
+  - [ ] ✅ Bij bezoek aan `/app` na logout → redirect naar login pagina
+- [ ] **Trial Expiration Flow:**
+  - [ ] Gebruik SQL om trial account te expiren (zie `TRIAL-EXPIRATION-TEST-GUIDE.md`)
+  - [ ] ✅ Login met expired trial → automatisch naar `/upgrade` pagina
+  - [ ] ✅ Upgrade pagina toont "Je trial is verlopen" boodschap
+  - [ ] ✅ Upgrade button redirect naar PlugAndPay met email pre-filled
+  - [ ] Test discount code: `/upgrade?discount=LASTCHANCE10` toont €44,10
 - [ ] **Bestaande Trial Users:**
   - [ ] Als er bestaande trial users zijn, moeten zij bij `/app` bezoek redirected worden naar password setup
 - [ ] **Regular Flows:**
   - [ ] Test magic link redirect voor nieuwe trial users  
   - [ ] Test welcome email ontvangst
   - [ ] Test trial expiration reminders (via cron job)
-  - [ ] Test upgrade flow van trial naar paid
+  - [ ] Test upgrade flow van trial naar paid (ECHTE BETALING - voorzie refund!)
   - [ ] Test bestaande paid users (geen impact)
 
 ### 9. **Monitoring & Debugging**
@@ -104,30 +115,46 @@
   - /api/debug/env-check
 - [ ] **Console logging minimaliseren** in production
 
-### 10. **DNS & Domain Settings**
+### 10. **Cron Jobs & Scheduled Tasks**
+- [ ] **Vercel Cron Jobs** geconfigureerd in `vercel.json`:
+  - Trial reminder cron job: `0 10 * * *` (dagelijks om 10:00 UTC)
+  - Path: `/api/cron/trial-reminders`
+- [ ] **Test cron job** na deployment via manual trigger of wacht tot volgende uitvoering
+
+### 11. **DNS & Domain Settings**
 - [ ] **Vercel domain** correct gekoppeld aan minddumper.com
 - [ ] **SSL certificaat** automatisch gegenereerd voor minddumper.com
 
 ---
 
-## 🔄 **Staging → Production Workflow**
+## 🔄 **Staging → Production Workflow (KRITIEKE VOLGORDE)**
 
-1. **Pre-deployment checks:**
-   - Alle bovenstaande items ✅
-   - Staging volledig getest
-   - Database migratie script klaar
+### **1. PRE-DEPLOYMENT CHECKS:**
+   - [ ] Alle bovenstaande items ✅
+   - [ ] Staging volledig getest
+   - [ ] Database migratie script klaar
+   - [ ] **Database backup gemaakt van productie**
 
-2. **Deployment:**
-   - Merge staging → main via PR
-   - Database migratie uitvoeren
-   - Environment variables controleren
-   - Supabase redirects updaten
-
-3. **Post-deployment checks:**
-   - Trial signup flow testen
-   - Email delivery verifiëren  
-   - Magic links testen
-   - Bestaande users testen
+### **2. DEPLOYMENT VOLGORDE (BELANGRIJK!):**
+   **A. Database Migratie EERST:**
+   - [ ] Voer `has_set_password` migratie uit op PRODUCTIE Supabase
+   - [ ] Verifieer migratie succesvol met SELECT query
+   
+   **B. Code Deployment:**
+   - [ ] Merge staging → main via PR
+   - [ ] Vercel deployment compleet wachten
+   - [ ] Environment variables controleren op main branch
+   
+   **C. External Services:**
+   - [ ] Supabase Auth URLs updaten naar `https://minddumper.com`
+   - [ ] PlugAndPay webhook URL updaten naar productie
+   
+### **3. POST-DEPLOYMENT CHECKS:**
+   - [ ] Trial signup flow testen
+   - [ ] Email delivery verifiëren  
+   - [ ] Magic links testen
+   - [ ] Logout functionaliteit testen
+   - [ ] Bestaande users testen (GEEN IMPACT verwacht)
 
 ---
 
@@ -171,8 +198,36 @@
 
 ---
 
+---
+
+## ⚠️ **BEKENDE ISSUES & WAARSCHUWINGEN**
+
+### **1. Login 500 Error = User bestaat niet**
+- **Symptoom**: `500 Internal Server Error` bij `signInWithPassword`
+- **Oorzaak**: User bestaat niet in die Supabase omgeving
+- **Oplossing**: Maak nieuw account aan of gebruik bestaande test account
+
+### **2. Staging vs Productie Databases**
+- **BELANGRIJK**: Staging en productie hebben **APARTE** Supabase databases
+- **Gebruikers**: Bestaan NIET in beide omgevingen automatisch
+- **Data**: Wordt NIET gesynchroniseerd tussen staging/productie
+
+### **3. 🚨 BETALING OP STAGING - GEVAARLIJK!**
+- **WAARSCHUWING**: PlugAndPay checkout is ECHTE betaling (€49)
+- **Probleem**: Betaling update alleen staging database
+- **Resultaat**: Geld kwijt, alleen staging toegang
+- **Oplossing**: ALLEEN testen op productie met refund optie
+
+### **4. Session/Cookie Issues**
+- **Logout**: Vereist zowel `supabase.auth.signOut()` als cookie clearing
+- **Server-side**: Gebruik service role key voor server operations
+- **Client-side**: Gebruik anon key voor client operations
+
+---
+
 ## 🚨 **Kritieke Punten**
 - **Geen impact op bestaande users** - trial system is volledig geïsoleerd
 - **Database backup** maken voor productie migratie
 - **Rollback plan** - trial system kan eenvoudig uitgeschakeld worden
 - **⚠️ has_set_password migratie is VERPLICHT** - anders werkt trial password flow niet
+- **⚠️ DEPLOYMENT VOLGORDE**: Database EERST, dan code, dan external services
