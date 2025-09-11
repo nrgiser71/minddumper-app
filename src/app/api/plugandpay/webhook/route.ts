@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@supabase/supabase-js'
+import { sendUpgradeConfirmationEmail } from '@/lib/mailgun'
 
 // Create Supabase client with service role for user creation
 const supabase = createClient(
@@ -134,47 +135,68 @@ export async function POST(request: NextRequest) {
         return NextResponse.json({ error: 'Missing customer email' }, { status: 400 })
       }
 
-      // Check if user already exists
-      const { data: { users }, error: userCheckError } = await supabase.auth.admin.listUsers()
-      
-      if (userCheckError) {
-        console.error('❌ Error checking existing users:', userCheckError)
-        return NextResponse.json({ error: 'Database error' }, { status: 500 })
-      }
-      
-      const existingUser = users.find(u => u.email?.toLowerCase() === email)
+      // Check if user already exists (profile check is more reliable)
+      const { data: existingProfile, error: profileCheckError } = await supabase
+        .from('profiles')
+        .select('id, email, payment_status, is_trial_user, full_name')
+        .eq('email', email)
+        .single()
 
       let userId: string
+      let wasTrialUser = false
 
-      if (existingUser) {
-        // User exists, update their payment status
-        console.log('👤 User already exists, updating payment status')
-        userId = existingUser.id
+      if (existingProfile && profileCheckError?.code !== 'PGRST116') {
+        // User exists in profiles, update their payment status
+        console.log('👤 User already exists, updating payment status:', existingProfile.payment_status)
+        userId = existingProfile.id
+        wasTrialUser = existingProfile.is_trial_user || existingProfile.payment_status === 'trial'
         
         // Generate login token for auto-login
         const loginToken = Math.random().toString(36).substring(2, 15) + 
                           Math.random().toString(36).substring(2, 15)
         const tokenExpires = new Date(Date.now() + 10 * 60 * 1000) // 10 minutes
         
-        // Update profile with payment information
+        // Update profile with payment information (trial → paid conversion)
+        const updateData = {
+          payment_status: 'paid',
+          amount_paid_cents: payload.amount ? Math.round(Number(payload.amount) * 100) : 
+                            (payload.total ? Math.round(Number(payload.total) * 100) : 4900), // Default €49
+          plugandpay_order_id: orderId,
+          paid_at: new Date().toISOString(),
+          login_token: loginToken,
+          login_token_used: false,
+          login_token_expires: tokenExpires.toISOString(),
+          updated_at: new Date().toISOString()
+        }
+
+        // Update name if provided and different
+        if (fullName !== 'MindDumper User' && fullName !== existingProfile.full_name) {
+          updateData.full_name = fullName
+        }
+
         const { error: updateError } = await supabase
           .from('profiles')
-          .update({
-            payment_status: 'paid',
-            amount_paid_cents: payload.amount ? Math.round(Number(payload.amount) * 100) : 
-                              (payload.total ? Math.round(Number(payload.total) * 100) : 0), // Convert to cents
-            plugandpay_order_id: orderId,
-            paid_at: new Date().toISOString(),
-            login_token: loginToken,
-            login_token_used: false,
-            login_token_expires: tokenExpires.toISOString(),
-            updated_at: new Date().toISOString()
-          })
+          .update(updateData)
           .eq('id', userId)
 
         if (updateError) {
           console.error('❌ Error updating existing user profile:', updateError)
           return NextResponse.json({ error: 'Profile update failed' }, { status: 500 })
+        }
+
+        // Send appropriate email based on user type
+        try {
+          if (wasTrialUser) {
+            console.log('📧 Sending upgrade confirmation email (trial→paid)...')
+            await sendUpgradeConfirmationEmail(email, existingProfile.full_name || fullName)
+          } else {
+            console.log('📧 Sending upgrade confirmation email (direct purchase)...')
+            await sendUpgradeConfirmationEmail(email, existingProfile.full_name || fullName)
+          }
+          console.log('✅ Upgrade confirmation email sent')
+        } catch (emailError) {
+          console.error('⚠️ Upgrade confirmation email failed:', emailError)
+          // Don't fail the webhook for email errors
         }
       } else {
         // Create new user
