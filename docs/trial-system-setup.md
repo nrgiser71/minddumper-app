@@ -8,7 +8,7 @@ Add these variables to your `.env.local` file:
 
 ```bash
 # Mailgun Configuration (for Trial System & Email Notifications)
-MAILGUN_API_KEY=key-your_actual_mailgun_api_key
+MAILGUN_API_KEY=your_mailgun_sending_key_here
 MAILGUN_DOMAIN=mg.yourdomain.com
 MAILGUN_FROM_EMAIL=noreply@yourdomain.com
 MAILGUN_FROM_NAME=MindDumper
@@ -31,7 +31,7 @@ CRON_SECRET=your_secure_random_string_for_cron_protection
 
 3. **API Key**
    - Find your API key in Mailgun dashboard
-   - Format: `key-1234567890abcdef1234567890abcdef`
+   - Format: `key-[random letters and numbers]`
    - Add to MAILGUN_API_KEY environment variable
 
 ### Cron Job Security
