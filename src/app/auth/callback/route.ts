@@ -46,9 +46,26 @@ export async function GET(request: NextRequest) {
       if (data.session) {
         console.log('🔗 [AUTH CALLBACK] Magic link verified successfully...')
         
-        // Check if this is a trial user by checking the user metadata or email
+        // Check if this is a trial user by checking the user metadata
         const user = data.user
-        const isTrialUser = user?.app_metadata?.is_trial_user || user?.user_metadata?.is_trial_user
+        let isTrialUser = user?.app_metadata?.is_trial_user || user?.user_metadata?.is_trial_user
+        
+        // Fallback: check profile in database if metadata is missing
+        if (!isTrialUser && user?.id) {
+          console.log('🔗 [AUTH CALLBACK] Metadata check failed, checking database...')
+          try {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('payment_status, is_trial_user')
+              .eq('id', user.id)
+              .single()
+              
+            isTrialUser = profile?.payment_status === 'trial' || profile?.is_trial_user
+            console.log('🔗 [AUTH CALLBACK] Database trial check result:', isTrialUser)
+          } catch (dbError) {
+            console.log('🔗 [AUTH CALLBACK] Database check failed:', dbError)
+          }
+        }
         
         if (isTrialUser) {
           console.log('🔗 [AUTH CALLBACK] Trial user detected, redirecting to password reset...')

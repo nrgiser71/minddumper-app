@@ -160,7 +160,8 @@ export async function POST(request: NextRequest) {
         email_confirm: true, // Auto-confirm email
         user_metadata: {
           full_name: trimmedName,
-          source: 'trial_signup'
+          source: 'trial_signup',
+          is_trial_user: true
         }
       });
       
