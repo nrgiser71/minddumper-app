@@ -240,14 +240,16 @@ export async function POST(request: NextRequest) {
       console.log('🔗 [DEBUG] Magic link generation result:');
       console.log('  - Error:', magicError);
       console.log('  - Has data:', !!magicLinkData);
+      console.log('  - Full magic link data:', JSON.stringify(magicLinkData, null, 2));
       if (magicLinkData?.properties?.action_link) {
-        console.log('  - Magic link preview:', magicLinkData.properties.action_link.substring(0, 100) + '...');
+        console.log('  - Complete magic link URL:', magicLinkData.properties.action_link);
+        console.log('  - Magic link includes redirect param:', magicLinkData.properties.action_link.includes('redirect_to'));
       }
       
       if (magicError) {
         console.error('⚠️ Magic link generation failed:', magicError);
       } else if (magicLinkData?.properties?.action_link) {
-        console.log('✅ Magic link generated successfully');
+        console.log('✅ Magic link generated successfully - ready to redirect user');
         return NextResponse.json({
           success: true,
           message: 'Trial account aangemaakt! Je wordt doorgestuurd...',

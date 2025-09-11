@@ -8,7 +8,7 @@ if (process.env.MAILGUN_API_KEY && process.env.MAILGUN_DOMAIN) {
   mg = mailgun.client({
     username: 'api',
     key: process.env.MAILGUN_API_KEY,
-    domain: process.env.MAILGUN_DOMAIN
+    url: 'https://api.eu.mailgun.net' // EU region
   });
 }
 
