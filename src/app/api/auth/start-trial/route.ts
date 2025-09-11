@@ -217,7 +217,7 @@ export async function POST(request: NextRequest) {
         type: 'magiclink',
         email: normalizedEmail,
         options: {
-          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || 'https://minddumper-app-git-staging-nrgiser71s-projects.vercel.app'}/auth/callback?redirect_to=/app`
+          redirectTo: `${(process.env.NEXT_PUBLIC_SITE_URL || 'https://minddumper-app-git-staging-nrgiser71s-projects.vercel.app').replace(/\/$/, '')}/auth/callback?redirect_to=/app`
         }
       });
       
