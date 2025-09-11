@@ -169,17 +169,66 @@ export async function GET(request: NextRequest) {
       }
 
       if (data.session) {
-        // Check if this is a password recovery (user needs to set new password)
+        console.log('🔗 [AUTH CALLBACK] Code exchange successful...')
+        
+        // Check if this is a trial user by checking the user metadata  
+        const user = data.user
+        let isTrialUser = user?.app_metadata?.is_trial_user || user?.user_metadata?.is_trial_user
+        
+        // Fallback: check profile in database if metadata is missing
+        if (!isTrialUser && user?.id) {
+          console.log('🔗 [AUTH CALLBACK] Metadata check failed, checking database...')
+          try {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('payment_status, is_trial_user')
+              .eq('id', user.id)
+              .single()
+              
+            isTrialUser = profile?.payment_status === 'trial' || profile?.is_trial_user
+            console.log('🔗 [AUTH CALLBACK] Database trial check result:', isTrialUser)
+          } catch (dbError) {
+            console.log('🔗 [AUTH CALLBACK] Database check failed:', dbError)
+          }
+        }
+        
         const accessToken = data.session.access_token
         const refreshToken = data.session.refresh_token
         
-        // For password recovery, redirect to reset-password with tokens and welcome flag
-        const resetPasswordUrl = new URL('/auth/reset-password', request.url)
-        resetPasswordUrl.searchParams.set('access_token', accessToken)
-        resetPasswordUrl.searchParams.set('refresh_token', refreshToken)
-        resetPasswordUrl.searchParams.set('welcome', 'true')
-        
-        return NextResponse.redirect(resetPasswordUrl)
+        if (isTrialUser) {
+          console.log('🔗 [AUTH CALLBACK] Trial user detected, redirecting to password reset...')
+          
+          // For trial users, redirect to password reset page to set password
+          const resetPasswordUrl = new URL('/auth/reset-password', request.url)
+          resetPasswordUrl.searchParams.set('access_token', accessToken)
+          resetPasswordUrl.searchParams.set('refresh_token', refreshToken)
+          resetPasswordUrl.searchParams.set('welcome', 'true')
+          resetPasswordUrl.searchParams.set('trial', 'true')
+          
+          return NextResponse.redirect(resetPasswordUrl)
+        } else {
+          console.log('🔗 [AUTH CALLBACK] Regular user, redirecting to app...')
+          
+          // For regular users, redirect to app with session cookies
+          const response = NextResponse.redirect(new URL(redirectTo, request.url))
+          
+          // Set session cookies
+          response.cookies.set('supabase-auth-token', accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: data.session.expires_in || 3600
+          })
+          
+          response.cookies.set('supabase-refresh-token', refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 30 * 24 * 60 * 60 // 30 days
+          })
+          
+          return response
+        }
       }
     } catch (error) {
       console.error('Error in auth callback:', error)
