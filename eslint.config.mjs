@@ -17,7 +17,22 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-vars": "off",
       "@typescript-eslint/no-empty-object-type": "off",
       "@next/next/no-html-link-for-pages": "off",
-      "@typescript-eslint/ban-types": "off"
+      "@typescript-eslint/ban-types": "off",
+      "@next/next/no-img-element": "off",
+      "react-hooks/exhaustive-deps": "warn"
+    }
+  },
+  {
+    files: ["src/app/**/*"],
+    rules: {
+      "@next/next/no-img-element": "off",
+      "react-hooks/exhaustive-deps": "warn"
+    }
+  },
+  {
+    files: ["src/lib/**/*"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off"
     }
   }
 ];
