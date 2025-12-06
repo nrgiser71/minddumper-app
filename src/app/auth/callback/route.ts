@@ -8,13 +8,109 @@ export async function GET(request: NextRequest) {
   const type = requestUrl.searchParams.get('type')
   const error = requestUrl.searchParams.get('error')
   const errorDescription = requestUrl.searchParams.get('error_description')
+  const redirectTo = requestUrl.searchParams.get('redirect_to') || '/app'
+
+  console.log('🔗 [AUTH CALLBACK] Processing auth callback...')
+  console.log('🔗 [AUTH CALLBACK] Parameters:', { code: !!code, token: !!token, type, error, redirectTo })
 
   // If there's an error, redirect to login with error message
   if (error) {
-    console.error('Auth callback error:', error, errorDescription)
+    console.error('🔗 [AUTH CALLBACK] Auth callback error:', error, errorDescription)
     return NextResponse.redirect(
       new URL(`/auth/login?error=${encodeURIComponent(errorDescription || error)}`, request.url)
     )
+  }
+
+  // Handle magic link authentication
+  if (token && type === 'magiclink') {
+    console.log('🔗 [AUTH CALLBACK] Processing magic link token...')
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    )
+
+    try {
+      // Verify the magic link token and get session
+      const { data, error: verifyError } = await supabase.auth.verifyOtp({
+        token_hash: token,
+        type: 'magiclink'
+      })
+
+      if (verifyError) {
+        console.error('🔗 [AUTH CALLBACK] Error verifying magic link token:', verifyError)
+        return NextResponse.redirect(
+          new URL(`/auth/login?error=${encodeURIComponent(verifyError.message)}`, request.url)
+        )
+      }
+
+      if (data.session) {
+        console.log('🔗 [AUTH CALLBACK] Magic link verified successfully...')
+        
+        // Check if this is a trial user by checking the user metadata
+        const user = data.user
+        let isTrialUser = user?.app_metadata?.is_trial_user || user?.user_metadata?.is_trial_user
+        
+        // Fallback: check profile in database if metadata is missing
+        if (!isTrialUser && user?.id) {
+          console.log('🔗 [AUTH CALLBACK] Metadata check failed, checking database...')
+          try {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('payment_status, is_trial_user')
+              .eq('id', user.id)
+              .single()
+              
+            isTrialUser = profile?.payment_status === 'trial' || profile?.is_trial_user
+            console.log('🔗 [AUTH CALLBACK] Database trial check result:', isTrialUser)
+          } catch (dbError) {
+            console.log('🔗 [AUTH CALLBACK] Database check failed:', dbError)
+          }
+        }
+        
+        if (isTrialUser) {
+          console.log('🔗 [AUTH CALLBACK] Trial user detected, redirecting to password reset...')
+          
+          // For trial users, redirect to password reset page to set password
+          const resetPasswordUrl = new URL('/auth/reset-password', request.url)
+          resetPasswordUrl.searchParams.set('access_token', data.session.access_token)
+          resetPasswordUrl.searchParams.set('refresh_token', data.session.refresh_token)
+          resetPasswordUrl.searchParams.set('welcome', 'true')
+          resetPasswordUrl.searchParams.set('trial', 'true')
+          
+          return NextResponse.redirect(resetPasswordUrl)
+        } else {
+          console.log('🔗 [AUTH CALLBACK] Regular user, redirecting to app...')
+          
+          // Get the redirect_to parameter or default to /app
+          const redirectTo = requestUrl.searchParams.get('redirect_to') || '/app'
+          
+          // Create response with session cookies
+          const response = NextResponse.redirect(new URL(redirectTo, request.url))
+          
+          // Set session cookies
+          response.cookies.set('supabase-auth-token', data.session.access_token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: data.session.expires_in || 3600
+          })
+          
+          response.cookies.set('supabase-refresh-token', data.session.refresh_token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 30 * 24 * 60 * 60 // 30 days
+          })
+          
+          return response
+        }
+      }
+    } catch (error) {
+      console.error('🔗 [AUTH CALLBACK] Error in magic link callback:', error)
+      return NextResponse.redirect(
+        new URL(`/auth/login?error=${encodeURIComponent('Magic link authentication failed')}`, request.url)
+      )
+    }
   }
 
   // Handle password recovery with verification token
@@ -73,17 +169,66 @@ export async function GET(request: NextRequest) {
       }
 
       if (data.session) {
-        // Check if this is a password recovery (user needs to set new password)
+        console.log('🔗 [AUTH CALLBACK] Code exchange successful...')
+        
+        // Check if this is a trial user by checking the user metadata  
+        const user = data.user
+        let isTrialUser = user?.app_metadata?.is_trial_user || user?.user_metadata?.is_trial_user
+        
+        // Fallback: check profile in database if metadata is missing
+        if (!isTrialUser && user?.id) {
+          console.log('🔗 [AUTH CALLBACK] Metadata check failed, checking database...')
+          try {
+            const { data: profile } = await supabase
+              .from('profiles')
+              .select('payment_status, is_trial_user')
+              .eq('id', user.id)
+              .single()
+              
+            isTrialUser = profile?.payment_status === 'trial' || profile?.is_trial_user
+            console.log('🔗 [AUTH CALLBACK] Database trial check result:', isTrialUser)
+          } catch (dbError) {
+            console.log('🔗 [AUTH CALLBACK] Database check failed:', dbError)
+          }
+        }
+        
         const accessToken = data.session.access_token
         const refreshToken = data.session.refresh_token
         
-        // For password recovery, redirect to reset-password with tokens and welcome flag
-        const resetPasswordUrl = new URL('/auth/reset-password', request.url)
-        resetPasswordUrl.searchParams.set('access_token', accessToken)
-        resetPasswordUrl.searchParams.set('refresh_token', refreshToken)
-        resetPasswordUrl.searchParams.set('welcome', 'true')
-        
-        return NextResponse.redirect(resetPasswordUrl)
+        if (isTrialUser) {
+          console.log('🔗 [AUTH CALLBACK] Trial user detected, redirecting to password reset...')
+          
+          // For trial users, redirect to password reset page to set password
+          const resetPasswordUrl = new URL('/auth/reset-password', request.url)
+          resetPasswordUrl.searchParams.set('access_token', accessToken)
+          resetPasswordUrl.searchParams.set('refresh_token', refreshToken)
+          resetPasswordUrl.searchParams.set('welcome', 'true')
+          resetPasswordUrl.searchParams.set('trial', 'true')
+          
+          return NextResponse.redirect(resetPasswordUrl)
+        } else {
+          console.log('🔗 [AUTH CALLBACK] Regular user, redirecting to app...')
+          
+          // For regular users, redirect to app with session cookies
+          const response = NextResponse.redirect(new URL(redirectTo, request.url))
+          
+          // Set session cookies
+          response.cookies.set('supabase-auth-token', accessToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: data.session.expires_in || 3600
+          })
+          
+          response.cookies.set('supabase-refresh-token', refreshToken, {
+            httpOnly: true,
+            secure: true,
+            sameSite: 'lax',
+            maxAge: 30 * 24 * 60 * 60 // 30 days
+          })
+          
+          return response
+        }
       }
     } catch (error) {
       console.error('Error in auth callback:', error)
@@ -93,6 +238,29 @@ export async function GET(request: NextRequest) {
     }
   }
 
+  // Check if this is a magic link callback without explicit token (Supabase might have already processed it)
+  if (redirectTo && redirectTo !== '/app') {
+    console.log('🔗 [AUTH CALLBACK] Magic link callback without token - attempting direct redirect...')
+    
+    try {
+      // Check if we can get user from the request (Supabase might have set session)
+      const authHeader = request.headers.get('authorization')
+      if (authHeader) {
+        console.log('🔗 [AUTH CALLBACK] Found auth header, redirecting to:', redirectTo)
+        return NextResponse.redirect(new URL(redirectTo, request.url))
+      }
+    } catch (error) {
+      console.error('🔗 [AUTH CALLBACK] Error checking auth header:', error)
+    }
+  }
+  
+  // Fallback for magic link: redirect directly to app and let client-side handle auth
+  if (redirectTo === '/app') {
+    console.log('🔗 [AUTH CALLBACK] Magic link fallback - redirecting to app for client-side auth handling...')
+    return NextResponse.redirect(new URL('/app', request.url))
+  }
+
   // No code provided, redirect to login
+  console.log('🔗 [AUTH CALLBACK] No valid parameters, redirecting to login...')
   return NextResponse.redirect(new URL('/auth/login', request.url))
 }
